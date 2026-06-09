@@ -1,0 +1,28 @@
+{
+  "name": "@m-grid/core",
+  "version": "0.1.0",
+  "description": "Framework-independent core engine contracts for m-grid.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "mGrid": {
+    "offeringPolicy": "Single open-source offering with no Community/Pro separation during the first project year"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

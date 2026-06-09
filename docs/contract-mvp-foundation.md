@@ -1,0 +1,169 @@
+# Contract MVP Foundation
+
+## English
+
+This document describes the initial `@m-grid` Contract MVP foundation. It is a package-contract and build-foundation slice only. It does not implement usable grid rendering, sorting, filtering, pagination, selection behavior, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, export, editing or framework components.
+
+### Repository Setup
+
+The repository is a pnpm workspace with four initial packages:
+
+```text
+@m-grid/core
+@m-grid/dom
+@m-grid/vue
+@m-grid/theme-default
+```
+
+Primary validation commands:
+
+```text
+corepack enable
+corepack prepare pnpm@9.15.0 --activate
+pnpm install
+pnpm typecheck
+pnpm test
+pnpm package:check
+pnpm exports:check
+pnpm build
+pnpm validate
+```
+
+### Package Responsibilities
+
+`@m-grid/core` owns framework-independent public contracts, row identity validation, state/command/event contracts, subscription flow and datasource lifecycle coordination. It must not import DOM APIs, CSS, Vue, React, Svelte, browser globals or renderer types.
+
+`@m-grid/dom` owns framework-neutral contracts reserved for future DOM mounting, focus coordination, ARIA coordination, measurements, observers, viewport and virtualization integration. It does not implement real rendering in this slice.
+
+`@m-grid/vue` is the first adapter package and currently exposes only a minimal contract placeholder that composes core and DOM contracts. It does not implement a real Vue grid component yet.
+
+`@m-grid/theme-default` is an optional CSS package with explicit CSS entry points and CSS side-effect metadata. It has no JavaScript runtime dependency.
+
+### Dependency Rules
+
+Allowed package directions:
+
+```text
+@m-grid/core -> no other @m-grid package
+@m-grid/dom -> @m-grid/core
+@m-grid/vue -> @m-grid/core, @m-grid/dom
+@m-grid/theme-default -> no TypeScript runtime dependencies
+```
+
+Automated checks reject unsupported deep imports, circular `@m-grid` dependencies, framework imports in lower layers, CSS imports in core and DOM-related public types in core.
+
+### Dependency Documentation
+
+| Dependency | Type | Purpose | Why Required | Alternatives Considered |
+|---|---|---|---|---|
+| `typescript` | Development | Strict TypeScript compilation and declaration generation | Required for the TypeScript-first public API and ESM package output | Plain JavaScript was rejected because public generic contracts are a product requirement |
+| `vitest` | Development | Focused unit and type-inference smoke tests | Required to prove Contract MVP behavior without browser rendering | Node's built-in test runner was considered, but Vitest gives `expectTypeOf` and TypeScript-friendly tests with less custom setup |
+
+There are no production dependencies in `@m-grid/core`, `@m-grid/dom` or `@m-grid/theme-default`. `@m-grid/vue` declares Vue as a peer dependency because it is the Vue adapter package, but the current placeholder does not import Vue runtime APIs.
+
+### Language Policy
+
+All source code, tests, identifiers, package metadata, scripts, CSS selectors, CSS custom properties, data attributes, comments, logs and runtime messages are English-only. Explanatory documentation is bilingual in English first, then Turkish. Code blocks remain English-only.
+
+### Browser Policy
+
+The initial policy is latest two major versions of supported browsers. Current tooling metadata lists Chrome, Firefox, Safari, Edge, iOS Safari and Android Chrome families. This slice does not claim browser runtime validation.
+
+### Package Exports
+
+The JavaScript packages expose only root ESM entries and `package.json`. The CSS package exposes explicit CSS entry points:
+
+```text
+@m-grid/theme-default/base.css
+@m-grid/theme-default/light.css
+```
+
+Unsupported internal deep imports are intentionally rejected by package-boundary checks.
+
+### Current Limitations
+
+The Contract MVP foundation does not render a grid. It does not sort, filter, paginate, select, edit, virtualize, navigate with keyboard, calculate responsive columns, export files, or provide a real Vue component. Those belong to later slices.
+
+## Turkce
+
+Bu dokuman ilk `@m-grid` Contract MVP foundation kapsamını aciklar. Bu dilim yalniz package contract ve build foundation isidir. Usable grid rendering, sorting, filtering, pagination, selection behavior, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, export, editing veya framework component implement etmez.
+
+### Repository Setup
+
+Repository dort ilk package iceren bir pnpm workspace'tir:
+
+```text
+@m-grid/core
+@m-grid/dom
+@m-grid/vue
+@m-grid/theme-default
+```
+
+Ana validation komutlari:
+
+```text
+corepack enable
+corepack prepare pnpm@9.15.0 --activate
+pnpm install
+pnpm typecheck
+pnpm test
+pnpm package:check
+pnpm exports:check
+pnpm build
+pnpm validate
+```
+
+### Package Responsibilities
+
+`@m-grid/core` framework-independent public contract'lari, row identity validation, state/command/event contract'lari, subscription flow ve datasource lifecycle coordination'i sahiplenir. DOM API, CSS, Vue, React, Svelte, browser global veya renderer type import etmez.
+
+`@m-grid/dom` future DOM mounting, focus coordination, ARIA coordination, measurement, observer, viewport ve virtualization integration icin framework-neutral contract'lari ayirir. Bu dilimde real rendering implement etmez.
+
+`@m-grid/vue` ilk adapter package'tir ve su anda yalniz core ve DOM contract'larini birlestiren minimal placeholder contract export eder. Henuz real Vue grid component implement etmez.
+
+`@m-grid/theme-default` explicit CSS entry point'leri ve CSS side-effect metadata'si olan optional CSS package'tir. JavaScript runtime dependency'si yoktur.
+
+### Dependency Rules
+
+Izin verilen package yonleri:
+
+```text
+@m-grid/core -> no other @m-grid package
+@m-grid/dom -> @m-grid/core
+@m-grid/vue -> @m-grid/core, @m-grid/dom
+@m-grid/theme-default -> no TypeScript runtime dependencies
+```
+
+Automated check'ler unsupported deep import, circular `@m-grid` dependency, alt katmanlarda framework import'u, core'da CSS import'u ve core'da DOM-related public type'lari reddeder.
+
+### Dependency Documentation
+
+| Dependency | Type | Purpose | Why Required | Alternatives Considered |
+|---|---|---|---|---|
+| `typescript` | Development | Strict TypeScript compilation ve declaration generation | TypeScript-first public API ve ESM package output icin gereklidir | Plain JavaScript reddedildi cunku public generic contract'lar urun gereksinimidir |
+| `vitest` | Development | Focused unit ve type-inference smoke test'leri | Browser rendering olmadan Contract MVP davranisini kanitlamak icin gereklidir | Node built-in test runner dusunuldu, fakat Vitest `expectTypeOf` ve TypeScript-friendly testleri daha az custom setup ile saglar |
+
+`@m-grid/core`, `@m-grid/dom` ve `@m-grid/theme-default` production dependency icermez. `@m-grid/vue`, Vue adapter package oldugu icin Vue'yu peer dependency olarak bildirir; mevcut placeholder Vue runtime API'lerini import etmez.
+
+### Language Policy
+
+Tum source code, test, identifier, package metadata, script, CSS selector, CSS custom property, data attribute, comment, log ve runtime message English-only olur. Aciklayici dokumantasyon once English, sonra Turkce olacak sekilde bilingual olur. Code block'lar English-only kalir.
+
+### Browser Policy
+
+Ilk policy desteklenen browser'larin son iki major surumudur. Mevcut tooling metadata Chrome, Firefox, Safari, Edge, iOS Safari ve Android Chrome ailelerini listeler. Bu dilim browser runtime validation yapildigini iddia etmez.
+
+### Package Exports
+
+JavaScript package'lari yalniz root ESM entry ve `package.json` export eder. CSS package explicit CSS entry point'leri export eder:
+
+```text
+@m-grid/theme-default/base.css
+@m-grid/theme-default/light.css
+```
+
+Unsupported internal deep import'lar package-boundary check'ler tarafindan bilerek reddedilir.
+
+### Current Limitations
+
+Contract MVP foundation grid render etmez. Sort, filter, pagination, selection, editing, virtualization, keyboard navigation, responsive column calculation, file export veya real Vue component saglamaz. Bunlar sonraki implementation slice'larin kapsamindadir.

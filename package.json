@@ -1,0 +1,36 @@
+{
+  "name": "m-grid-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b && tsc -p tsconfig.test.json --noEmit",
+    "test": "vitest run",
+    "package:check": "node scripts/check-package-boundaries.mjs",
+    "exports:check": "node scripts/check-package-exports.mjs",
+    "validate": "tsc -b && tsc -p tsconfig.test.json --noEmit && vitest run && node scripts/check-package-boundaries.mjs && node scripts/check-package-exports.mjs && tsc -b"
+  },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions",
+    "last 2 iOS versions",
+    "last 2 ChromeAndroid versions"
+  ],
+  "mGrid": {
+    "packageScope": "@m-grid",
+    "licensePolicy": "MIT",
+    "offeringPolicy": "Single open-source offering with no Community/Pro separation during the first project year"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.8"
+  }
+}

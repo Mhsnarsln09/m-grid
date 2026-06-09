@@ -1,0 +1,10 @@
+@layer m-grid.theme {
+  :where(.m-grid-root[data-theme="light"]) {
+    --m-grid-background: #ffffff;
+    --m-grid-foreground: #111827;
+    --m-grid-border-color: #d1d5db;
+    --m-grid-focus-ring: #2563eb;
+    --m-grid-selected-background: #2563eb;
+    --m-grid-selected-foreground: #ffffff;
+  }
+}

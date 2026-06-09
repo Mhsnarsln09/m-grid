@@ -30,12 +30,17 @@ These are defaults, not immutable conclusions. Deviations require a documented r
 
 - Use a framework-independent core with thin framework adapters.
 - Prefer a hybrid product: headless/core capabilities plus optional styled packages.
+- Use `@m-grid` as the package scope unless an ADR supersedes it.
+- Use MIT as the project license unless an ADR supersedes it.
+- Do not introduce Community/Pro package separation during the first project year.
 - Keep rendering concerns outside the core state/data engine.
 - Use strict TypeScript and preserve row-type information through public generics.
 - Prefer ESM-first, side-effect-aware packages designed for tree-shaking.
 - Keep advanced features modular or plugin-based when they do not belong in the minimum core.
 - Avoid framework-specific types in core packages.
-- Do not make React the source of truth for behavior shared by other adapters.
+- Vue is the first stable framework adapter.
+- React and Svelte are post-MVP adapters.
+- Do not make any framework adapter the source of truth for behavior shared by other adapters.
 
 ## Styling contract
 
@@ -120,6 +125,63 @@ When changing public behavior, update:
 - responsive behavior notes;
 - migration guidance when compatibility changes;
 - ADRs for consequential architecture decisions.
+
+## Language policy
+
+### English-only technical artifacts
+
+All source-level and technical artifacts must be written only in English:
+
+- source code;
+- variable names;
+- function names;
+- class names;
+- type and interface names;
+- enum values;
+- file and folder names;
+- package names;
+- test names;
+- test descriptions;
+- code comments;
+- JSDoc and TSDoc;
+- runtime error messages;
+- warnings;
+- log messages;
+- command names;
+- configuration keys;
+- CSS classes;
+- CSS custom properties;
+- data attributes;
+- commit messages;
+- branch names;
+- pull request titles;
+- generated API declarations;
+- code examples inside documentation.
+
+Do not place Turkish words inside source code or code blocks. Do not hardcode Turkish runtime messages into the library. Default runtime text must be English. Future localization must use a separate locale or translation contract.
+
+### Bilingual explanations
+
+Human-readable explanations must be provided in both English and Turkish:
+
+- architecture documents;
+- ADR explanations;
+- README files;
+- developer guides;
+- migration guides;
+- release explanations;
+- decision summaries;
+- implementation reports;
+- final Codex task reports.
+
+Use this order consistently:
+
+1. English
+2. Turkish
+
+For documents, either use paired subsections such as `## English` and `## Turkce`, or use an English paragraph immediately followed by its Turkish equivalent.
+
+Do not translate identifiers, package names, API names, commands, paths, or code snippets. Code blocks must appear once and must remain English-only. Do not duplicate code blocks merely to provide Turkish documentation.
 
 ## Output quality
 

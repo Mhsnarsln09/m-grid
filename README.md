@@ -1,66 +1,95 @@
-# Önemli: macOS Finder Gizli Klasörler
+# m-grid
 
-`.codex` ve `.agents` paket içinde mevcuttur; Finder bunları varsayılan olarak göstermez. `Command + Shift + .` ile görünür hâle getirebilirsin. Çıkarma aracının gizli klasörleri atladığından şüpheleniyorsan `INSTALL.command` dosyasını çalıştır.
+## English
 
-# Codex Data Grid Ajan Paketi
+`m-grid` is a framework-independent, TypeScript-first data-grid package family. The current repository state is the Contract MVP foundation: package topology, strict TypeScript, package boundaries, public type skeletons, datasource lifecycle contracts, optional CSS entry points and focused validation.
 
-Bu klasör, AG Grid benzeri geliştirici odaklı bir tablo/grid paketi için Codex üzerinde çalışacak proje kapsamlı özel ajanları içerir.
+It does not yet provide usable grid rendering, a real Vue component, sorting, filtering, pagination, row selection, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, editing, grouping or export features.
 
-## İçerik
-
-- `AGENTS.md`: Repository genelinde kalıcı çalışma ve mimari kuralları
-- `.codex/config.toml`: Paralel ajan sınırları
-- `.codex/agents/*.toml`: Rol bazlı özel Codex ajanları
-- `.agents/skills/grid-package-analysis/SKILL.md`: Tam analizi orkestre eden tekrar kullanılabilir skill
-- `prompts/run-full-analysis.md`: Analizi başlatan hazır prompt
-- `prompts/implement-mvp.md`: Onaylı bir MVP dilimini uygulama promptu
-- `prompts/review-change.md`: Branch/PR inceleme promptu
-- `docs/agent-responsibility-matrix.md`: Ajanların görev sınırları
-- `docs/analysis-output-template.md`: Nihai analiz şablonu
-- `docs/original-analysis-prompt.md`: Ana gereksinim promptu
-
-## Kurulum
-
-Bu klasörün içeriğini repository köküne kopyala. Proje kapsamlı ajan dosyaları `.codex/agents/` altında, skill ise `.agents/skills/` altında kalmalıdır.
-
-Codex'i repository kökünden başlat. Proje `.codex/` ayarlarının yüklenebilmesi için repository'nin güvenilir proje olarak çalıştırılması gerekebilir.
-
-## İlk kullanım
-
-`prompts/run-full-analysis.md` içindeki promptu Codex'e ver.
-
-Skill'i açıkça çağırmak için:
+### Packages
 
 ```text
-$grid-package-analysis becerisini kullan ve tam mimari analizi çalıştır.
+@m-grid/core
+@m-grid/dom
+@m-grid/vue
+@m-grid/theme-default
 ```
 
-Codex subagent'ları yalnızca açıkça istenince oluşturduğu için hazır prompt, ajanları adlarıyla ve dalgalar hâlinde spawn etmesini söyler.
+### Setup
 
-## Önerilen iş akışı
+Use Node.js 22 or newer. The repository pins pnpm through Corepack.
 
-1. Tam analizi çalıştır.
-2. `synthesis_reviewer` sonuçlarıyla çelişkileri çöz.
-3. Temel ADR'leri onayla.
-4. MVP'yi küçük implementation slice'larına böl.
-5. Her slice için `implementation_worker` kullan.
-6. Değişiklikleri accessibility, security/quality ve ilgili domain ajanlarıyla incelet.
-7. Tekrarlanan hataları en yakın `AGENTS.md` dosyasına ekle.
-
-## Ajan izinleri
-
-Analiz ve inceleme ajanları `read-only` çalışır. `implementation_worker`, yalnızca workspace içinde yazabilen `workspace-write` modundadır. Parent oturumun canlı izin ve approval ayarları alt ajanlara yeniden uygulanabilir.
-
-## Model seçimi
-
-Ajan dosyaları belirli bir model adına sabitlenmemiştir. Böylece aktif Codex oturumunun modeli ve reasoning ayarları miras alınır; proje dosyaları güncel model isimlerine bağımlı kalmaz.
-
-## Doğrulama
-
-Codex'te aktif talimatları kontrol etmek için repository kökünde şu tür bir komut kullanılabilir:
-
-```bash
-codex --ask-for-approval never "Summarize the current instructions and list the available project custom agents."
+```text
+corepack enable
+corepack prepare pnpm@9.15.0 --activate
+pnpm install
 ```
 
-Analiz ajanlarının dosya değiştirmediğini, implementation ajanının ise yalnızca görev kapsamındaki dosyalara dokunduğunu inceleme aşamasında doğrula.
+If pnpm is not directly available on PATH, use Corepack:
+
+```text
+corepack pnpm install
+corepack pnpm validate
+```
+
+### Validation
+
+```text
+pnpm typecheck
+pnpm test
+pnpm package:check
+pnpm exports:check
+pnpm build
+pnpm validate
+```
+
+### Documentation
+
+See [Contract MVP Foundation](./docs/contract-mvp-foundation.md), [MVP Acceptance Criteria](./docs/mvp-acceptance-criteria.md), and [ADR Backlog](./docs/adr/README.md).
+
+## Turkce
+
+`m-grid`, framework-independent ve TypeScript-first bir data-grid package ailesidir. Repository'nin mevcut durumu Contract MVP foundation'dir: package topology, strict TypeScript, package boundary'leri, public type skeleton'lari, datasource lifecycle contract'lari, optional CSS entry point'leri ve focused validation.
+
+Henuz usable grid rendering, real Vue component, sorting, filtering, pagination, row selection, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, editing, grouping veya export feature saglamaz.
+
+### Packages
+
+```text
+@m-grid/core
+@m-grid/dom
+@m-grid/vue
+@m-grid/theme-default
+```
+
+### Setup
+
+Node.js 22 veya daha yeni surum kullanin. Repository pnpm'i Corepack uzerinden pinler.
+
+```text
+corepack enable
+corepack prepare pnpm@9.15.0 --activate
+pnpm install
+```
+
+pnpm PATH uzerinde dogrudan mevcut degilse Corepack kullanin:
+
+```text
+corepack pnpm install
+corepack pnpm validate
+```
+
+### Validation
+
+```text
+pnpm typecheck
+pnpm test
+pnpm package:check
+pnpm exports:check
+pnpm build
+pnpm validate
+```
+
+### Documentation
+
+[Contract MVP Foundation](./docs/contract-mvp-foundation.md), [MVP Acceptance Criteria](./docs/mvp-acceptance-criteria.md) ve [ADR Backlog](./docs/adr/README.md) dokumanlarina bakin.
