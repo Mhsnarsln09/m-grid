@@ -13,7 +13,7 @@ const columns = [{ accessorKey: "label" }] satisfies readonly ColumnDef<PackageR
 const getRowId: GetRowId<PackageRow> = (row) => row.id;
 
 describe("package contract smoke tests", () => {
-  it("links core to dom without rendering", () => {
+  it("links core to dom through the static rendering package surface", () => {
     const api = createGrid({ columns, getRowId });
     const dom = createDomAdapter({ api });
 

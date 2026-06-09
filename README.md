@@ -6,6 +6,8 @@
 
 It does not yet provide usable grid rendering, a real Vue component, sorting, filtering, pagination, row selection, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, editing, grouping or export features.
 
+The repository includes a static DOM demo for the first visible output. It renders rows and columns only; it is not yet a usable interactive grid.
+
 ### Packages
 
 ```text
@@ -52,11 +54,17 @@ pnpm release:check
 
 See [Contract MVP Foundation](./docs/contract-mvp-foundation.md), [MVP Acceptance Criteria](./docs/mvp-acceptance-criteria.md), and [ADR Backlog](./docs/adr/README.md).
 
+### Static DOM Demo
+
+Run a build, then open `examples/dom-static/index.html` in a browser.
+
 ## Turkce
 
 `m-grid`, framework-independent ve TypeScript-first bir data-grid package ailesidir. Repository'nin mevcut durumu Contract MVP foundation'dir: package topology, strict TypeScript, package boundary'leri, public type skeleton'lari, datasource lifecycle contract'lari, optional CSS entry point'leri ve focused validation.
 
 Henuz usable grid rendering, real Vue component, sorting, filtering, pagination, row selection, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, editing, grouping veya export feature saglamaz.
+
+Repository ilk gorunur cikti icin static DOM demo icerir. Sadece row ve column render eder; henuz usable interactive grid degildir.
 
 ### Packages
 
@@ -103,3 +111,7 @@ pnpm release:check
 ### Documentation
 
 [Contract MVP Foundation](./docs/contract-mvp-foundation.md), [MVP Acceptance Criteria](./docs/mvp-acceptance-criteria.md) ve [ADR Backlog](./docs/adr/README.md) dokumanlarina bakin.
+
+### Static DOM Demo
+
+Build calistirin, sonra browser'da `examples/dom-static/index.html` dosyasini acin.

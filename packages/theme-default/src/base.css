@@ -34,6 +34,16 @@
     overflow: auto;
   }
 
+  :where(.m-grid-caption) {
+    font-weight: 600;
+    margin-block-end: 8px;
+  }
+
+  :where(.m-grid-header-row, .m-grid-row) {
+    display: grid;
+    grid-template-columns: repeat(var(--m-grid-column-count, 1), minmax(0, 1fr));
+  }
+
   :where(.m-grid-row) {
     min-block-size: var(--m-grid-row-height);
   }
@@ -42,6 +52,8 @@
     border-block-end: 1px solid var(--m-grid-border-color);
     padding-block: var(--m-grid-cell-padding-block);
     padding-inline: var(--m-grid-cell-padding-inline);
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
   }
 
   :where(.m-grid-header-cell) {

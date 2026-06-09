@@ -2,7 +2,7 @@
 
 ## English
 
-This document describes the initial `@m-grid` Contract MVP foundation. It is a package-contract and build-foundation slice only. It does not implement usable grid rendering, sorting, filtering, pagination, selection behavior, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, export, editing or framework components.
+This document describes the initial `@m-grid` Contract MVP foundation. It now includes a static DOM rendering demo for first visible output. It does not implement usable interactive grid rendering, sorting, filtering, pagination, selection behavior, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, export, editing or framework components.
 
 ### Repository Setup
 
@@ -36,7 +36,7 @@ pnpm release:check
 
 `@m-grid/core` owns framework-independent public contracts, row identity validation, state/command/event contracts, subscription flow and datasource lifecycle coordination. It must not import DOM APIs, CSS, Vue, React, Svelte, browser globals or renderer types.
 
-`@m-grid/dom` owns framework-neutral contracts reserved for future DOM mounting, focus coordination, ARIA coordination, measurements, observers, viewport and virtualization integration. It does not implement real rendering in this slice.
+`@m-grid/dom` owns framework-neutral contracts reserved for future DOM mounting, focus coordination, ARIA coordination, measurements, observers, viewport and virtualization integration. It also exposes `renderStaticGridHtml` as a deliberately small static rendering helper for demos and package smoke tests.
 
 `@m-grid/vue` is the first adapter package and currently exposes only a minimal contract placeholder that composes core and DOM contracts. It does not implement a real Vue grid component yet.
 
@@ -91,11 +91,11 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 
 ### Current Limitations
 
-The Contract MVP foundation does not render a grid. It does not sort, filter, paginate, select, edit, virtualize, navigate with keyboard, calculate responsive columns, export files, or provide a real Vue component. Those belong to later slices.
+The Contract MVP foundation has only static DOM rendering. It does not sort, filter, paginate, select, edit, virtualize, navigate with keyboard, calculate responsive columns, export files, or provide a real Vue component. Those belong to later slices.
 
 ## Turkce
 
-Bu dokuman ilk `@m-grid` Contract MVP foundation kapsamını aciklar. Bu dilim yalniz package contract ve build foundation isidir. Usable grid rendering, sorting, filtering, pagination, selection behavior, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, export, editing veya framework component implement etmez.
+Bu dokuman ilk `@m-grid` Contract MVP foundation kapsamını aciklar. Artik ilk gorunur cikti icin static DOM rendering demo icerir. Usable interactive grid rendering, sorting, filtering, pagination, selection behavior, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, export, editing veya framework component implement etmez.
 
 ### Repository Setup
 
@@ -129,7 +129,7 @@ pnpm release:check
 
 `@m-grid/core` framework-independent public contract'lari, row identity validation, state/command/event contract'lari, subscription flow ve datasource lifecycle coordination'i sahiplenir. DOM API, CSS, Vue, React, Svelte, browser global veya renderer type import etmez.
 
-`@m-grid/dom` future DOM mounting, focus coordination, ARIA coordination, measurement, observer, viewport ve virtualization integration icin framework-neutral contract'lari ayirir. Bu dilimde real rendering implement etmez.
+`@m-grid/dom` future DOM mounting, focus coordination, ARIA coordination, measurement, observer, viewport ve virtualization integration icin framework-neutral contract'lari ayirir. Ayrica demo ve package smoke test icin bilerek kucuk tutulan `renderStaticGridHtml` static rendering helper'ini export eder.
 
 `@m-grid/vue` ilk adapter package'tir ve su anda yalniz core ve DOM contract'larini birlestiren minimal placeholder contract export eder. Henuz real Vue grid component implement etmez.
 
@@ -184,4 +184,4 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 
 ### Current Limitations
 
-Contract MVP foundation grid render etmez. Sort, filter, pagination, selection, editing, virtualization, keyboard navigation, responsive column calculation, file export veya real Vue component saglamaz. Bunlar sonraki implementation slice'larin kapsamindadir.
+Contract MVP foundation yalniz static DOM rendering icerir. Sort, filter, pagination, selection, editing, virtualization, keyboard navigation, responsive column calculation, file export veya real Vue component saglamaz. Bunlar sonraki implementation slice'larin kapsamindadir.

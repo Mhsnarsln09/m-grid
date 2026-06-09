@@ -1,4 +1,4 @@
-import type { GridApi, GridEvent, GridState } from "@m-grid/core";
+import type { AnyColumnDef, GridApi, GridEvent, GridState } from "@m-grid/core";
 export type GridDomSlot = "root" | "viewport" | "header" | "body" | "footer";
 export interface GridDomMountOptions<TData> {
     readonly api: GridApi<TData>;
@@ -37,4 +37,10 @@ export interface GridDomAdapter<TData> {
     readonly getState: () => Readonly<GridState<TData>>;
     readonly onCoreEvent: (event: GridEvent<TData>) => void;
 }
+export interface StaticGridRenderOptions<TData> {
+    readonly api: GridApi<TData>;
+    readonly columns: readonly AnyColumnDef<TData>[];
+    readonly caption?: string;
+}
 export declare function createDomAdapter<TData>(options: GridDomMountOptions<TData>): GridDomAdapter<TData>;
+export declare function renderStaticGridHtml<TData>(options: StaticGridRenderOptions<TData>): string;

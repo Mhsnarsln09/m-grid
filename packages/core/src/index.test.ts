@@ -5,6 +5,7 @@ import {
   type AccessorFnColumnDef,
   type AccessorKeyColumnDef,
   type ColumnDef,
+  type ColumnValue,
   type GetRowId,
   type GridDataSource,
 } from "./index.js";
@@ -93,9 +94,12 @@ describe("@m-grid/core contract", () => {
   it("preserves typed row input for column accessors and getRowId", () => {
     expectTypeOf<(typeof columns)[number]>().toMatchTypeOf<ColumnDef<TestRow, unknown>>();
     expectTypeOf<
-      AccessorKeyColumnDef<{ id: string; optionalValue?: number }, "optionalValue">["__valueType"]
+      ColumnValue<
+        { id: string; optionalValue?: number },
+        AccessorKeyColumnDef<{ id: string; optionalValue?: number }, "optionalValue">
+      >
     >().toEqualTypeOf<number | undefined>();
-    expectTypeOf<AccessorFnColumnDef<TestRow, number>["accessorFn"]>().returns.toEqualTypeOf<
+    expectTypeOf<ColumnValue<TestRow, AccessorFnColumnDef<TestRow, number>>>().toEqualTypeOf<
       number
     >();
     expectTypeOf(getRowId).toMatchTypeOf<GetRowId<TestRow>>();

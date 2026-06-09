@@ -1,4 +1,10 @@
-import type { GridApi, GridEvent, GridState } from "@m-grid/core";
+import type {
+  AnyColumnDef,
+  ColumnId,
+  GridApi,
+  GridEvent,
+  GridState,
+} from "@m-grid/core";
 
 export type GridDomSlot =
   | "root"
@@ -52,6 +58,12 @@ export interface GridDomAdapter<TData> {
   readonly onCoreEvent: (event: GridEvent<TData>) => void;
 }
 
+export interface StaticGridRenderOptions<TData> {
+  readonly api: GridApi<TData>;
+  readonly columns: readonly AnyColumnDef<TData>[];
+  readonly caption?: string;
+}
+
 export function createDomAdapter<TData>(
   options: GridDomMountOptions<TData>
 ): GridDomAdapter<TData> {
@@ -65,4 +77,91 @@ export function createDomAdapter<TData>(
       return undefined;
     },
   };
+}
+
+export function renderStaticGridHtml<TData>(
+  options: StaticGridRenderOptions<TData>
+): string {
+  const state = options.api.getState();
+  const columnCount = options.columns.length;
+  const headerCells = options.columns
+    .map((column) => {
+      const columnId = getColumnId(column);
+      return `<div class="m-grid-header-cell" role="columnheader" data-column-id="${escapeAttribute(
+        columnId
+      )}">${escapeHtml(column.header ?? columnId)}</div>`;
+    })
+    .join("");
+
+  const rows = state.rows.rows
+    .map((row, rowIndex) => {
+      const rowId = state.rows.rowIds[rowIndex] ?? "";
+      const cells = options.columns
+        .map((column) => {
+          const columnId = getColumnId(column);
+          return `<div class="m-grid-cell" role="gridcell" data-column-id="${escapeAttribute(
+            columnId
+          )}">${escapeHtml(
+            String(getCellValue(options.api, row, column, rowIndex) ?? "")
+          )}</div>`;
+        })
+        .join("");
+
+      return `<div class="m-grid-row" role="row" data-row-id="${escapeAttribute(
+        rowId
+      )}">${cells}</div>`;
+    })
+    .join("");
+
+  const caption =
+    options.caption === undefined
+      ? ""
+      : `<div class="m-grid-caption">${escapeHtml(options.caption)}</div>`;
+
+  return `<div class="m-grid-root" data-density="comfortable" data-theme="light">
+${caption}
+<div class="m-grid-surface" role="grid" aria-rowcount="${state.rows.rows.length}" aria-colcount="${columnCount}" style="--m-grid-column-count: ${columnCount};">
+<div class="m-grid-header-row" role="row">${headerCells}</div>
+${rows}
+</div>
+</div>`;
+}
+
+function getColumnId<TData>(column: AnyColumnDef<TData>): ColumnId {
+  if (column.id !== undefined && column.id !== "") return column.id;
+  if (column.accessorKey !== undefined && column.accessorKey !== "") {
+    return column.accessorKey;
+  }
+  throw new Error("[MGRID-DOM-001] Column id is required for DOM rendering.");
+}
+
+function getCellValue<TData>(
+  api: GridApi<TData>,
+  row: TData,
+  column: AnyColumnDef<TData>,
+  rowIndex: number
+): unknown {
+  if (column.accessorFn !== undefined) {
+    return column.accessorFn(row, {
+      rowIndex,
+      getRowId: api.getRowId,
+    });
+  }
+  if (column.accessorKey !== undefined) {
+    return row[column.accessorKey];
+  }
+  return "";
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function escapeAttribute(value: string): string {
+  return escapeHtml(value);
 }

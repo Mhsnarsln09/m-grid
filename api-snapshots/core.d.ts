@@ -8,29 +8,28 @@ export interface AccessorContext<TData> {
     readonly rowIndex: number;
     readonly getRowId: GetRowId<TData>;
 }
-interface ColumnBase<TData, TValue> {
+interface ColumnBase<TData> {
     readonly id?: ColumnId;
     readonly header?: string;
     readonly meta?: Readonly<Record<string, unknown>>;
-    readonly __dataType?: TData;
-    readonly __valueType?: TValue;
 }
-export interface AccessorKeyColumnDef<TData, TKey extends AccessorKey<TData> = AccessorKey<TData>> extends ColumnBase<TData, TData[TKey]> {
+export interface AccessorKeyColumnDef<TData, TKey extends AccessorKey<TData> = AccessorKey<TData>> extends ColumnBase<TData> {
     readonly accessorKey: TKey;
     readonly accessorFn?: never;
 }
-export interface AccessorFnColumnDef<TData, TValue> extends ColumnBase<TData, TValue> {
+export interface AccessorFnColumnDef<TData, TValue> extends ColumnBase<TData> {
     readonly id: ColumnId;
     readonly accessorKey?: never;
     readonly accessorFn: (row: TData, context: AccessorContext<TData>) => TValue;
 }
-export interface DisplayColumnDef<TData> extends ColumnBase<TData, unknown> {
+export interface DisplayColumnDef<TData> extends ColumnBase<TData> {
     readonly id: ColumnId;
     readonly accessorKey?: never;
     readonly accessorFn?: never;
 }
 export type ColumnDef<TData, TValue = unknown> = AccessorKeyColumnDef<TData> | AccessorFnColumnDef<TData, TValue> | DisplayColumnDef<TData>;
 export type AnyColumnDef<TData> = ColumnDef<TData, unknown>;
+export type ColumnValue<TData, TColumn extends ColumnDef<TData, unknown>> = TColumn extends AccessorKeyColumnDef<TData, infer TKey> ? TData[TKey] : TColumn extends AccessorFnColumnDef<TData, infer TValue> ? TValue : unknown;
 export interface SortState {
     readonly items: readonly unknown[];
 }
@@ -194,15 +193,6 @@ export interface LatestRequestMetadata {
     readonly requestId: RequestId;
     readonly queryKey: QueryKey;
 }
-export interface StaleResponseCheck {
-    readonly latestRequestId: RequestId | undefined;
-    readonly latestQueryKey: QueryKey | undefined;
-    readonly responseRequestId: RequestId;
-    readonly responseQueryKey: QueryKey;
-    readonly signal: GridAbortSignal;
-}
 export declare function createGrid<TData>(options: GridOptions<TData>): GridApi<TData>;
 export declare function createDataCoordinator<TData>(api: GridApi<TData>, dataSource: GridDataSource<TData>): GridDataCoordinator<TData>;
-export declare function isStaleResponse(check: StaleResponseCheck): boolean;
-export declare function resolveColumnId<TData>(column: AnyColumnDef<TData>): ColumnId;
 export {};
