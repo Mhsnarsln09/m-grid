@@ -14,7 +14,10 @@
     "test": "vitest run",
     "package:check": "node scripts/check-package-boundaries.mjs",
     "exports:check": "node scripts/check-package-exports.mjs",
-    "validate": "tsc -b && tsc -p tsconfig.test.json --noEmit && vitest run && node scripts/check-package-boundaries.mjs && node scripts/check-package-exports.mjs && tsc -b"
+    "api:check": "node scripts/check-api-snapshot.mjs",
+    "pack:smoke": "node scripts/check-tarball-smoke.mjs",
+    "validate": "tsc -b && tsc -p tsconfig.test.json --noEmit && vitest run && node scripts/check-package-boundaries.mjs && node scripts/check-package-exports.mjs && node scripts/check-api-snapshot.mjs && tsc -b",
+    "release:check": "tsc -b && tsc -p tsconfig.test.json --noEmit && vitest run && node scripts/check-package-boundaries.mjs && node scripts/check-package-exports.mjs && node scripts/check-api-snapshot.mjs && tsc -b && node scripts/check-tarball-smoke.mjs"
   },
   "browserslist": [
     "last 2 Chrome versions",

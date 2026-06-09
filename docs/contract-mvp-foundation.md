@@ -25,8 +25,11 @@ pnpm typecheck
 pnpm test
 pnpm package:check
 pnpm exports:check
+pnpm api:check
+pnpm pack:smoke
 pnpm build
 pnpm validate
+pnpm release:check
 ```
 
 ### Package Responsibilities
@@ -80,6 +83,12 @@ The JavaScript packages expose only root ESM entries and `package.json`. The CSS
 
 Unsupported internal deep imports are intentionally rejected by package-boundary checks.
 
+### API Snapshot And Tarball Smoke
+
+`pnpm api:check` compares generated public declaration entry points against committed API snapshots under `api-snapshots/`. Public API changes must update those snapshots intentionally after review.
+
+`pnpm pack:smoke` packs all four packages, installs the local tarballs into a temporary consumer project, verifies public JavaScript imports and checks that CSS files are present through the published theme package. It does not perform browser runtime validation.
+
 ### Current Limitations
 
 The Contract MVP foundation does not render a grid. It does not sort, filter, paginate, select, edit, virtualize, navigate with keyboard, calculate responsive columns, export files, or provide a real Vue component. Those belong to later slices.
@@ -109,8 +118,11 @@ pnpm typecheck
 pnpm test
 pnpm package:check
 pnpm exports:check
+pnpm api:check
+pnpm pack:smoke
 pnpm build
 pnpm validate
+pnpm release:check
 ```
 
 ### Package Responsibilities
@@ -163,6 +175,12 @@ JavaScript package'lari yalniz root ESM entry ve `package.json` export eder. CSS
 ```
 
 Unsupported internal deep import'lar package-boundary check'ler tarafindan bilerek reddedilir.
+
+### API Snapshot And Tarball Smoke
+
+`pnpm api:check`, generated public declaration entry point'lerini `api-snapshots/` altindaki committed API snapshot'larla karsilastirir. Public API degisiklikleri review sonrasi bilincli snapshot update gerektirir.
+
+`pnpm pack:smoke`, dort package'i pack eder, local tarball'lari gecici consumer project'e kurar, public JavaScript import'larini dogrular ve published theme package uzerinden CSS dosyalarinin mevcut oldugunu kontrol eder. Browser runtime validation yapmaz.
 
 ### Current Limitations
 

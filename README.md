@@ -39,9 +39,14 @@ pnpm typecheck
 pnpm test
 pnpm package:check
 pnpm exports:check
+pnpm api:check
+pnpm pack:smoke
 pnpm build
 pnpm validate
+pnpm release:check
 ```
+
+`pnpm validate` is the fast local quality gate. `pnpm release:check` also packs the four packages into tarballs, installs them into a temporary consumer project and verifies public package imports.
 
 ### Documentation
 
@@ -86,9 +91,14 @@ pnpm typecheck
 pnpm test
 pnpm package:check
 pnpm exports:check
+pnpm api:check
+pnpm pack:smoke
 pnpm build
 pnpm validate
+pnpm release:check
 ```
+
+`pnpm validate` hizli lokal kalite gate'idir. `pnpm release:check` ayrica dort package'i tarball olarak paketler, gecici consumer project'e kurar ve public package import'larini dogrular.
 
 ### Documentation
 
