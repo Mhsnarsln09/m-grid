@@ -177,6 +177,8 @@ export function renderStaticGridHtml<TData>(
   const columnCount = options.columns.length;
   const density = options.density ?? "comfortable";
   const theme = options.theme ?? "light";
+  const loadingStatus = state.loading.status;
+  const busy = loadingStatus === "loading" ? "true" : "false";
   const gridLabel =
     options.caption === undefined
       ? ""
@@ -219,9 +221,11 @@ export function renderStaticGridHtml<TData>(
 
   return `<div class="m-grid-root" data-density="${escapeAttribute(
     density
-  )}" data-theme="${escapeAttribute(theme)}">
+  )}" data-theme="${escapeAttribute(theme)}" data-loading-status="${escapeAttribute(
+    loadingStatus
+  )}">
 ${caption}
-<div class="m-grid-surface" role="grid"${gridLabel} aria-rowcount="${state.rows.rows.length}" aria-colcount="${columnCount}" style="--m-grid-column-count: ${columnCount};">
+<div class="m-grid-surface" role="grid"${gridLabel} aria-busy="${busy}" aria-rowcount="${state.rows.rows.length}" aria-colcount="${columnCount}" style="--m-grid-column-count: ${columnCount};">
 <div class="m-grid-header-row" role="row">${headerCells}</div>
 ${rows}
 </div>
