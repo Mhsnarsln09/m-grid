@@ -58,6 +58,8 @@ export interface GridDomAdapter<TData> {
   readonly onCoreEvent: (event: GridEvent<TData>) => void;
 }
 
+export type StaticGridDensity = "compact" | "comfortable";
+
 export interface StaticGridRenderOptions<TData> {
   /**
    * Core grid API that provides the current row state and row identity contract.
@@ -73,6 +75,14 @@ export interface StaticGridRenderOptions<TData> {
    * grid's accessible label.
    */
   readonly caption?: string;
+  /**
+   * Density token exposed through the root data attribute.
+   */
+  readonly density?: StaticGridDensity;
+  /**
+   * Theme token exposed through the root data attribute.
+   */
+  readonly theme?: string;
 }
 
 export interface StaticGridMountTarget {
@@ -123,6 +133,8 @@ export function mountStaticGrid<TData>(
     api: options.api,
     columns: options.columns,
     ...(options.caption === undefined ? {} : { caption: options.caption }),
+    ...(options.density === undefined ? {} : { density: options.density }),
+    ...(options.theme === undefined ? {} : { theme: options.theme }),
   };
   const unsubscribe = options.api.subscribe((event) => {
     if (event.type === "state.change" && mounted) {
@@ -163,6 +175,8 @@ export function renderStaticGridHtml<TData>(
 ): string {
   const state = options.api.getState();
   const columnCount = options.columns.length;
+  const density = options.density ?? "comfortable";
+  const theme = options.theme ?? "light";
   const gridLabel =
     options.caption === undefined
       ? ""
@@ -203,7 +217,9 @@ export function renderStaticGridHtml<TData>(
       ? ""
       : `<div class="m-grid-caption">${escapeHtml(options.caption)}</div>`;
 
-  return `<div class="m-grid-root" data-density="comfortable" data-theme="light">
+  return `<div class="m-grid-root" data-density="${escapeAttribute(
+    density
+  )}" data-theme="${escapeAttribute(theme)}">
 ${caption}
 <div class="m-grid-surface" role="grid"${gridLabel} aria-rowcount="${state.rows.rows.length}" aria-colcount="${columnCount}" style="--m-grid-column-count: ${columnCount};">
 <div class="m-grid-header-row" role="row">${headerCells}</div>

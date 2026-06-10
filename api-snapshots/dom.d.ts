@@ -37,6 +37,7 @@ export interface GridDomAdapter<TData> {
     readonly getState: () => Readonly<GridState<TData>>;
     readonly onCoreEvent: (event: GridEvent<TData>) => void;
 }
+export type StaticGridDensity = "compact" | "comfortable";
 export interface StaticGridRenderOptions<TData> {
     /**
      * Core grid API that provides the current row state and row identity contract.
@@ -52,6 +53,14 @@ export interface StaticGridRenderOptions<TData> {
      * grid's accessible label.
      */
     readonly caption?: string;
+    /**
+     * Density token exposed through the root data attribute.
+     */
+    readonly density?: StaticGridDensity;
+    /**
+     * Theme token exposed through the root data attribute.
+     */
+    readonly theme?: string;
 }
 export interface StaticGridMountTarget {
     innerHTML: string;

@@ -96,6 +96,7 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 - `options.api` reads the current `@m-grid/core` state and row identity contract.
 - `options.columns` defines the rendered column order for this static call.
 - `options.caption`, when provided, renders visible caption text and the grid `aria-label`.
+- `options.density` and `options.theme` set root `data-density` and `data-theme` attributes; defaults are `comfortable` and `light`.
 - Header labels, row ids, column ids and cell values are escaped before interpolation.
 - `renderStaticGridHtml` returns a string.
 - `mountStaticGrid` writes that string into `container.innerHTML`, re-renders after core state changes, exposes `render()` for explicit refresh and `unmount()` to clear the container and stop its subscription.
@@ -204,6 +205,7 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 - `options.api` mevcut `@m-grid/core` state'ini ve row identity contract'ini okur.
 - `options.columns` bu static cagri icin rendered column sirasini belirler.
 - `options.caption` verildiginde visible caption text ve grid `aria-label` uretir.
+- `options.density` ve `options.theme` root `data-density` ve `data-theme` attribute'larini belirler; default degerler `comfortable` ve `light` olur.
 - Header label, row id, column id ve cell value degerleri interpolation oncesi escape edilir.
 - `renderStaticGridHtml` string dondurur.
 - `mountStaticGrid` bu string'i `container.innerHTML` icine yazar, core state degisince yeniden render eder, explicit refresh icin `render()` ve container'i temizleyip subscription'i durdurmak icin `unmount()` sunar.

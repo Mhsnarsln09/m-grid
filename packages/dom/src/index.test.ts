@@ -47,6 +47,24 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).not.toContain("<script>bad()</script>");
   });
 
+  it("renders density and theme data attributes", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+    });
+
+    const html = renderStaticGridHtml({
+      api,
+      columns,
+      density: "compact",
+      theme: 'custom"theme',
+    });
+
+    expect(html).toContain('data-density="compact"');
+    expect(html).toContain('data-theme="custom&quot;theme"');
+  });
+
   it("keeps the static HTML output stable", () => {
     const api = createGrid({
       columns,
