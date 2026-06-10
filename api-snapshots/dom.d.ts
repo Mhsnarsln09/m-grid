@@ -48,6 +48,7 @@ export interface StaticGridRowClassContext<TData> {
     readonly row: TData;
     readonly rowId: string;
     readonly rowIndex: number;
+    readonly selected: boolean;
 }
 export interface StaticGridCellClassContext<TData> extends StaticGridRowClassContext<TData>, StaticGridHeaderClassContext<TData> {
     readonly value: unknown;

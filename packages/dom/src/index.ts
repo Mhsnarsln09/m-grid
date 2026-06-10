@@ -71,6 +71,7 @@ export interface StaticGridRowClassContext<TData> {
   readonly row: TData;
   readonly rowId: string;
   readonly rowIndex: number;
+  readonly selected: boolean;
 }
 
 export interface StaticGridCellClassContext<TData>
@@ -269,11 +270,12 @@ export function renderStaticGridHtml<TData>(
   const rows = state.rows.rows
     .map((row, rowIndex) => {
       const rowId = state.rows.rowIds[rowIndex] ?? "";
+      const selected = state.selection.rowIds.has(rowId);
       const rowClassName = composeClassName(
         "m-grid-row",
-        options.getRowClassName?.({ row, rowId, rowIndex })
+        options.getRowClassName?.({ row, rowId, rowIndex, selected })
       );
-      const selected = state.selection.rowIds.has(rowId)
+      const selectionAttributes = selected
         ? ' aria-selected="true" data-selected="true"'
         : "";
       const cells = renderColumns
@@ -286,6 +288,7 @@ export function renderStaticGridHtml<TData>(
               row,
               rowId,
               rowIndex,
+              selected,
               column,
               columnId,
               columnIndex,
@@ -306,7 +309,7 @@ export function renderStaticGridHtml<TData>(
         rowClassName
       )}" role="row" aria-rowindex="${
         rowIndex + 1
-      }"${selected} data-row-id="${escapeAttribute(rowId)}">${cells}</div>`;
+      }"${selectionAttributes} data-row-id="${escapeAttribute(rowId)}">${cells}</div>`;
     })
     .join("");
 

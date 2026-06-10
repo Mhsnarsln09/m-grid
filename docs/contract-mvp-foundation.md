@@ -100,6 +100,7 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 - `options.emptyMessage`, when provided and there are no rows, renders escaped status text outside the grid surface.
 - `options.density` and `options.theme` set root `data-density` and `data-theme` attributes; defaults are `comfortable` and `light`.
 - `rootClassName`, `getHeaderCellClassName`, `getRowClassName` and `getCellClassName` append escaped classes while preserving stable base classes.
+- Row and cell class hook contexts include `selected` from current core selection state.
 - Header labels, row ids, column ids and cell values are escaped before interpolation.
 - `renderStaticGridHtml` returns a string.
 - `mountStaticGrid` writes that string into `container.innerHTML`, re-renders after core state changes, exposes `render()` for explicit refresh and `unmount()` to clear the container and stop its subscription.
@@ -215,6 +216,7 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 - `options.emptyMessage` verildiginde ve row yoksa, grid surface disinda escaped status text render eder.
 - `options.density` ve `options.theme` root `data-density` ve `data-theme` attribute'larini belirler; default degerler `comfortable` ve `light` olur.
 - `rootClassName`, `getHeaderCellClassName`, `getRowClassName` ve `getCellClassName` stable base class'lari koruyarak escaped class ekler.
+- Row ve cell class hook context'leri mevcut core selection state'ten gelen `selected` bilgisini icerir.
 - Header label, row id, column id ve cell value degerleri interpolation oncesi escape edilir.
 - `renderStaticGridHtml` string dondurur.
 - `mountStaticGrid` bu string'i `container.innerHTML` icine yazar, core state degisince yeniden render eder, explicit refresh icin `render()` ve container'i temizleyip subscription'i durdurmak icin `unmount()` sunar.

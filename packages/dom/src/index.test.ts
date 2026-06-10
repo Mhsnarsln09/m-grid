@@ -152,6 +152,7 @@ describe("@m-grid/dom static rendering", () => {
       columns,
       rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
       getRowId: (row) => row.id,
+      initialState: { selection: { rowIds: new Set(["row-1"]) } },
     });
 
     const html = renderStaticGridHtml({
@@ -159,15 +160,18 @@ describe("@m-grid/dom static rendering", () => {
       columns,
       rootClassName: "custom-root",
       getHeaderCellClassName: ({ columnId }) => `header-${columnId}`,
-      getRowClassName: ({ rowId }) => `row-${rowId}`,
-      getCellClassName: ({ columnId, value }) =>
-        columnId === "label" ? `cell-${String(value).toLowerCase()}"` : undefined,
+      getRowClassName: ({ rowId, selected }) =>
+        selected ? `row-${rowId}-selected` : `row-${rowId}`,
+      getCellClassName: ({ columnId, selected, value }) =>
+        columnId === "label" && selected
+          ? `cell-${String(value).toLowerCase()}-selected"`
+          : undefined,
     });
 
     expect(html).toContain('class="m-grid-root custom-root"');
     expect(html).toContain('class="m-grid-header-cell header-label"');
-    expect(html).toContain('class="m-grid-row row-row-1"');
-    expect(html).toContain('class="m-grid-cell cell-alpha&quot;"');
+    expect(html).toContain('class="m-grid-row row-row-1-selected"');
+    expect(html).toContain('class="m-grid-cell cell-alpha-selected&quot;"');
   });
 
   it("renders an escaped empty message outside the grid surface", () => {
