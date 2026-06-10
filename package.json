@@ -16,6 +16,7 @@
     "exports:check": "node scripts/check-package-exports.mjs",
     "api:check": "node scripts/check-api-snapshot.mjs",
     "pack:smoke": "node scripts/check-tarball-smoke.mjs",
+    "demo:static": "pnpm build && python3 -m http.server 4173 --bind 127.0.0.1",
     "validate": "tsc -b && tsc -p tsconfig.test.json --noEmit && vitest run && node scripts/check-package-boundaries.mjs && node scripts/check-package-exports.mjs && node scripts/check-api-snapshot.mjs && tsc -b",
     "release:check": "tsc -b && tsc -p tsconfig.test.json --noEmit && vitest run && node scripts/check-package-boundaries.mjs && node scripts/check-package-exports.mjs && node scripts/check-api-snapshot.mjs && tsc -b && node scripts/check-tarball-smoke.mjs"
   },

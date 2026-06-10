@@ -9,10 +9,10 @@ Rationale: the repository does not yet have an interactive DOM mount API or fram
 Recommended workflow:
 
 ```text
-corepack pnpm build
+corepack pnpm demo:static
 ```
 
-Then serve the repository root with any static file server and open `/examples/dom-static/`. The last verified local URL was `http://127.0.0.1:4173/examples/dom-static/`.
+Then open `http://127.0.0.1:4173/examples/dom-static/`.
 
 Acceptance criteria:
 
@@ -34,10 +34,10 @@ Rationale: repository'de henuz interactive DOM mount API veya framework componen
 Recommended workflow:
 
 ```text
-corepack pnpm build
+corepack pnpm demo:static
 ```
 
-Sonra repository root'unu herhangi bir static file server ile serve edin ve `/examples/dom-static/` adresini acin. Son dogrulanan lokal URL `http://127.0.0.1:4173/examples/dom-static/` idi.
+Sonra `http://127.0.0.1:4173/examples/dom-static/` adresini acin.
 
 Acceptance criteria:
 

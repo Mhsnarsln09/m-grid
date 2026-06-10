@@ -56,9 +56,13 @@ See [Contract MVP Foundation](./docs/contract-mvp-foundation.md), [MVP Acceptanc
 
 ### Static DOM Demo
 
-Run a build, then open `examples/dom-static/index.html` in a browser. With a static file server, the demo is available at `/examples/dom-static/`.
+Run the static demo server, then open `http://127.0.0.1:4173/examples/dom-static/`.
 
-The demo imports package build output from `packages/core/dist/index.js` and `packages/dom/dist/index.js`, so run `pnpm build` or `corepack pnpm build` before opening it. It exercises `mountStaticGrid`: the helper writes escaped static HTML from the current core state into a container and re-renders after core state changes. It does not diff, hydrate, virtualize, sort, filter or handle keyboard interaction.
+```text
+corepack pnpm demo:static
+```
+
+The demo imports package build output from `packages/core/dist/index.js` and `packages/dom/dist/index.js`. The `demo:static` script builds first, then serves the repository root. It exercises `mountStaticGrid`: the helper writes escaped static HTML from the current core state into a container and re-renders after core state changes. It does not diff, hydrate, virtualize, sort, filter or handle keyboard interaction.
 
 See [Static DOM Demo Notes](./examples/dom-static/README.md) for the demo scope and validation notes.
 
@@ -118,8 +122,12 @@ pnpm release:check
 
 ### Static DOM Demo
 
-Build calistirin, sonra browser'da `examples/dom-static/index.html` dosyasini acin. Static file server ile demo `/examples/dom-static/` adresinden kullanilabilir.
+Static demo server'i calistirin, sonra `http://127.0.0.1:4173/examples/dom-static/` adresini acin.
 
-Demo `packages/core/dist/index.js` ve `packages/dom/dist/index.js` build ciktilarini import eder; bu yuzden acmadan once `pnpm build` veya `corepack pnpm build` calistirin. `mountStaticGrid` helper'ini dener: helper mevcut core state uzerinden escaped static HTML'i container icine yazar ve core state degisince yeniden render eder. Diff, hydrate, virtualize, sort, filter veya keyboard interaction yapmaz.
+```text
+corepack pnpm demo:static
+```
+
+Demo `packages/core/dist/index.js` ve `packages/dom/dist/index.js` build ciktilarini import eder. `demo:static` script'i once build alir, sonra repository root'unu serve eder. `mountStaticGrid` helper'ini dener: helper mevcut core state uzerinden escaped static HTML'i container icine yazar ve core state degisince yeniden render eder. Diff, hydrate, virtualize, sort, filter veya keyboard interaction yapmaz.
 
 Demo kapsami ve validation notlari icin [Static DOM Demo Notes](./examples/dom-static/README.md) dokumanina bakin.
