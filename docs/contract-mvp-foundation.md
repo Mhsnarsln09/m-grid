@@ -94,7 +94,7 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 `@m-grid/dom` exposes `renderStaticGridHtml(options)` and `mountStaticGrid(options)` for first-output demos and package smoke coverage. The public contract is intentionally narrow:
 
 - `options.api` reads the current `@m-grid/core` state and row identity contract.
-- `options.columns` defines the rendered column order for this static call.
+- `options.columns` defines renderable columns; current core `columns.order` controls rendered order when ids match.
 - Empty `options.columns` is rejected because static DOM grid output requires at least one renderable column.
 - `options.caption`, when provided, renders visible caption text and the grid `aria-label`.
 - `options.emptyMessage`, when provided and there are no rows, renders escaped status text outside the grid surface.
@@ -208,7 +208,7 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 `@m-grid/dom`, ilk cikti demo'lari ve package smoke coverage icin `renderStaticGridHtml(options)` ve `mountStaticGrid(options)` export eder. Public contract bilerek dar tutulur:
 
 - `options.api` mevcut `@m-grid/core` state'ini ve row identity contract'ini okur.
-- `options.columns` bu static cagri icin rendered column sirasini belirler.
+- `options.columns` renderable column'lari belirler; id'ler eslestiginde mevcut core `columns.order` rendered order'i kontrol eder.
 - Empty `options.columns` reddedilir cunku static DOM grid output en az bir renderable column gerektirir.
 - `options.caption` verildiginde visible caption text ve grid `aria-label` uretir.
 - `options.emptyMessage` verildiginde ve row yoksa, grid surface disinda escaped status text render eder.

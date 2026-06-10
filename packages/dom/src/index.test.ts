@@ -86,6 +86,20 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('aria-busy="true"');
   });
 
+  it("honors core column order state", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+      initialState: { columns: { order: ["amount", "label"] } },
+    });
+
+    const html = renderStaticGridHtml({ api, columns });
+
+    expect(html.indexOf("Amount")).toBeLessThan(html.indexOf("Label"));
+    expect(html.indexOf(">12<")).toBeLessThan(html.indexOf(">Alpha<"));
+  });
+
   it("applies escaped static class hooks", () => {
     const api = createGrid({
       columns,

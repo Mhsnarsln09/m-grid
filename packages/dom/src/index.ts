@@ -239,7 +239,8 @@ export function renderStaticGridHtml<TData>(
 ): string {
   assertRenderableStaticGridColumns(options.columns);
   const state = options.api.getState();
-  const columnCount = options.columns.length;
+  const renderColumns = resolveRenderColumns(options.columns, state.columns.order);
+  const columnCount = renderColumns.length;
   const density = options.density ?? "comfortable";
   const theme = options.theme ?? "light";
   const loadingStatus = state.loading.status;
@@ -248,7 +249,7 @@ export function renderStaticGridHtml<TData>(
     options.caption === undefined
       ? ""
       : ` aria-label="${escapeAttribute(options.caption)}"`;
-  const headerCells = options.columns
+  const headerCells = renderColumns
     .map((column, columnIndex) => {
       const columnId = getColumnId(column);
       const className = composeClassName(
@@ -272,7 +273,7 @@ export function renderStaticGridHtml<TData>(
         "m-grid-row",
         options.getRowClassName?.({ row, rowId, rowIndex })
       );
-      const cells = options.columns
+      const cells = renderColumns
         .map((column, columnIndex) => {
           const columnId = getColumnId(column);
           const value = getCellValue(options.api, row, column, rowIndex);
@@ -348,6 +349,33 @@ function assertRenderableStaticGridColumns<TData>(
       "[MGRID-DOM-003] At least one column is required for DOM rendering."
     );
   }
+}
+
+function resolveRenderColumns<TData>(
+  columns: readonly AnyColumnDef<TData>[],
+  order: readonly ColumnId[]
+): readonly AnyColumnDef<TData>[] {
+  const columnsById = new Map<ColumnId, AnyColumnDef<TData>>();
+  for (const column of columns) {
+    columnsById.set(getColumnId(column), column);
+  }
+
+  const orderedColumns: AnyColumnDef<TData>[] = [];
+  const seen = new Set<ColumnId>();
+  for (const columnId of order) {
+    const column = columnsById.get(columnId);
+    if (column !== undefined) {
+      orderedColumns.push(column);
+      seen.add(columnId);
+    }
+  }
+
+  for (const column of columns) {
+    const columnId = getColumnId(column);
+    if (!seen.has(columnId)) orderedColumns.push(column);
+  }
+
+  return orderedColumns;
 }
 
 function getCellValue<TData>(
