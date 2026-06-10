@@ -38,8 +38,19 @@ export interface GridDomAdapter<TData> {
     readonly onCoreEvent: (event: GridEvent<TData>) => void;
 }
 export interface StaticGridRenderOptions<TData> {
+    /**
+     * Core grid API that provides the current row state and row identity contract.
+     */
     readonly api: GridApi<TData>;
+    /**
+     * Columns to render in source order. This helper does not apply column
+     * visibility, sorting, filtering or virtualization.
+     */
     readonly columns: readonly AnyColumnDef<TData>[];
+    /**
+     * Optional visible caption. When provided, it is also used as the static
+     * grid's accessible label.
+     */
     readonly caption?: string;
 }
 export declare function createDomAdapter<TData>(options: GridDomMountOptions<TData>): GridDomAdapter<TData>;

@@ -59,8 +59,19 @@ export interface GridDomAdapter<TData> {
 }
 
 export interface StaticGridRenderOptions<TData> {
+  /**
+   * Core grid API that provides the current row state and row identity contract.
+   */
   readonly api: GridApi<TData>;
+  /**
+   * Columns to render in source order. This helper does not apply column
+   * visibility, sorting, filtering or virtualization.
+   */
   readonly columns: readonly AnyColumnDef<TData>[];
+  /**
+   * Optional visible caption. When provided, it is also used as the static
+   * grid's accessible label.
+   */
   readonly caption?: string;
 }
 
@@ -84,6 +95,10 @@ export function renderStaticGridHtml<TData>(
 ): string {
   const state = options.api.getState();
   const columnCount = options.columns.length;
+  const gridLabel =
+    options.caption === undefined
+      ? ""
+      : ` aria-label="${escapeAttribute(options.caption)}"`;
   const headerCells = options.columns
     .map((column) => {
       const columnId = getColumnId(column);
@@ -120,7 +135,7 @@ export function renderStaticGridHtml<TData>(
 
   return `<div class="m-grid-root" data-density="comfortable" data-theme="light">
 ${caption}
-<div class="m-grid-surface" role="grid" aria-rowcount="${state.rows.rows.length}" aria-colcount="${columnCount}" style="--m-grid-column-count: ${columnCount};">
+<div class="m-grid-surface" role="grid"${gridLabel} aria-rowcount="${state.rows.rows.length}" aria-colcount="${columnCount}" style="--m-grid-column-count: ${columnCount};">
 <div class="m-grid-header-row" role="row">${headerCells}</div>
 ${rows}
 </div>

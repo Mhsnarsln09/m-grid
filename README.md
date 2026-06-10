@@ -56,7 +56,11 @@ See [Contract MVP Foundation](./docs/contract-mvp-foundation.md), [MVP Acceptanc
 
 ### Static DOM Demo
 
-Run a build, then open `examples/dom-static/index.html` in a browser.
+Run a build, then open `examples/dom-static/index.html` in a browser. With a static file server, the demo is available at `/examples/dom-static/`.
+
+The demo imports package build output from `packages/core/dist/index.js` and `packages/dom/dist/index.js`, so run `pnpm build` or `corepack pnpm build` before opening it. It exercises `renderStaticGridHtml` only: the helper returns an escaped HTML string from the current core state and the provided column order. It does not mount, diff, hydrate, virtualize, sort, filter or handle keyboard interaction.
+
+See [Static DOM Demo Notes](./examples/dom-static/README.md) for the demo scope and validation notes.
 
 ## Turkce
 
@@ -114,4 +118,8 @@ pnpm release:check
 
 ### Static DOM Demo
 
-Build calistirin, sonra browser'da `examples/dom-static/index.html` dosyasini acin.
+Build calistirin, sonra browser'da `examples/dom-static/index.html` dosyasini acin. Static file server ile demo `/examples/dom-static/` adresinden kullanilabilir.
+
+Demo `packages/core/dist/index.js` ve `packages/dom/dist/index.js` build ciktilarini import eder; bu yuzden acmadan once `pnpm build` veya `corepack pnpm build` calistirin. Yalniz `renderStaticGridHtml` helper'ini dener: helper mevcut core state ve verilen column sirasi uzerinden escaped HTML string dondurur. Mount, diff, hydrate, virtualize, sort, filter veya keyboard interaction yapmaz.
+
+Demo kapsami ve validation notlari icin [Static DOM Demo Notes](./examples/dom-static/README.md) dokumanina bakin.

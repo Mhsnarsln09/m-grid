@@ -89,6 +89,18 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 
 `pnpm pack:smoke` packs all four packages, installs the local tarballs into a temporary consumer project, verifies public JavaScript imports and checks that CSS files are present through the published theme package. It does not perform browser runtime validation.
 
+### Static DOM Rendering API
+
+`@m-grid/dom` exposes `renderStaticGridHtml(options)` for first-output demos and package smoke coverage. The public contract is intentionally narrow:
+
+- `options.api` reads the current `@m-grid/core` state and row identity contract.
+- `options.columns` defines the rendered column order for this static call.
+- `options.caption`, when provided, renders visible caption text and the grid `aria-label`.
+- Header labels, row ids, column ids and cell values are escaped before interpolation.
+- The helper returns a string and does not mount, diff, hydrate, virtualize, sort, filter, paginate, select, edit or handle keyboard interaction.
+
+Acceptance for this slice is the focused DOM unit test and inline static output snapshot. Browser runtime validation remains limited to manually serving `examples/dom-static/` after a build.
+
 ### Current Limitations
 
 The Contract MVP foundation has only static DOM rendering. It does not sort, filter, paginate, select, edit, virtualize, navigate with keyboard, calculate responsive columns, export files, or provide a real Vue component. Those belong to later slices.
@@ -181,6 +193,18 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 `pnpm api:check`, generated public declaration entry point'lerini `api-snapshots/` altindaki committed API snapshot'larla karsilastirir. Public API degisiklikleri review sonrasi bilincli snapshot update gerektirir.
 
 `pnpm pack:smoke`, dort package'i pack eder, local tarball'lari gecici consumer project'e kurar, public JavaScript import'larini dogrular ve published theme package uzerinden CSS dosyalarinin mevcut oldugunu kontrol eder. Browser runtime validation yapmaz.
+
+### Static DOM Rendering API
+
+`@m-grid/dom`, ilk cikti demo'lari ve package smoke coverage icin `renderStaticGridHtml(options)` export eder. Public contract bilerek dar tutulur:
+
+- `options.api` mevcut `@m-grid/core` state'ini ve row identity contract'ini okur.
+- `options.columns` bu static cagri icin rendered column sirasini belirler.
+- `options.caption` verildiginde visible caption text ve grid `aria-label` uretir.
+- Header label, row id, column id ve cell value degerleri interpolation oncesi escape edilir.
+- Helper string dondurur; mount, diff, hydrate, virtualize, sort, filter, paginate, select, edit veya keyboard interaction yapmaz.
+
+Bu slice icin acceptance, focused DOM unit test ve inline static output snapshot'tir. Browser runtime validation halen build sonrasi `examples/dom-static/` klasorunu manuel serve etmekle sinirlidir.
 
 ### Current Limitations
 

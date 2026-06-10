@@ -24,6 +24,7 @@ describe("@m-grid/dom static rendering", () => {
     const html = renderStaticGridHtml({ api, columns, caption: "Orders" });
 
     expect(html).toContain('role="grid"');
+    expect(html).toContain('aria-label="Orders"');
     expect(html).toContain('aria-rowcount="1"');
     expect(html).toContain('aria-colcount="2"');
     expect(html).toContain("Orders");
@@ -42,5 +43,28 @@ describe("@m-grid/dom static rendering", () => {
 
     expect(html).toContain("&lt;script&gt;bad()&lt;/script&gt;");
     expect(html).not.toContain("<script>bad()</script>");
+  });
+
+  it("keeps the static HTML output stable", () => {
+    const api = createGrid({
+      columns,
+      rows: [
+        { id: "row-1", label: "Alpha", amount: 12 },
+        { id: "row-2", label: "Beta & Co", amount: 34 },
+      ],
+      getRowId: (row) => row.id,
+    });
+
+    const html = renderStaticGridHtml({ api, columns, caption: "Orders" });
+
+    expect(html).toMatchInlineSnapshot(`
+      "<div class="m-grid-root" data-density="comfortable" data-theme="light">
+      <div class="m-grid-caption">Orders</div>
+      <div class="m-grid-surface" role="grid" aria-label="Orders" aria-rowcount="2" aria-colcount="2" style="--m-grid-column-count: 2;">
+      <div class="m-grid-header-row" role="row"><div class="m-grid-header-cell" role="columnheader" data-column-id="label">Label</div><div class="m-grid-header-cell" role="columnheader" data-column-id="amount">Amount</div></div>
+      <div class="m-grid-row" role="row" data-row-id="row-1"><div class="m-grid-cell" role="gridcell" data-column-id="label">Alpha</div><div class="m-grid-cell" role="gridcell" data-column-id="amount">12</div></div><div class="m-grid-row" role="row" data-row-id="row-2"><div class="m-grid-cell" role="gridcell" data-column-id="label">Beta &amp; Co</div><div class="m-grid-cell" role="gridcell" data-column-id="amount">34</div></div>
+      </div>
+      </div>"
+    `);
   });
 });
