@@ -31,6 +31,8 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('data-loading-status="idle"');
     expect(html).toContain('aria-rowindex="1"');
     expect(html).toContain('aria-colindex="2"');
+    expect(html).toContain('data-row-index="0"');
+    expect(html).toContain('data-column-index="1"');
     expect(html).toContain("Orders");
     expect(html).toContain("Alpha");
     expect(html).toContain("12");
@@ -207,8 +209,8 @@ describe("@m-grid/dom static rendering", () => {
       "<div class="m-grid-root" data-density="comfortable" data-theme="light" data-loading-status="idle">
       <div class="m-grid-caption">Orders</div>
       <div class="m-grid-surface" role="grid" aria-label="Orders" aria-busy="false" aria-rowcount="2" aria-colcount="2" style="--m-grid-column-count: 2;">
-      <div class="m-grid-header-row" role="row"><div class="m-grid-header-cell" role="columnheader" aria-colindex="1" data-column-id="label">Label</div><div class="m-grid-header-cell" role="columnheader" aria-colindex="2" data-column-id="amount">Amount</div></div>
-      <div class="m-grid-row" role="row" aria-rowindex="1" data-row-id="row-1"><div class="m-grid-cell" role="gridcell" aria-colindex="1" data-column-id="label">Alpha</div><div class="m-grid-cell" role="gridcell" aria-colindex="2" data-column-id="amount">12</div></div><div class="m-grid-row" role="row" aria-rowindex="2" data-row-id="row-2"><div class="m-grid-cell" role="gridcell" aria-colindex="1" data-column-id="label">Beta &amp; Co</div><div class="m-grid-cell" role="gridcell" aria-colindex="2" data-column-id="amount">34</div></div>
+      <div class="m-grid-header-row" role="row"><div class="m-grid-header-cell" role="columnheader" aria-colindex="1" data-column-index="0" data-column-id="label">Label</div><div class="m-grid-header-cell" role="columnheader" aria-colindex="2" data-column-index="1" data-column-id="amount">Amount</div></div>
+      <div class="m-grid-row" role="row" aria-rowindex="1" data-row-index="0" data-row-id="row-1"><div class="m-grid-cell" role="gridcell" aria-colindex="1" data-column-index="0" data-column-id="label">Alpha</div><div class="m-grid-cell" role="gridcell" aria-colindex="2" data-column-index="1" data-column-id="amount">12</div></div><div class="m-grid-row" role="row" aria-rowindex="2" data-row-index="1" data-row-id="row-2"><div class="m-grid-cell" role="gridcell" aria-colindex="1" data-column-index="0" data-column-id="label">Beta &amp; Co</div><div class="m-grid-cell" role="gridcell" aria-colindex="2" data-column-index="1" data-column-id="amount">34</div></div>
       </div>
       </div>"
     `);

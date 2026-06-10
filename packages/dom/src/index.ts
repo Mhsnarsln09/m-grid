@@ -261,7 +261,7 @@ export function renderStaticGridHtml<TData>(
         className
       )}" role="columnheader" aria-colindex="${
         columnIndex + 1
-      }" data-column-id="${escapeAttribute(columnId)}">${escapeHtml(
+      }" data-column-index="${columnIndex}" data-column-id="${escapeAttribute(columnId)}">${escapeHtml(
         column.header ?? columnId
       )}</div>`;
     })
@@ -299,7 +299,7 @@ export function renderStaticGridHtml<TData>(
             className
           )}" role="gridcell" aria-colindex="${
             columnIndex + 1
-          }" data-column-id="${escapeAttribute(columnId)}">${escapeHtml(
+          }" data-column-index="${columnIndex}" data-column-id="${escapeAttribute(columnId)}">${escapeHtml(
             String(value ?? "")
           )}</div>`;
         })
@@ -309,7 +309,7 @@ export function renderStaticGridHtml<TData>(
         rowClassName
       )}" role="row" aria-rowindex="${
         rowIndex + 1
-      }"${selectionAttributes} data-row-id="${escapeAttribute(rowId)}">${cells}</div>`;
+      }" data-row-index="${rowIndex}"${selectionAttributes} data-row-id="${escapeAttribute(rowId)}">${cells}</div>`;
     })
     .join("");
 
