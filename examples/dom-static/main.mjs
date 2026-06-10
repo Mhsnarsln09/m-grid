@@ -64,9 +64,9 @@ export function setupStaticDemo(documentRef) {
   refreshButton.textContent = showingAlternateRows
       ? "Show initial rows"
       : "Refresh rows";
-    refreshStatus.textContent = showingAlternateRows
-      ? "Showing refreshed rows"
-      : "Showing initial rows";
+  refreshStatus.textContent = showingAlternateRows
+    ? "Showing refreshed rows; Mary Jackson selected"
+    : "Showing initial rows; Grace Hopper selected";
   });
 
   return { api, mount };

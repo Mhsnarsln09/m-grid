@@ -6,7 +6,9 @@ describe("static DOM demo", () => {
     const elements = {
       "#app": { innerHTML: "" },
       "#refresh-rows": createButton(),
-      "#refresh-status": { textContent: "Showing initial rows" },
+      "#refresh-status": {
+        textContent: "Showing initial rows; Grace Hopper selected",
+      },
     };
     const documentRef = {
       querySelector(selector) {
@@ -28,7 +30,9 @@ describe("static DOM demo", () => {
       'aria-selected="true" data-selected="true" data-row-id="order-2002"'
     );
     expect(elements["#refresh-rows"].textContent).toBe("Show initial rows");
-    expect(elements["#refresh-status"].textContent).toBe("Showing refreshed rows");
+    expect(elements["#refresh-status"].textContent).toBe(
+      "Showing refreshed rows; Mary Jackson selected"
+    );
 
     elements["#refresh-rows"].click();
 
@@ -37,7 +41,9 @@ describe("static DOM demo", () => {
       'aria-selected="true" data-selected="true" data-row-id="order-1002"'
     );
     expect(elements["#refresh-rows"].textContent).toBe("Refresh rows");
-    expect(elements["#refresh-status"].textContent).toBe("Showing initial rows");
+    expect(elements["#refresh-status"].textContent).toBe(
+      "Showing initial rows; Grace Hopper selected"
+    );
   });
 
   it("fails predictably when required demo nodes are missing", () => {
@@ -57,7 +63,9 @@ function createDocumentWithout(missingSelector) {
   const elements = {
     "#app": { innerHTML: "" },
     "#refresh-rows": createButton(),
-    "#refresh-status": { textContent: "Showing initial rows" },
+    "#refresh-status": {
+      textContent: "Showing initial rows; Grace Hopper selected",
+    },
   };
   return {
     querySelector(selector) {
