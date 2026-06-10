@@ -4,7 +4,9 @@
 
 `m-grid` is a framework-independent, TypeScript-first data-grid package family. The current repository state is the Contract MVP foundation: package topology, strict TypeScript, package boundaries, public type skeletons, datasource lifecycle contracts, optional CSS entry points and focused validation.
 
-It does not yet provide usable grid rendering, a real Vue component, sorting, filtering, pagination, row selection, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, editing, grouping or export features.
+It does not yet provide usable grid rendering, a real Vue component, sorting, filtering, pagination, interactive row selection behavior, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, editing, grouping or export features.
+
+The core state model now supports replacing selected row ids through `selection.replace`; adapters still need to implement real pointer and keyboard selection behavior.
 
 The repository includes a static DOM demo for the first visible output. It renders rows and columns only; it is not yet a usable interactive grid.
 
@@ -70,7 +72,9 @@ See [Static DOM Demo Notes](./examples/dom-static/README.md) for the demo scope 
 
 `m-grid`, framework-independent ve TypeScript-first bir data-grid package ailesidir. Repository'nin mevcut durumu Contract MVP foundation'dir: package topology, strict TypeScript, package boundary'leri, public type skeleton'lari, datasource lifecycle contract'lari, optional CSS entry point'leri ve focused validation.
 
-Henuz usable grid rendering, real Vue component, sorting, filtering, pagination, row selection, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, editing, grouping veya export feature saglamaz.
+Henuz usable grid rendering, real Vue component, sorting, filtering, pagination, interactive row selection behavior, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, editing, grouping veya export feature saglamaz.
+
+Core state model artik selected row id'lerini `selection.replace` ile degistirmeyi destekler; adapter'larin real pointer ve keyboard selection behavior'i henuz implement etmesi gerekir.
 
 Repository ilk gorunur cikti icin static DOM demo icerir. Sadece row ve column render eder; henuz usable interactive grid degildir.
 
