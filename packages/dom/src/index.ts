@@ -168,11 +168,13 @@ export function renderStaticGridHtml<TData>(
       ? ""
       : ` aria-label="${escapeAttribute(options.caption)}"`;
   const headerCells = options.columns
-    .map((column) => {
+    .map((column, columnIndex) => {
       const columnId = getColumnId(column);
-      return `<div class="m-grid-header-cell" role="columnheader" data-column-id="${escapeAttribute(
-        columnId
-      )}">${escapeHtml(column.header ?? columnId)}</div>`;
+      return `<div class="m-grid-header-cell" role="columnheader" aria-colindex="${
+        columnIndex + 1
+      }" data-column-id="${escapeAttribute(columnId)}">${escapeHtml(
+        column.header ?? columnId
+      )}</div>`;
     })
     .join("");
 
@@ -180,19 +182,19 @@ export function renderStaticGridHtml<TData>(
     .map((row, rowIndex) => {
       const rowId = state.rows.rowIds[rowIndex] ?? "";
       const cells = options.columns
-        .map((column) => {
+        .map((column, columnIndex) => {
           const columnId = getColumnId(column);
-          return `<div class="m-grid-cell" role="gridcell" data-column-id="${escapeAttribute(
-            columnId
-          )}">${escapeHtml(
+          return `<div class="m-grid-cell" role="gridcell" aria-colindex="${
+            columnIndex + 1
+          }" data-column-id="${escapeAttribute(columnId)}">${escapeHtml(
             String(getCellValue(options.api, row, column, rowIndex) ?? "")
           )}</div>`;
         })
         .join("");
 
-      return `<div class="m-grid-row" role="row" data-row-id="${escapeAttribute(
-        rowId
-      )}">${cells}</div>`;
+      return `<div class="m-grid-row" role="row" aria-rowindex="${
+        rowIndex + 1
+      }" data-row-id="${escapeAttribute(rowId)}">${cells}</div>`;
     })
     .join("");
 

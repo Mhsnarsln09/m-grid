@@ -99,6 +99,7 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 - Header labels, row ids, column ids and cell values are escaped before interpolation.
 - `renderStaticGridHtml` returns a string.
 - `mountStaticGrid` writes that string into `container.innerHTML`, re-renders after core state changes, exposes `render()` for explicit refresh and `unmount()` to clear the container and stop its subscription.
+- Static output includes `aria-rowcount`, `aria-colcount`, body-row `aria-rowindex` and cell/header `aria-colindex` metadata.
 - These helpers do not diff, hydrate, virtualize, sort, filter, paginate, select, edit or handle keyboard interaction.
 
 Acceptance for this slice is the focused DOM unit test and inline static output snapshot. Browser runtime validation remains limited to manually serving `examples/dom-static/` after a build.
@@ -206,6 +207,7 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 - Header label, row id, column id ve cell value degerleri interpolation oncesi escape edilir.
 - `renderStaticGridHtml` string dondurur.
 - `mountStaticGrid` bu string'i `container.innerHTML` icine yazar, core state degisince yeniden render eder, explicit refresh icin `render()` ve container'i temizleyip subscription'i durdurmak icin `unmount()` sunar.
+- Static output `aria-rowcount`, `aria-colcount`, body-row `aria-rowindex` ve cell/header `aria-colindex` metadata'si icerir.
 - Bu helper'lar diff, hydrate, virtualize, sort, filter, paginate, select, edit veya keyboard interaction yapmaz.
 
 Bu slice icin acceptance, focused DOM unit test ve inline static output snapshot'tir. Browser runtime validation halen build sonrasi `examples/dom-static/` klasorunu manuel serve etmekle sinirlidir.
