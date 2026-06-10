@@ -30,6 +30,16 @@ if (app === null) {
   throw new Error("[MGRID-DEMO-001] Demo mount target was not found.");
 }
 
+const refreshButton = document.querySelector("#refresh-rows");
+if (refreshButton === null) {
+  throw new Error("[MGRID-DEMO-002] Demo refresh button was not found.");
+}
+
+const refreshStatus = document.querySelector("#refresh-status");
+if (refreshStatus === null) {
+  throw new Error("[MGRID-DEMO-003] Demo refresh status was not found.");
+}
+
 mountStaticGrid({
   api,
   columns,
@@ -39,10 +49,16 @@ mountStaticGrid({
 
 let showingAlternateRows = false;
 
-document.querySelector("#refresh-rows").addEventListener("click", () => {
+refreshButton.addEventListener("click", () => {
   showingAlternateRows = !showingAlternateRows;
   api.dispatch({
     type: "rows.replace",
     rows: showingAlternateRows ? alternateRows : rows,
   });
+  refreshButton.textContent = showingAlternateRows
+    ? "Show initial rows"
+    : "Refresh rows";
+  refreshStatus.textContent = showingAlternateRows
+    ? "Showing refreshed rows"
+    : "Showing initial rows";
 });
