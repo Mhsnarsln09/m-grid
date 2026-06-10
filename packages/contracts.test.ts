@@ -14,13 +14,19 @@ const getRowId: GetRowId<PackageRow> = (row) => row.id;
 
 describe("package contract smoke tests", () => {
   it("links core to dom through the static rendering package surface", () => {
-    const api = createGrid({ columns, getRowId });
+    const api = createGrid({
+      columns,
+      getRowId,
+      rows: [{ id: "row-1", label: "Ready" }],
+    });
     const dom = createDomAdapter({ api });
     const container = { innerHTML: "" };
     const mount = mountStaticGrid({ api, columns, container });
 
     expect(dom.getState().version).toBe(1);
     expect(container.innerHTML).toContain('role="grid"');
+    api.dispatch({ type: "selection.replace", rowIds: ["row-1"] });
+    expect(container.innerHTML).toContain('aria-selected="true"');
     mount.unmount();
     expect("emit" in api).toBe(false);
   });
