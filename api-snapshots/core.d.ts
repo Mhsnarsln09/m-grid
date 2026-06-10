@@ -90,6 +90,9 @@ export type GridCommand<TData> = {
     readonly type: "rows.replace";
     readonly rows: readonly TData[];
 } | {
+    readonly type: "selection.replace";
+    readonly rowIds: readonly RowId[];
+} | {
     readonly type: "data.request.start";
     readonly requestId: RequestId;
     readonly queryKey: QueryKey;

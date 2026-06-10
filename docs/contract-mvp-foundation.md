@@ -34,7 +34,7 @@ pnpm release:check
 
 ### Package Responsibilities
 
-`@m-grid/core` owns framework-independent public contracts, row identity validation, state/command/event contracts, subscription flow and datasource lifecycle coordination. It must not import DOM APIs, CSS, Vue, React, Svelte, browser globals or renderer types.
+`@m-grid/core` owns framework-independent public contracts, row identity validation, state/command/event contracts, selection state replacement, subscription flow and datasource lifecycle coordination. It must not import DOM APIs, CSS, Vue, React, Svelte, browser globals or renderer types.
 
 `@m-grid/dom` owns framework-neutral contracts reserved for future DOM coordination, focus coordination, ARIA coordination, measurements, observers, viewport and virtualization integration. It also exposes `renderStaticGridHtml` and `mountStaticGrid` as deliberately small static rendering helpers for demos and package smoke tests.
 
@@ -88,6 +88,10 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 `pnpm api:check` compares generated public declaration entry points against committed API snapshots under `api-snapshots/`. Public API changes must update those snapshots intentionally after review.
 
 `pnpm pack:smoke` packs all four packages, installs the local tarballs into a temporary consumer project, verifies public JavaScript imports and checks that CSS files are present through the published theme package. It does not perform browser runtime validation.
+
+### Selection State API
+
+`selection.replace` replaces the selected row id set in core state. It validates row ids with the same non-empty row id rule as row data. It does not implement pointer selection, keyboard selection ranges or adapter-level selection behavior.
 
 ### Static DOM Rendering API
 
@@ -150,7 +154,7 @@ pnpm release:check
 
 ### Package Responsibilities
 
-`@m-grid/core` framework-independent public contract'lari, row identity validation, state/command/event contract'lari, subscription flow ve datasource lifecycle coordination'i sahiplenir. DOM API, CSS, Vue, React, Svelte, browser global veya renderer type import etmez.
+`@m-grid/core` framework-independent public contract'lari, row identity validation, state/command/event contract'lari, selection state replacement, subscription flow ve datasource lifecycle coordination'i sahiplenir. DOM API, CSS, Vue, React, Svelte, browser global veya renderer type import etmez.
 
 `@m-grid/dom` future DOM coordination, focus coordination, ARIA coordination, measurement, observer, viewport ve virtualization integration icin framework-neutral contract'lari ayirir. Ayrica demo ve package smoke test icin bilerek kucuk tutulan `renderStaticGridHtml` ve `mountStaticGrid` static rendering helper'larini export eder.
 
@@ -204,6 +208,10 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 `pnpm api:check`, generated public declaration entry point'lerini `api-snapshots/` altindaki committed API snapshot'larla karsilastirir. Public API degisiklikleri review sonrasi bilincli snapshot update gerektirir.
 
 `pnpm pack:smoke`, dort package'i pack eder, local tarball'lari gecici consumer project'e kurar, public JavaScript import'larini dogrular ve published theme package uzerinden CSS dosyalarinin mevcut oldugunu kontrol eder. Browser runtime validation yapmaz.
+
+### Selection State API
+
+`selection.replace`, core state icindeki selected row id set'ini degistirir. Row id'leri row data ile ayni non-empty row id kuraliyla validate eder. Pointer selection, keyboard selection range veya adapter-level selection behavior implement etmez.
 
 ### Static DOM Rendering API
 

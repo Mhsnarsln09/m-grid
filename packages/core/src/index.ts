@@ -123,6 +123,7 @@ export type GridStateSliceKey = keyof GridState<unknown>;
 
 export type GridCommand<TData> =
   | { readonly type: "rows.replace"; readonly rows: readonly TData[] }
+  | { readonly type: "selection.replace"; readonly rowIds: readonly RowId[] }
   | {
       readonly type: "data.request.start";
       readonly requestId: RequestId;
@@ -343,6 +344,13 @@ function reduceGridState<TData>(
         state,
         "rows",
         createDataRowsState(command.rows, context.getRowId),
+        command
+      );
+    case "selection.replace":
+      return withSliceChange(
+        state,
+        "selection",
+        createSelectionState(command.rowIds),
         command
       );
     case "data.request.start":
@@ -582,6 +590,13 @@ function assertUniqueRowIds(rowIds: readonly RowId[]): void {
     }
     seen.add(rowId);
   }
+}
+
+function createSelectionState(rowIds: readonly RowId[]): SelectionState {
+  for (const rowId of rowIds) {
+    normalizeRowId(rowId);
+  }
+  return Object.freeze({ rowIds: new Set(rowIds) });
 }
 
 function withSliceChange<TData, TKey extends GridStateSliceKey>(

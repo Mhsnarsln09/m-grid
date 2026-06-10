@@ -91,6 +91,30 @@ describe("@m-grid/core contract", () => {
     expect(calls).toBe(0);
   });
 
+  it("replaces selected row ids through a command", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    const events = grid.dispatch({
+      type: "selection.replace",
+      rowIds: ["r1", "r2", "r2"],
+    });
+
+    expect(events).toHaveLength(1);
+    expect(events[0]?.slice).toBe("selection");
+    expect([...grid.getState().selection.rowIds]).toEqual(["r1", "r2"]);
+  });
+
+  it("rejects empty selected row ids with a predictable English error", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    expect(() =>
+      grid.dispatch({
+        type: "selection.replace",
+        rowIds: [""],
+      })
+    ).toThrow("[MGRID-ROW-001] Row id must not be empty.");
+  });
+
   it("uses one transaction id for all state changes from one command", () => {
     const grid = createGrid<TestRow>({ columns, getRowId });
 
