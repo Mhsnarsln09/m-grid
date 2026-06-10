@@ -106,6 +106,7 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 - Core state changes from one dispatch share one transaction id; `mountStaticGrid` uses that id to avoid duplicate automatic renders for multi-slice updates.
 - Static output includes `aria-rowcount`, `aria-colcount`, body-row `aria-rowindex` and cell/header `aria-colindex` metadata.
 - Static output exposes loading state through root `data-loading-status` and grid `aria-busy`.
+- Static output exposes selected rows through row `data-selected="true"`.
 - These helpers do not diff, hydrate, virtualize, sort, filter, paginate, select, edit or handle keyboard interaction.
 
 Acceptance for this slice is the focused DOM unit test and inline static output snapshot. Browser runtime validation remains limited to manually serving `examples/dom-static/` after a build.
@@ -220,6 +221,7 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 - Tek dispatch'ten gelen core state change'leri tek transaction id paylasir; `mountStaticGrid` multi-slice update'lerde duplicate automatic render'i onlemek icin bu id'yi kullanir.
 - Static output `aria-rowcount`, `aria-colcount`, body-row `aria-rowindex` ve cell/header `aria-colindex` metadata'si icerir.
 - Static output loading state'i root `data-loading-status` ve grid `aria-busy` uzerinden expose eder.
+- Static output selected row'lari row `data-selected="true"` ile expose eder.
 - Bu helper'lar diff, hydrate, virtualize, sort, filter, paginate, select, edit veya keyboard interaction yapmaz.
 
 Bu slice icin acceptance, focused DOM unit test ve inline static output snapshot'tir. Browser runtime validation halen build sonrasi `examples/dom-static/` klasorunu manuel serve etmekle sinirlidir.

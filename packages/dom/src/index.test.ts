@@ -86,6 +86,23 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('aria-busy="true"');
   });
 
+  it("renders selected row metadata from core selection state", () => {
+    const api = createGrid({
+      columns,
+      rows: [
+        { id: "row-1", label: "Alpha", amount: 12 },
+        { id: "row-2", label: "Beta", amount: 34 },
+      ],
+      getRowId: (row) => row.id,
+      initialState: { selection: { rowIds: new Set(["row-2"]) } },
+    });
+
+    const html = renderStaticGridHtml({ api, columns });
+
+    expect(html).toContain('data-selected="true" data-row-id="row-2"');
+    expect(html).not.toContain('data-selected="true" data-row-id="row-1"');
+  });
+
   it("honors core column order state", () => {
     const api = createGrid({
       columns,

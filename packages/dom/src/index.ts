@@ -273,6 +273,9 @@ export function renderStaticGridHtml<TData>(
         "m-grid-row",
         options.getRowClassName?.({ row, rowId, rowIndex })
       );
+      const selected = state.selection.rowIds.has(rowId)
+        ? ' data-selected="true"'
+        : "";
       const cells = renderColumns
         .map((column, columnIndex) => {
           const columnId = getColumnId(column);
@@ -303,7 +306,7 @@ export function renderStaticGridHtml<TData>(
         rowClassName
       )}" role="row" aria-rowindex="${
         rowIndex + 1
-      }" data-row-id="${escapeAttribute(rowId)}">${cells}</div>`;
+      }"${selected} data-row-id="${escapeAttribute(rowId)}">${cells}</div>`;
     })
     .join("");
 
