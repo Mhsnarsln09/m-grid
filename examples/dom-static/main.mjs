@@ -24,6 +24,7 @@ export function setupStaticDemo(documentRef) {
     columns,
     rows,
     getRowId: (row) => row.id,
+    initialState: { selection: { rowIds: new Set(["order-1002"]) } },
   });
 
   const app = documentRef.querySelector("#app");

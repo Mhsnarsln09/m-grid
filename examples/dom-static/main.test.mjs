@@ -17,6 +17,9 @@ describe("static DOM demo", () => {
     setupStaticDemo(documentRef);
 
     expect(elements["#app"].innerHTML).toContain("Ada Lovelace");
+    expect(elements["#app"].innerHTML).toContain(
+      'aria-selected="true" data-selected="true" data-row-id="order-1002"'
+    );
 
     elements["#refresh-rows"].click();
 
