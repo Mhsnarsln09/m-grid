@@ -169,6 +169,7 @@ export function mountStaticGrid<TData>(
   options: StaticGridMountOptions<TData>
 ): StaticGridMount {
   assertValidStaticGridMountTarget(options.container);
+  assertRenderableStaticGridColumns(options.columns);
   let mounted = true;
   const renderOptions: StaticGridRenderOptions<TData> = {
     api: options.api,
@@ -226,6 +227,7 @@ function assertValidStaticGridMountTarget(
 export function renderStaticGridHtml<TData>(
   options: StaticGridRenderOptions<TData>
 ): string {
+  assertRenderableStaticGridColumns(options.columns);
   const state = options.api.getState();
   const columnCount = options.columns.length;
   const density = options.density ?? "comfortable";
@@ -320,6 +322,16 @@ function getColumnId<TData>(column: AnyColumnDef<TData>): ColumnId {
     return column.accessorKey;
   }
   throw new Error("[MGRID-DOM-001] Column id is required for DOM rendering.");
+}
+
+function assertRenderableStaticGridColumns<TData>(
+  columns: readonly AnyColumnDef<TData>[]
+): void {
+  if (columns.length === 0) {
+    throw new Error(
+      "[MGRID-DOM-003] At least one column is required for DOM rendering."
+    );
+  }
 }
 
 function getCellValue<TData>(

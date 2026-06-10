@@ -179,4 +179,16 @@ describe("@m-grid/dom static rendering", () => {
       })
     ).toThrow("[MGRID-DOM-002] Static grid mount container is required.");
   });
+
+  it("rejects empty static column lists with a predictable English error", () => {
+    const api = createGrid<TestRow>({
+      columns: [],
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+    });
+
+    expect(() => renderStaticGridHtml({ api, columns: [] })).toThrow(
+      "[MGRID-DOM-003] At least one column is required for DOM rendering."
+    );
+  });
 });
