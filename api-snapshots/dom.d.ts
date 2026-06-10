@@ -1,4 +1,4 @@
-import type { AnyColumnDef, GridApi, GridEvent, GridState } from "@m-grid/core";
+import type { AnyColumnDef, ColumnId, GridApi, GridEvent, GridState } from "@m-grid/core";
 export type GridDomSlot = "root" | "viewport" | "header" | "body" | "footer";
 export interface GridDomMountOptions<TData> {
     readonly api: GridApi<TData>;
@@ -38,6 +38,20 @@ export interface GridDomAdapter<TData> {
     readonly onCoreEvent: (event: GridEvent<TData>) => void;
 }
 export type StaticGridDensity = "compact" | "comfortable";
+export type StaticGridClassName = string | undefined;
+export interface StaticGridHeaderClassContext<TData> {
+    readonly column: AnyColumnDef<TData>;
+    readonly columnId: ColumnId;
+    readonly columnIndex: number;
+}
+export interface StaticGridRowClassContext<TData> {
+    readonly row: TData;
+    readonly rowId: string;
+    readonly rowIndex: number;
+}
+export interface StaticGridCellClassContext<TData> extends StaticGridRowClassContext<TData>, StaticGridHeaderClassContext<TData> {
+    readonly value: unknown;
+}
 export interface StaticGridRenderOptions<TData> {
     /**
      * Core grid API that provides the current row state and row identity contract.
@@ -61,6 +75,22 @@ export interface StaticGridRenderOptions<TData> {
      * Theme token exposed through the root data attribute.
      */
     readonly theme?: string;
+    /**
+     * Additional class appended to the static grid root.
+     */
+    readonly rootClassName?: StaticGridClassName;
+    /**
+     * Optional class hook for each header cell.
+     */
+    readonly getHeaderCellClassName?: (context: StaticGridHeaderClassContext<TData>) => StaticGridClassName;
+    /**
+     * Optional class hook for each row.
+     */
+    readonly getRowClassName?: (context: StaticGridRowClassContext<TData>) => StaticGridClassName;
+    /**
+     * Optional class hook for each cell.
+     */
+    readonly getCellClassName?: (context: StaticGridCellClassContext<TData>) => StaticGridClassName;
 }
 export interface StaticGridMountTarget {
     innerHTML: string;

@@ -86,6 +86,29 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('aria-busy="true"');
   });
 
+  it("applies escaped static class hooks", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+    });
+
+    const html = renderStaticGridHtml({
+      api,
+      columns,
+      rootClassName: "custom-root",
+      getHeaderCellClassName: ({ columnId }) => `header-${columnId}`,
+      getRowClassName: ({ rowId }) => `row-${rowId}`,
+      getCellClassName: ({ columnId, value }) =>
+        columnId === "label" ? `cell-${String(value).toLowerCase()}"` : undefined,
+    });
+
+    expect(html).toContain('class="m-grid-root custom-root"');
+    expect(html).toContain('class="m-grid-header-cell header-label"');
+    expect(html).toContain('class="m-grid-row row-row-1"');
+    expect(html).toContain('class="m-grid-cell cell-alpha&quot;"');
+  });
+
   it("keeps the static HTML output stable", () => {
     const api = createGrid({
       columns,

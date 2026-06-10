@@ -59,6 +59,25 @@ export interface GridDomAdapter<TData> {
 }
 
 export type StaticGridDensity = "compact" | "comfortable";
+export type StaticGridClassName = string | undefined;
+
+export interface StaticGridHeaderClassContext<TData> {
+  readonly column: AnyColumnDef<TData>;
+  readonly columnId: ColumnId;
+  readonly columnIndex: number;
+}
+
+export interface StaticGridRowClassContext<TData> {
+  readonly row: TData;
+  readonly rowId: string;
+  readonly rowIndex: number;
+}
+
+export interface StaticGridCellClassContext<TData>
+  extends StaticGridRowClassContext<TData>,
+    StaticGridHeaderClassContext<TData> {
+  readonly value: unknown;
+}
 
 export interface StaticGridRenderOptions<TData> {
   /**
@@ -83,6 +102,28 @@ export interface StaticGridRenderOptions<TData> {
    * Theme token exposed through the root data attribute.
    */
   readonly theme?: string;
+  /**
+   * Additional class appended to the static grid root.
+   */
+  readonly rootClassName?: StaticGridClassName;
+  /**
+   * Optional class hook for each header cell.
+   */
+  readonly getHeaderCellClassName?: (
+    context: StaticGridHeaderClassContext<TData>
+  ) => StaticGridClassName;
+  /**
+   * Optional class hook for each row.
+   */
+  readonly getRowClassName?: (
+    context: StaticGridRowClassContext<TData>
+  ) => StaticGridClassName;
+  /**
+   * Optional class hook for each cell.
+   */
+  readonly getCellClassName?: (
+    context: StaticGridCellClassContext<TData>
+  ) => StaticGridClassName;
 }
 
 export interface StaticGridMountTarget {
@@ -135,6 +176,18 @@ export function mountStaticGrid<TData>(
     ...(options.caption === undefined ? {} : { caption: options.caption }),
     ...(options.density === undefined ? {} : { density: options.density }),
     ...(options.theme === undefined ? {} : { theme: options.theme }),
+    ...(options.rootClassName === undefined
+      ? {}
+      : { rootClassName: options.rootClassName }),
+    ...(options.getHeaderCellClassName === undefined
+      ? {}
+      : { getHeaderCellClassName: options.getHeaderCellClassName }),
+    ...(options.getRowClassName === undefined
+      ? {}
+      : { getRowClassName: options.getRowClassName }),
+    ...(options.getCellClassName === undefined
+      ? {}
+      : { getCellClassName: options.getCellClassName }),
   };
   const unsubscribe = options.api.subscribe((event) => {
     if (event.type === "state.change" && mounted) {
@@ -186,7 +239,13 @@ export function renderStaticGridHtml<TData>(
   const headerCells = options.columns
     .map((column, columnIndex) => {
       const columnId = getColumnId(column);
-      return `<div class="m-grid-header-cell" role="columnheader" aria-colindex="${
+      const className = composeClassName(
+        "m-grid-header-cell",
+        options.getHeaderCellClassName?.({ column, columnId, columnIndex })
+      );
+      return `<div class="${escapeAttribute(
+        className
+      )}" role="columnheader" aria-colindex="${
         columnIndex + 1
       }" data-column-id="${escapeAttribute(columnId)}">${escapeHtml(
         column.header ?? columnId
@@ -197,18 +256,39 @@ export function renderStaticGridHtml<TData>(
   const rows = state.rows.rows
     .map((row, rowIndex) => {
       const rowId = state.rows.rowIds[rowIndex] ?? "";
+      const rowClassName = composeClassName(
+        "m-grid-row",
+        options.getRowClassName?.({ row, rowId, rowIndex })
+      );
       const cells = options.columns
         .map((column, columnIndex) => {
           const columnId = getColumnId(column);
-          return `<div class="m-grid-cell" role="gridcell" aria-colindex="${
+          const value = getCellValue(options.api, row, column, rowIndex);
+          const className = composeClassName(
+            "m-grid-cell",
+            options.getCellClassName?.({
+              row,
+              rowId,
+              rowIndex,
+              column,
+              columnId,
+              columnIndex,
+              value,
+            })
+          );
+          return `<div class="${escapeAttribute(
+            className
+          )}" role="gridcell" aria-colindex="${
             columnIndex + 1
           }" data-column-id="${escapeAttribute(columnId)}">${escapeHtml(
-            String(getCellValue(options.api, row, column, rowIndex) ?? "")
+            String(value ?? "")
           )}</div>`;
         })
         .join("");
 
-      return `<div class="m-grid-row" role="row" aria-rowindex="${
+      return `<div class="${escapeAttribute(
+        rowClassName
+      )}" role="row" aria-rowindex="${
         rowIndex + 1
       }" data-row-id="${escapeAttribute(rowId)}">${cells}</div>`;
     })
@@ -219,7 +299,9 @@ export function renderStaticGridHtml<TData>(
       ? ""
       : `<div class="m-grid-caption">${escapeHtml(options.caption)}</div>`;
 
-  return `<div class="m-grid-root" data-density="${escapeAttribute(
+  const rootClassName = composeClassName("m-grid-root", options.rootClassName);
+
+  return `<div class="${escapeAttribute(rootClassName)}" data-density="${escapeAttribute(
     density
   )}" data-theme="${escapeAttribute(theme)}" data-loading-status="${escapeAttribute(
     loadingStatus
@@ -269,4 +351,14 @@ function escapeHtml(value: string): string {
 
 function escapeAttribute(value: string): string {
   return escapeHtml(value);
+}
+
+function composeClassName(
+  baseClassName: string,
+  userClassName: StaticGridClassName
+): string {
+  if (userClassName === undefined || userClassName.trim() === "") {
+    return baseClassName;
+  }
+  return `${baseClassName} ${userClassName.trim()}`;
 }
