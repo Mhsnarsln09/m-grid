@@ -71,8 +71,15 @@ const rows = [{ id: "row-1", label: "Ready" }];
 const columns = [{ accessorKey: "label" }];
 const getRowId = (row) => row.id;
 const api = createGrid({ rows, columns, getRowId });
+const selectedApi = createGrid({
+  rows,
+  columns,
+  getRowId,
+  initialState: { selection: { rowIds: new Set(["row-1"]) } },
+});
 const dom = createDomAdapter({ api });
 const html = renderStaticGridHtml({ api, columns, caption: "Smoke" });
+const selectedHtml = renderStaticGridHtml({ api: selectedApi, columns });
 const container = { innerHTML: "" };
 const mount = mountStaticGrid({ api, columns, caption: "Smoke", container });
 const vue = createVueGridContract({ rows, columns, getRowId, adapterName: "vue" });
@@ -81,6 +88,7 @@ if (corePackage.name !== "@m-grid/core") throw new Error("Unexpected core packag
 if (dom.getState().rows.rowIds[0] !== "row-1") throw new Error("DOM adapter did not read core state.");
 if (!html.includes('role="grid"')) throw new Error("Static DOM render did not produce a grid role.");
 if (!html.includes("Ready")) throw new Error("Static DOM render did not include row content.");
+if (!selectedHtml.includes('aria-selected="true"')) throw new Error("Static DOM render did not expose selected row metadata.");
 if (!container.innerHTML.includes("Ready")) throw new Error("Static DOM mount did not include row content.");
 api.dispatch({ type: "rows.replace", rows: [{ id: "row-2", label: "Updated" }] });
 if (!container.innerHTML.includes("Updated")) throw new Error("Static DOM mount did not auto-render state changes.");
