@@ -6,6 +6,7 @@ describe("static DOM demo", () => {
     const elements = {
       "#app": { innerHTML: "" },
       "#refresh-rows": createButton(),
+      "#select-next-row": createButton(),
       "#refresh-status": {
         textContent: "Showing initial rows; Grace Hopper selected",
       },
@@ -44,6 +45,15 @@ describe("static DOM demo", () => {
     expect(elements["#refresh-status"].textContent).toBe(
       "Showing initial rows; Grace Hopper selected"
     );
+
+    elements["#select-next-row"].click();
+
+    expect(elements["#app"].innerHTML).toContain(
+      'aria-selected="true" data-selected="true" data-row-id="order-1003"'
+    );
+    expect(elements["#refresh-status"].textContent).toBe(
+      "Showing initial rows; Katherine Johnson selected"
+    );
   });
 
   it("fails predictably when required demo nodes are missing", () => {
@@ -56,6 +66,9 @@ describe("static DOM demo", () => {
     expect(() => setupStaticDemo(createDocumentWithout("#refresh-status"))).toThrow(
       "[MGRID-DEMO-003] Demo refresh status was not found."
     );
+    expect(() => setupStaticDemo(createDocumentWithout("#select-next-row"))).toThrow(
+      "[MGRID-DEMO-004] Demo select next button was not found."
+    );
   });
 });
 
@@ -63,6 +76,7 @@ function createDocumentWithout(missingSelector) {
   const elements = {
     "#app": { innerHTML: "" },
     "#refresh-rows": createButton(),
+    "#select-next-row": createButton(),
     "#refresh-status": {
       textContent: "Showing initial rows; Grace Hopper selected",
     },

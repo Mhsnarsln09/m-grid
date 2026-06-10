@@ -37,6 +37,11 @@ export function setupStaticDemo(documentRef) {
     throw new Error("[MGRID-DEMO-002] Demo refresh button was not found.");
   }
 
+  const selectNextButton = documentRef.querySelector("#select-next-row");
+  if (selectNextButton === null) {
+    throw new Error("[MGRID-DEMO-004] Demo select next button was not found.");
+  }
+
   const refreshStatus = documentRef.querySelector("#refresh-status");
   if (refreshStatus === null) {
     throw new Error("[MGRID-DEMO-003] Demo refresh status was not found.");
@@ -50,23 +55,40 @@ export function setupStaticDemo(documentRef) {
   });
 
   let showingAlternateRows = false;
+  let selectedRowIndex = 1;
+
+  function getVisibleRows() {
+    return showingAlternateRows ? alternateRows : rows;
+  }
+
+  function updateSelection() {
+    const visibleRows = getVisibleRows();
+    const selectedRow = visibleRows[selectedRowIndex] ?? visibleRows[0];
+    api.dispatch({
+      type: "selection.replace",
+      rowIds: selectedRow === undefined ? [] : [selectedRow.id],
+    });
+    refreshStatus.textContent = `${showingAlternateRows ? "Showing refreshed rows" : "Showing initial rows"}; ${
+      selectedRow?.customer ?? "No row"
+    } selected`;
+  }
 
   refreshButton.addEventListener("click", () => {
     showingAlternateRows = !showingAlternateRows;
+    selectedRowIndex = 1;
     api.dispatch({
-    type: "rows.replace",
-    rows: showingAlternateRows ? alternateRows : rows,
-  });
-  api.dispatch({
-    type: "selection.replace",
-    rowIds: [showingAlternateRows ? "order-2002" : "order-1002"],
-  });
-  refreshButton.textContent = showingAlternateRows
+      type: "rows.replace",
+      rows: getVisibleRows(),
+    });
+    updateSelection();
+    refreshButton.textContent = showingAlternateRows
       ? "Show initial rows"
       : "Refresh rows";
-  refreshStatus.textContent = showingAlternateRows
-    ? "Showing refreshed rows; Mary Jackson selected"
-    : "Showing initial rows; Grace Hopper selected";
+  });
+
+  selectNextButton.addEventListener("click", () => {
+    selectedRowIndex = (selectedRowIndex + 1) % getVisibleRows().length;
+    updateSelection();
   });
 
   return { api, mount };
