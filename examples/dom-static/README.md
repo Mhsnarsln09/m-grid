@@ -18,7 +18,8 @@ Acceptance criteria:
 
 - the page loads without a bundler;
 - `main.mjs` imports the built package output from `packages/core/dist/` and `packages/dom/dist/`;
-- row, column and caption text render through `renderStaticGridHtml`;
+- row, column and caption text render through `mountStaticGrid`;
+- the refresh button proves manual `render()` after core state replacement;
 - the optional default theme CSS remains replaceable by consumers;
 - no interactive grid behavior is implied by the demo.
 
@@ -42,7 +43,8 @@ Acceptance criteria:
 
 - page bundler olmadan yuklenir;
 - `main.mjs`, built package output'u `packages/core/dist/` ve `packages/dom/dist/` uzerinden import eder;
-- row, column ve caption text `renderStaticGridHtml` ile render edilir;
+- row, column ve caption text `mountStaticGrid` ile render edilir;
+- refresh button, core state replacement sonrasi manual `render()` davranisini kanitlar;
 - optional default theme CSS consumer tarafindan degistirilebilir kalir;
 - demo interactive grid behavior ima etmez.
 
