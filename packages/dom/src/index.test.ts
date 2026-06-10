@@ -181,6 +181,41 @@ describe("@m-grid/dom static rendering", () => {
     expect(container.innerHTML).toBe("");
   });
 
+  it("auto-renders once for multi-slice transactions", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+    });
+    let renderCount = 0;
+    let html = "";
+    const container = {
+      get innerHTML() {
+        return html;
+      },
+      set innerHTML(value: string) {
+        renderCount += 1;
+        html = value;
+      },
+    };
+
+    mountStaticGrid({ api, columns, container });
+    api.dispatch({
+      type: "data.request.start",
+      requestId: "request-1",
+      queryKey: "orders",
+    });
+    api.dispatch({
+      type: "data.request.success",
+      requestId: "request-1",
+      queryKey: "orders",
+      rows: [{ id: "row-2", label: "Beta", amount: 34 }],
+    });
+
+    expect(renderCount).toBe(3);
+    expect(container.innerHTML).toContain("Beta");
+  });
+
   it("rejects missing mount containers with a predictable English error", () => {
     const api = createGrid({
       columns,

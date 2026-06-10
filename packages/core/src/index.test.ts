@@ -91,6 +91,25 @@ describe("@m-grid/core contract", () => {
     expect(calls).toBe(0);
   });
 
+  it("uses one transaction id for all state changes from one command", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    grid.dispatch({
+      type: "data.request.start",
+      requestId: "request-1",
+      queryKey: "orders",
+    });
+    const events = grid.dispatch({
+      type: "data.request.success",
+      requestId: "request-1",
+      queryKey: "orders",
+      rows: [{ id: "r1", name: "Ready", value: 1 }],
+    });
+
+    expect(events.map((event) => event.slice)).toEqual(["rows", "loading"]);
+    expect(new Set(events.map((event) => event.transactionId)).size).toBe(1);
+  });
+
   it("preserves typed row input for column accessors and getRowId", () => {
     expectTypeOf<(typeof columns)[number]>().toMatchTypeOf<ColumnDef<TestRow, unknown>>();
     expectTypeOf<

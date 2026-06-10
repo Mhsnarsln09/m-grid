@@ -175,6 +175,7 @@ export function mountStaticGrid<TData>(
   assertValidStaticGridMountTarget(options.container);
   assertRenderableStaticGridColumns(options.columns);
   let mounted = true;
+  let lastAutoRenderedTransactionId: string | undefined;
   const renderOptions: StaticGridRenderOptions<TData> = {
     api: options.api,
     columns: options.columns,
@@ -199,6 +200,8 @@ export function mountStaticGrid<TData>(
   };
   const unsubscribe = options.api.subscribe((event) => {
     if (event.type === "state.change" && mounted) {
+      if (event.transactionId === lastAutoRenderedTransactionId) return;
+      lastAutoRenderedTransactionId = event.transactionId;
       mount.render();
     }
   });
