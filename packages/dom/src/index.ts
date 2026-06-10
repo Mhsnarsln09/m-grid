@@ -103,6 +103,10 @@ export interface StaticGridRenderOptions<TData> {
    */
   readonly theme?: string;
   /**
+   * Optional message rendered outside the grid surface when there are no rows.
+   */
+  readonly emptyMessage?: string;
+  /**
    * Additional class appended to the static grid root.
    */
   readonly rootClassName?: StaticGridClassName;
@@ -177,6 +181,9 @@ export function mountStaticGrid<TData>(
     ...(options.caption === undefined ? {} : { caption: options.caption }),
     ...(options.density === undefined ? {} : { density: options.density }),
     ...(options.theme === undefined ? {} : { theme: options.theme }),
+    ...(options.emptyMessage === undefined
+      ? {}
+      : { emptyMessage: options.emptyMessage }),
     ...(options.rootClassName === undefined
       ? {}
       : { rootClassName: options.rootClassName }),
@@ -300,6 +307,12 @@ export function renderStaticGridHtml<TData>(
     options.caption === undefined
       ? ""
       : `<div class="m-grid-caption">${escapeHtml(options.caption)}</div>`;
+  const empty =
+    state.rows.rows.length === 0 && options.emptyMessage !== undefined
+      ? `\n<div class="m-grid-empty" role="status">${escapeHtml(
+          options.emptyMessage
+        )}</div>`
+      : "";
 
   const rootClassName = composeClassName("m-grid-root", options.rootClassName);
 
@@ -312,7 +325,7 @@ ${caption}
 <div class="m-grid-surface" role="grid"${gridLabel} aria-busy="${busy}" aria-rowcount="${state.rows.rows.length}" aria-colcount="${columnCount}" style="--m-grid-column-count: ${columnCount};">
 <div class="m-grid-header-row" role="row">${headerCells}</div>
 ${rows}
-</div>
+</div>${empty}
 </div>`;
 }
 

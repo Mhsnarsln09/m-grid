@@ -76,6 +76,10 @@ export interface StaticGridRenderOptions<TData> {
      */
     readonly theme?: string;
     /**
+     * Optional message rendered outside the grid surface when there are no rows.
+     */
+    readonly emptyMessage?: string;
+    /**
      * Additional class appended to the static grid root.
      */
     readonly rootClassName?: StaticGridClassName;

@@ -109,6 +109,23 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('class="m-grid-cell cell-alpha&quot;"');
   });
 
+  it("renders an escaped empty message outside the grid surface", () => {
+    const api = createGrid<TestRow>({
+      columns,
+      rows: [],
+      getRowId: (row) => row.id,
+    });
+
+    const html = renderStaticGridHtml({
+      api,
+      columns,
+      emptyMessage: "No <orders>",
+    });
+
+    expect(html).toContain('<div class="m-grid-empty" role="status">No &lt;orders&gt;</div>');
+    expect(html).toContain('aria-rowcount="0"');
+  });
+
   it("keeps the static HTML output stable", () => {
     const api = createGrid({
       columns,

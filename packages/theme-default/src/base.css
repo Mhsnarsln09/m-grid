@@ -45,6 +45,12 @@
     margin-block-end: 8px;
   }
 
+  :where(.m-grid-empty) {
+    color: color-mix(in srgb, var(--m-grid-foreground) 72%, transparent);
+    padding-block: var(--m-grid-cell-padding-block);
+    padding-inline: var(--m-grid-cell-padding-inline);
+  }
+
   :where(.m-grid-header-row, .m-grid-row) {
     display: grid;
     grid-template-columns: repeat(var(--m-grid-column-count, 1), minmax(0, 1fr));

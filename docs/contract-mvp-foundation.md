@@ -97,6 +97,7 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 - `options.columns` defines the rendered column order for this static call.
 - Empty `options.columns` is rejected because static DOM grid output requires at least one renderable column.
 - `options.caption`, when provided, renders visible caption text and the grid `aria-label`.
+- `options.emptyMessage`, when provided and there are no rows, renders escaped status text outside the grid surface.
 - `options.density` and `options.theme` set root `data-density` and `data-theme` attributes; defaults are `comfortable` and `light`.
 - `rootClassName`, `getHeaderCellClassName`, `getRowClassName` and `getCellClassName` append escaped classes while preserving stable base classes.
 - Header labels, row ids, column ids and cell values are escaped before interpolation.
@@ -209,6 +210,7 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 - `options.columns` bu static cagri icin rendered column sirasini belirler.
 - Empty `options.columns` reddedilir cunku static DOM grid output en az bir renderable column gerektirir.
 - `options.caption` verildiginde visible caption text ve grid `aria-label` uretir.
+- `options.emptyMessage` verildiginde ve row yoksa, grid surface disinda escaped status text render eder.
 - `options.density` ve `options.theme` root `data-density` ve `data-theme` attribute'larini belirler; default degerler `comfortable` ve `light` olur.
 - `rootClassName`, `getHeaderCellClassName`, `getRowClassName` ve `getCellClassName` stable base class'lari koruyarak escaped class ekler.
 - Header label, row id, column id ve cell value degerleri interpolation oncesi escape edilir.
