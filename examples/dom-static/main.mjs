@@ -54,10 +54,14 @@ export function setupStaticDemo(documentRef) {
   refreshButton.addEventListener("click", () => {
     showingAlternateRows = !showingAlternateRows;
     api.dispatch({
-      type: "rows.replace",
-      rows: showingAlternateRows ? alternateRows : rows,
-    });
-    refreshButton.textContent = showingAlternateRows
+    type: "rows.replace",
+    rows: showingAlternateRows ? alternateRows : rows,
+  });
+  api.dispatch({
+    type: "selection.replace",
+    rowIds: [showingAlternateRows ? "order-2002" : "order-1002"],
+  });
+  refreshButton.textContent = showingAlternateRows
       ? "Show initial rows"
       : "Refresh rows";
     refreshStatus.textContent = showingAlternateRows

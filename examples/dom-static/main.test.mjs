@@ -24,12 +24,18 @@ describe("static DOM demo", () => {
     elements["#refresh-rows"].click();
 
     expect(elements["#app"].innerHTML).toContain("Dorothy Vaughan");
+    expect(elements["#app"].innerHTML).toContain(
+      'aria-selected="true" data-selected="true" data-row-id="order-2002"'
+    );
     expect(elements["#refresh-rows"].textContent).toBe("Show initial rows");
     expect(elements["#refresh-status"].textContent).toBe("Showing refreshed rows");
 
     elements["#refresh-rows"].click();
 
     expect(elements["#app"].innerHTML).toContain("Ada Lovelace");
+    expect(elements["#app"].innerHTML).toContain(
+      'aria-selected="true" data-selected="true" data-row-id="order-1002"'
+    );
     expect(elements["#refresh-rows"].textContent).toBe("Refresh rows");
     expect(elements["#refresh-status"].textContent).toBe("Showing initial rows");
   });
