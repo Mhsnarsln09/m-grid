@@ -100,6 +100,21 @@ describe("@m-grid/dom static rendering", () => {
     expect(html.indexOf(">12<")).toBeLessThan(html.indexOf(">Alpha<"));
   });
 
+  it("keeps provided columns when core column order omits them", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+      initialState: { columns: { order: ["amount"] } },
+    });
+
+    const html = renderStaticGridHtml({ api, columns });
+
+    expect(html).toContain("Amount");
+    expect(html).toContain("Label");
+    expect(html.indexOf("Amount")).toBeLessThan(html.indexOf("Label"));
+  });
+
   it("applies escaped static class hooks", () => {
     const api = createGrid({
       columns,
