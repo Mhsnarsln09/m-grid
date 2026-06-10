@@ -36,7 +36,7 @@ pnpm release:check
 
 `@m-grid/core` owns framework-independent public contracts, row identity validation, state/command/event contracts, subscription flow and datasource lifecycle coordination. It must not import DOM APIs, CSS, Vue, React, Svelte, browser globals or renderer types.
 
-`@m-grid/dom` owns framework-neutral contracts reserved for future DOM mounting, focus coordination, ARIA coordination, measurements, observers, viewport and virtualization integration. It also exposes `renderStaticGridHtml` as a deliberately small static rendering helper for demos and package smoke tests.
+`@m-grid/dom` owns framework-neutral contracts reserved for future DOM coordination, focus coordination, ARIA coordination, measurements, observers, viewport and virtualization integration. It also exposes `renderStaticGridHtml` and `mountStaticGrid` as deliberately small static rendering helpers for demos and package smoke tests.
 
 `@m-grid/vue` is the first adapter package and currently exposes only a minimal contract placeholder that composes core and DOM contracts. It does not implement a real Vue grid component yet.
 
@@ -91,13 +91,15 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 
 ### Static DOM Rendering API
 
-`@m-grid/dom` exposes `renderStaticGridHtml(options)` for first-output demos and package smoke coverage. The public contract is intentionally narrow:
+`@m-grid/dom` exposes `renderStaticGridHtml(options)` and `mountStaticGrid(options)` for first-output demos and package smoke coverage. The public contract is intentionally narrow:
 
 - `options.api` reads the current `@m-grid/core` state and row identity contract.
 - `options.columns` defines the rendered column order for this static call.
 - `options.caption`, when provided, renders visible caption text and the grid `aria-label`.
 - Header labels, row ids, column ids and cell values are escaped before interpolation.
-- The helper returns a string and does not mount, diff, hydrate, virtualize, sort, filter, paginate, select, edit or handle keyboard interaction.
+- `renderStaticGridHtml` returns a string.
+- `mountStaticGrid` writes that string into `container.innerHTML`, exposes `render()` for manual refresh and `unmount()` to clear the container.
+- These helpers do not diff, hydrate, virtualize, sort, filter, paginate, select, edit or handle keyboard interaction.
 
 Acceptance for this slice is the focused DOM unit test and inline static output snapshot. Browser runtime validation remains limited to manually serving `examples/dom-static/` after a build.
 
@@ -141,7 +143,7 @@ pnpm release:check
 
 `@m-grid/core` framework-independent public contract'lari, row identity validation, state/command/event contract'lari, subscription flow ve datasource lifecycle coordination'i sahiplenir. DOM API, CSS, Vue, React, Svelte, browser global veya renderer type import etmez.
 
-`@m-grid/dom` future DOM mounting, focus coordination, ARIA coordination, measurement, observer, viewport ve virtualization integration icin framework-neutral contract'lari ayirir. Ayrica demo ve package smoke test icin bilerek kucuk tutulan `renderStaticGridHtml` static rendering helper'ini export eder.
+`@m-grid/dom` future DOM coordination, focus coordination, ARIA coordination, measurement, observer, viewport ve virtualization integration icin framework-neutral contract'lari ayirir. Ayrica demo ve package smoke test icin bilerek kucuk tutulan `renderStaticGridHtml` ve `mountStaticGrid` static rendering helper'larini export eder.
 
 `@m-grid/vue` ilk adapter package'tir ve su anda yalniz core ve DOM contract'larini birlestiren minimal placeholder contract export eder. Henuz real Vue grid component implement etmez.
 
@@ -196,13 +198,15 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 
 ### Static DOM Rendering API
 
-`@m-grid/dom`, ilk cikti demo'lari ve package smoke coverage icin `renderStaticGridHtml(options)` export eder. Public contract bilerek dar tutulur:
+`@m-grid/dom`, ilk cikti demo'lari ve package smoke coverage icin `renderStaticGridHtml(options)` ve `mountStaticGrid(options)` export eder. Public contract bilerek dar tutulur:
 
 - `options.api` mevcut `@m-grid/core` state'ini ve row identity contract'ini okur.
 - `options.columns` bu static cagri icin rendered column sirasini belirler.
 - `options.caption` verildiginde visible caption text ve grid `aria-label` uretir.
 - Header label, row id, column id ve cell value degerleri interpolation oncesi escape edilir.
-- Helper string dondurur; mount, diff, hydrate, virtualize, sort, filter, paginate, select, edit veya keyboard interaction yapmaz.
+- `renderStaticGridHtml` string dondurur.
+- `mountStaticGrid` bu string'i `container.innerHTML` icine yazar, manual refresh icin `render()` ve container'i temizlemek icin `unmount()` sunar.
+- Bu helper'lar diff, hydrate, virtualize, sort, filter, paginate, select, edit veya keyboard interaction yapmaz.
 
 Bu slice icin acceptance, focused DOM unit test ve inline static output snapshot'tir. Browser runtime validation halen build sonrasi `examples/dom-static/` klasorunu manuel serve etmekle sinirlidir.
 

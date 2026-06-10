@@ -75,6 +75,29 @@ export interface StaticGridRenderOptions<TData> {
   readonly caption?: string;
 }
 
+export interface StaticGridMountTarget {
+  innerHTML: string;
+}
+
+export interface StaticGridMountOptions<TData>
+  extends StaticGridRenderOptions<TData> {
+  /**
+   * Container that receives the static grid HTML.
+   */
+  readonly container: StaticGridMountTarget;
+}
+
+export interface StaticGridMount {
+  /**
+   * Re-renders the current core state into the original container.
+   */
+  readonly render: () => void;
+  /**
+   * Clears the container. It does not dispose the core grid API.
+   */
+  readonly unmount: () => void;
+}
+
 export function createDomAdapter<TData>(
   options: GridDomMountOptions<TData>
 ): GridDomAdapter<TData> {
@@ -88,6 +111,28 @@ export function createDomAdapter<TData>(
       return undefined;
     },
   };
+}
+
+export function mountStaticGrid<TData>(
+  options: StaticGridMountOptions<TData>
+): StaticGridMount {
+  const renderOptions: StaticGridRenderOptions<TData> = {
+    api: options.api,
+    columns: options.columns,
+    ...(options.caption === undefined ? {} : { caption: options.caption }),
+  };
+
+  const mount: StaticGridMount = {
+    render() {
+      options.container.innerHTML = renderStaticGridHtml(renderOptions);
+    },
+    unmount() {
+      options.container.innerHTML = "";
+    },
+  };
+
+  mount.render();
+  return mount;
 }
 
 export function renderStaticGridHtml<TData>(

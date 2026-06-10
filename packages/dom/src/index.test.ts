@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createGrid, type ColumnDef } from "@m-grid/core";
-import { renderStaticGridHtml } from "./index.js";
+import { mountStaticGrid, renderStaticGridHtml } from "./index.js";
 
 interface TestRow {
   readonly id: string;
@@ -66,5 +66,31 @@ describe("@m-grid/dom static rendering", () => {
       </div>
       </div>"
     `);
+  });
+
+  it("mounts, re-renders and unmounts static HTML", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+    });
+    const container = { innerHTML: "" };
+
+    const mount = mountStaticGrid({ api, columns, caption: "Orders", container });
+
+    expect(container.innerHTML).toContain("Alpha");
+
+    api.dispatch({
+      type: "rows.replace",
+      rows: [{ id: "row-2", label: "Beta", amount: 34 }],
+    });
+    mount.render();
+
+    expect(container.innerHTML).toContain("Beta");
+    expect(container.innerHTML).not.toContain("Alpha");
+
+    mount.unmount();
+
+    expect(container.innerHTML).toBe("");
   });
 });
