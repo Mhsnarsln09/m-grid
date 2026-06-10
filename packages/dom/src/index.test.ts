@@ -115,6 +115,19 @@ describe("@m-grid/dom static rendering", () => {
     expect(html.indexOf("Amount")).toBeLessThan(html.indexOf("Label"));
   });
 
+  it("ignores duplicate ids in core column order state", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+      initialState: { columns: { order: ["amount", "amount", "label"] } },
+    });
+
+    const html = renderStaticGridHtml({ api, columns });
+
+    expect(html.match(/data-column-id="amount"/g)).toHaveLength(2);
+  });
+
   it("applies escaped static class hooks", () => {
     const api = createGrid({
       columns,

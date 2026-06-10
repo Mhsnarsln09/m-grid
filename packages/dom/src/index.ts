@@ -363,6 +363,7 @@ function resolveRenderColumns<TData>(
   const orderedColumns: AnyColumnDef<TData>[] = [];
   const seen = new Set<ColumnId>();
   for (const columnId of order) {
+    if (seen.has(columnId)) continue;
     const column = columnsById.get(columnId);
     if (column !== undefined) {
       orderedColumns.push(column);
