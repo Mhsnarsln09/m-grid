@@ -117,6 +117,7 @@ export function createDomAdapter<TData>(
 export function mountStaticGrid<TData>(
   options: StaticGridMountOptions<TData>
 ): StaticGridMount {
+  assertValidStaticGridMountTarget(options.container);
   let mounted = true;
   const renderOptions: StaticGridRenderOptions<TData> = {
     api: options.api,
@@ -143,6 +144,18 @@ export function mountStaticGrid<TData>(
 
   mount.render();
   return mount;
+}
+
+function assertValidStaticGridMountTarget(
+  container: StaticGridMountTarget | null | undefined
+): asserts container is StaticGridMountTarget {
+  if (
+    container === null ||
+    container === undefined ||
+    typeof container.innerHTML !== "string"
+  ) {
+    throw new Error("[MGRID-DOM-002] Static grid mount container is required.");
+  }
 }
 
 export function renderStaticGridHtml<TData>(

@@ -1,6 +1,6 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import { createGrid, type ColumnDef, type GetRowId } from "@m-grid/core";
-import { createDomAdapter } from "@m-grid/dom";
+import { createDomAdapter, mountStaticGrid } from "@m-grid/dom";
 import { createVueGridContract } from "@m-grid/vue";
 import themePackage from "./theme-default/package.json" with { type: "json" };
 
@@ -16,8 +16,12 @@ describe("package contract smoke tests", () => {
   it("links core to dom through the static rendering package surface", () => {
     const api = createGrid({ columns, getRowId });
     const dom = createDomAdapter({ api });
+    const container = { innerHTML: "" };
+    const mount = mountStaticGrid({ api, columns, container });
 
     expect(dom.getState().version).toBe(1);
+    expect(container.innerHTML).toContain('role="grid"');
+    mount.unmount();
     expect("emit" in api).toBe(false);
   });
 

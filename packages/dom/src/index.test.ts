@@ -99,4 +99,20 @@ describe("@m-grid/dom static rendering", () => {
 
     expect(container.innerHTML).toBe("");
   });
+
+  it("rejects missing mount containers with a predictable English error", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+    });
+
+    expect(() =>
+      mountStaticGrid({
+        api,
+        columns,
+        container: null as unknown as { innerHTML: string },
+      })
+    ).toThrow("[MGRID-DOM-002] Static grid mount container is required.");
+  });
 });

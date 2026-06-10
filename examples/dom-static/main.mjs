@@ -25,11 +25,16 @@ const api = createGrid({
   getRowId: (row) => row.id,
 });
 
+const app = document.querySelector("#app");
+if (app === null) {
+  throw new Error("[MGRID-DEMO-001] Demo mount target was not found.");
+}
+
 mountStaticGrid({
   api,
   columns,
   caption: "Orders",
-  container: document.querySelector("#app"),
+  container: app,
 });
 
 let showingAlternateRows = false;
