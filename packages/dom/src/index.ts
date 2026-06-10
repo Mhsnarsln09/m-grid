@@ -274,7 +274,7 @@ export function renderStaticGridHtml<TData>(
         options.getRowClassName?.({ row, rowId, rowIndex })
       );
       const selected = state.selection.rowIds.has(rowId)
-        ? ' data-selected="true"'
+        ? ' aria-selected="true" data-selected="true"'
         : "";
       const cells = renderColumns
         .map((column, columnIndex) => {

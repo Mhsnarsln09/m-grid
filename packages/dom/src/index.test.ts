@@ -99,7 +99,9 @@ describe("@m-grid/dom static rendering", () => {
 
     const html = renderStaticGridHtml({ api, columns });
 
-    expect(html).toContain('data-selected="true" data-row-id="row-2"');
+    expect(html).toContain(
+      'aria-selected="true" data-selected="true" data-row-id="row-2"'
+    );
     expect(html).not.toContain('data-selected="true" data-row-id="row-1"');
   });
 
