@@ -30,7 +30,33 @@ describe("static DOM demo", () => {
     expect(elements["#refresh-rows"].textContent).toBe("Refresh rows");
     expect(elements["#refresh-status"].textContent).toBe("Showing initial rows");
   });
+
+  it("fails predictably when required demo nodes are missing", () => {
+    expect(() => setupStaticDemo(createDocumentWithout("#app"))).toThrow(
+      "[MGRID-DEMO-001] Demo mount target was not found."
+    );
+    expect(() => setupStaticDemo(createDocumentWithout("#refresh-rows"))).toThrow(
+      "[MGRID-DEMO-002] Demo refresh button was not found."
+    );
+    expect(() => setupStaticDemo(createDocumentWithout("#refresh-status"))).toThrow(
+      "[MGRID-DEMO-003] Demo refresh status was not found."
+    );
+  });
 });
+
+function createDocumentWithout(missingSelector) {
+  const elements = {
+    "#app": { innerHTML: "" },
+    "#refresh-rows": createButton(),
+    "#refresh-status": { textContent: "Showing initial rows" },
+  };
+  return {
+    querySelector(selector) {
+      if (selector === missingSelector) return null;
+      return elements[selector] ?? null;
+    },
+  };
+}
 
 function createButton() {
   let listener = () => undefined;
