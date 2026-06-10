@@ -19,46 +19,54 @@ const alternateRows = [
   { id: "order-2003", customer: "Annie Easley", total: 109, status: "Packed" },
 ];
 
-const api = createGrid({
-  columns,
-  rows,
-  getRowId: (row) => row.id,
-});
-
-const app = document.querySelector("#app");
-if (app === null) {
-  throw new Error("[MGRID-DEMO-001] Demo mount target was not found.");
-}
-
-const refreshButton = document.querySelector("#refresh-rows");
-if (refreshButton === null) {
-  throw new Error("[MGRID-DEMO-002] Demo refresh button was not found.");
-}
-
-const refreshStatus = document.querySelector("#refresh-status");
-if (refreshStatus === null) {
-  throw new Error("[MGRID-DEMO-003] Demo refresh status was not found.");
-}
-
-mountStaticGrid({
-  api,
-  columns,
-  caption: "Orders",
-  container: app,
-});
-
-let showingAlternateRows = false;
-
-refreshButton.addEventListener("click", () => {
-  showingAlternateRows = !showingAlternateRows;
-  api.dispatch({
-    type: "rows.replace",
-    rows: showingAlternateRows ? alternateRows : rows,
+export function setupStaticDemo(documentRef) {
+  const api = createGrid({
+    columns,
+    rows,
+    getRowId: (row) => row.id,
   });
-  refreshButton.textContent = showingAlternateRows
-    ? "Show initial rows"
-    : "Refresh rows";
-  refreshStatus.textContent = showingAlternateRows
-    ? "Showing refreshed rows"
-    : "Showing initial rows";
-});
+
+  const app = documentRef.querySelector("#app");
+  if (app === null) {
+    throw new Error("[MGRID-DEMO-001] Demo mount target was not found.");
+  }
+
+  const refreshButton = documentRef.querySelector("#refresh-rows");
+  if (refreshButton === null) {
+    throw new Error("[MGRID-DEMO-002] Demo refresh button was not found.");
+  }
+
+  const refreshStatus = documentRef.querySelector("#refresh-status");
+  if (refreshStatus === null) {
+    throw new Error("[MGRID-DEMO-003] Demo refresh status was not found.");
+  }
+
+  const mount = mountStaticGrid({
+    api,
+    columns,
+    caption: "Orders",
+    container: app,
+  });
+
+  let showingAlternateRows = false;
+
+  refreshButton.addEventListener("click", () => {
+    showingAlternateRows = !showingAlternateRows;
+    api.dispatch({
+      type: "rows.replace",
+      rows: showingAlternateRows ? alternateRows : rows,
+    });
+    refreshButton.textContent = showingAlternateRows
+      ? "Show initial rows"
+      : "Refresh rows";
+    refreshStatus.textContent = showingAlternateRows
+      ? "Showing refreshed rows"
+      : "Showing initial rows";
+  });
+
+  return { api, mount };
+}
+
+if (typeof document !== "undefined") {
+  setupStaticDemo(document);
+}
