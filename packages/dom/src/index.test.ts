@@ -68,7 +68,7 @@ describe("@m-grid/dom static rendering", () => {
     `);
   });
 
-  it("mounts, re-renders and unmounts static HTML", () => {
+  it("mounts, re-renders on state changes and unmounts static HTML", () => {
     const api = createGrid({
       columns,
       rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
@@ -84,12 +84,18 @@ describe("@m-grid/dom static rendering", () => {
       type: "rows.replace",
       rows: [{ id: "row-2", label: "Beta", amount: 34 }],
     });
-    mount.render();
 
     expect(container.innerHTML).toContain("Beta");
     expect(container.innerHTML).not.toContain("Alpha");
 
     mount.unmount();
+
+    expect(container.innerHTML).toBe("");
+
+    api.dispatch({
+      type: "rows.replace",
+      rows: [{ id: "row-3", label: "Gamma", amount: 56 }],
+    });
 
     expect(container.innerHTML).toBe("");
   });

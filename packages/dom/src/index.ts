@@ -93,7 +93,8 @@ export interface StaticGridMount {
    */
   readonly render: () => void;
   /**
-   * Clears the container. It does not dispose the core grid API.
+   * Clears the container and stops automatic re-rendering. It does not dispose
+   * the core grid API.
    */
   readonly unmount: () => void;
 }
@@ -116,17 +117,26 @@ export function createDomAdapter<TData>(
 export function mountStaticGrid<TData>(
   options: StaticGridMountOptions<TData>
 ): StaticGridMount {
+  let mounted = true;
   const renderOptions: StaticGridRenderOptions<TData> = {
     api: options.api,
     columns: options.columns,
     ...(options.caption === undefined ? {} : { caption: options.caption }),
   };
+  const unsubscribe = options.api.subscribe((event) => {
+    if (event.type === "state.change" && mounted) {
+      mount.render();
+    }
+  });
 
   const mount: StaticGridMount = {
     render() {
+      if (!mounted) return;
       options.container.innerHTML = renderStaticGridHtml(renderOptions);
     },
     unmount() {
+      mounted = false;
+      unsubscribe();
       options.container.innerHTML = "";
     },
   };

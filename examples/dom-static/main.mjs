@@ -25,7 +25,7 @@ const api = createGrid({
   getRowId: (row) => row.id,
 });
 
-const mount = mountStaticGrid({
+mountStaticGrid({
   api,
   columns,
   caption: "Orders",
@@ -40,5 +40,4 @@ document.querySelector("#refresh-rows").addEventListener("click", () => {
     type: "rows.replace",
     rows: showingAlternateRows ? alternateRows : rows,
   });
-  mount.render();
 });

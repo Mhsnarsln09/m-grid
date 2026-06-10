@@ -68,7 +68,8 @@ export interface StaticGridMount {
      */
     readonly render: () => void;
     /**
-     * Clears the container. It does not dispose the core grid API.
+     * Clears the container and stops automatic re-rendering. It does not dispose
+     * the core grid API.
      */
     readonly unmount: () => void;
 }
