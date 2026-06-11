@@ -286,13 +286,15 @@ export function renderStaticGridHtml<TData>(
           : ` aria-sort="${
               sortItem.direction === "asc" ? "ascending" : "descending"
             }" data-sort-direction="${sortItem.direction}"`;
+      const filtered = state.filter.items.some((item) => item.columnId === columnId);
+      const filterAttributes = filtered ? ' data-filtered="true"' : "";
       const className = composeClassName(
         "m-grid-header-cell",
         options.getHeaderCellClassName?.({ column, columnId, columnIndex })
       );
       return `<div class="${escapeAttribute(
         className
-      )}" role="columnheader"${sortAttributes} aria-colindex="${
+      )}" role="columnheader"${sortAttributes}${filterAttributes} aria-colindex="${
         columnIndex + 1
       }" data-column-index="${columnIndex}" data-column-id="${escapeAttribute(columnId)}">${escapeHtml(
         column.header ?? columnId

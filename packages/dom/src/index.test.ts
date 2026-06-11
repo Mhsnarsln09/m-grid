@@ -233,6 +233,23 @@ describe("@m-grid/dom static rendering", () => {
     );
   });
 
+  it("renders filter metadata on filtered headers", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+      initialState: {
+        filter: { items: [{ columnId: "label", operator: "contains", value: "Al" }] },
+      },
+    });
+
+    const html = renderStaticGridHtml({ api, columns });
+
+    expect(html).toContain(
+      'role="columnheader" data-filtered="true" aria-colindex="1"'
+    );
+  });
+
   it("rejects static output with no visible columns", () => {
     const api = createGrid({
       columns,
