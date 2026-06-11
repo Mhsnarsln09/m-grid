@@ -21,6 +21,7 @@ Acceptance criteria:
 - row, column and caption text render through `mountStaticGrid`;
 - the refresh button swaps visible row data, button text and status text after core state replacement;
 - the select next button swaps selected row state through `selection.replace`;
+- clicking a row swaps selected row state through `selection.replace`;
 - the optional default theme CSS remains replaceable by consumers;
 - no interactive grid behavior is implied by the demo.
 
@@ -47,6 +48,7 @@ Acceptance criteria:
 - row, column ve caption text `mountStaticGrid` ile render edilir;
 - refresh button, core state replacement sonrasi visible row data, button text ve status text'i degistirir;
 - select next button, selected row state'i `selection.replace` ile degistirir;
+- row'a tiklamak selected row state'i `selection.replace` ile degistirir;
 - optional default theme CSS consumer tarafindan degistirilebilir kalir;
 - demo interactive grid behavior ima etmez.
 

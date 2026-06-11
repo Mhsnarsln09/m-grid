@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { createGrid, type ColumnDef } from "@m-grid/core";
-import { mountStaticGrid, renderStaticGridHtml, selectStaticGridRow } from "./index.js";
+import {
+  getStaticGridRowIdFromTarget,
+  mountStaticGrid,
+  renderStaticGridHtml,
+  selectStaticGridRow,
+} from "./index.js";
 
 interface TestRow {
   readonly id: string;
@@ -120,6 +125,26 @@ describe("@m-grid/dom static rendering", () => {
     selectStaticGridRow(api, "row-2");
 
     expect([...api.getState().selection.rowIds]).toEqual(["row-2"]);
+  });
+
+  it("reads row ids from static row event targets", () => {
+    expect(
+      getStaticGridRowIdFromTarget({
+        getAttribute: () => "row-1",
+      })
+    ).toBe("row-1");
+    expect(
+      getStaticGridRowIdFromTarget({
+        getAttribute: () => null,
+        closest: () => ({ getAttribute: () => "row-2" }),
+      })
+    ).toBe("row-2");
+    expect(getStaticGridRowIdFromTarget(null)).toBeUndefined();
+    expect(
+      getStaticGridRowIdFromTarget({
+        getAttribute: () => "",
+      })
+    ).toBeUndefined();
   });
 
   it("honors core column order state", () => {

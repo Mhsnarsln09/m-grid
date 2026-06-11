@@ -4,7 +4,7 @@ import { setupStaticDemo } from "./main.mjs";
 describe("static DOM demo", () => {
   it("updates rows, button text and status when refreshed", () => {
     const elements = {
-      "#app": { innerHTML: "" },
+      "#app": createApp(),
       "#refresh-rows": createButton(),
       "#select-next-row": createButton(),
       "#refresh-status": {
@@ -54,6 +54,15 @@ describe("static DOM demo", () => {
     expect(elements["#refresh-status"].textContent).toBe(
       "Showing initial rows; Katherine Johnson selected"
     );
+
+    elements["#app"].clickRow("order-1001");
+
+    expect(elements["#app"].innerHTML).toContain(
+      'aria-selected="true" data-selected="true" data-row-id="order-1001"'
+    );
+    expect(elements["#refresh-status"].textContent).toBe(
+      "Showing initial rows; Ada Lovelace selected"
+    );
   });
 
   it("fails predictably when required demo nodes are missing", () => {
@@ -74,7 +83,7 @@ describe("static DOM demo", () => {
 
 function createDocumentWithout(missingSelector) {
   const elements = {
-    "#app": { innerHTML: "" },
+    "#app": createApp(),
     "#refresh-rows": createButton(),
     "#select-next-row": createButton(),
     "#refresh-status": {
@@ -85,6 +94,30 @@ function createDocumentWithout(missingSelector) {
     querySelector(selector) {
       if (selector === missingSelector) return null;
       return elements[selector] ?? null;
+    },
+  };
+}
+
+function createApp() {
+  let listener = () => undefined;
+  return {
+    innerHTML: "",
+    addEventListener(type, callback) {
+      if (type === "click") listener = callback;
+    },
+    clickRow(rowId) {
+      listener({ target: createRowTarget(rowId) });
+    },
+  };
+}
+
+function createRowTarget(rowId) {
+  return {
+    getAttribute(name) {
+      return name === "data-row-id" ? rowId : null;
+    },
+    closest(selector) {
+      return selector === "[data-row-id]" ? this : null;
     },
   };
 }

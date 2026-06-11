@@ -117,7 +117,12 @@ export interface StaticGridMount {
      */
     readonly unmount: () => void;
 }
+export interface StaticGridRowTarget {
+    getAttribute(name: "data-row-id"): string | null;
+    closest?(selector: "[data-row-id]"): StaticGridRowTarget | null;
+}
 export declare function createDomAdapter<TData>(options: GridDomMountOptions<TData>): GridDomAdapter<TData>;
 export declare function selectStaticGridRow<TData>(api: GridApi<TData>, rowId: RowId): void;
+export declare function getStaticGridRowIdFromTarget(target: StaticGridRowTarget | null | undefined): RowId | undefined;
 export declare function mountStaticGrid<TData>(options: StaticGridMountOptions<TData>): StaticGridMount;
 export declare function renderStaticGridHtml<TData>(options: StaticGridRenderOptions<TData>): string;

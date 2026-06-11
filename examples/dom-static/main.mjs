@@ -1,5 +1,6 @@
 import { createGrid } from "../../packages/core/dist/index.js";
 import {
+  getStaticGridRowIdFromTarget,
   mountStaticGrid,
   selectStaticGridRow,
 } from "../../packages/dom/dist/index.js";
@@ -88,6 +89,17 @@ export function setupStaticDemo(documentRef) {
 
   selectNextButton.addEventListener("click", () => {
     selectedRowIndex = (selectedRowIndex + 1) % getVisibleRows().length;
+    updateSelection();
+  });
+
+  app.addEventListener("click", (event) => {
+    const rowId = getStaticGridRowIdFromTarget(event.target);
+    if (rowId === undefined) return;
+
+    const rowIndex = getVisibleRows().findIndex((row) => row.id === rowId);
+    if (rowIndex === -1) return;
+
+    selectedRowIndex = rowIndex;
     updateSelection();
   });
 
