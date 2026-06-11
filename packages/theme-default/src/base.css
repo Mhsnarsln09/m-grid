@@ -53,7 +53,10 @@
 
   :where(.m-grid-header-row, .m-grid-row) {
     display: grid;
-    grid-template-columns: repeat(var(--m-grid-column-count, 1), minmax(0, 1fr));
+    grid-template-columns: var(
+      --m-grid-column-template,
+      repeat(var(--m-grid-column-count, 1), minmax(0, 1fr))
+    );
   }
 
   :where(.m-grid-row) {

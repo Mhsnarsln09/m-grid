@@ -130,6 +130,19 @@ describe("@m-grid/core contract", () => {
     expect(grid.getState().columns.visibility).toEqual({ score: false });
   });
 
+  it("replaces column sizing through a command", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    const events = grid.dispatch({
+      type: "columns.sizing.replace",
+      sizing: { name: 180, score: 96 },
+    });
+
+    expect(events).toHaveLength(1);
+    expect(events[0]?.slice).toBe("columns");
+    expect(grid.getState().columns.sizing).toEqual({ name: 180, score: 96 });
+  });
+
   it("rejects invalid column order ids with predictable English errors", () => {
     const grid = createGrid<TestRow>({ columns, getRowId });
 
@@ -153,6 +166,23 @@ describe("@m-grid/core contract", () => {
         visibility: { missing: false },
       })
     ).toThrow('[MGRID-COL-006] Unknown column visibility id: "missing".');
+  });
+
+  it("rejects invalid column sizing values with predictable English errors", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    expect(() =>
+      grid.dispatch({ type: "columns.sizing.replace", sizing: { "": 120 } })
+    ).toThrow("[MGRID-COL-008] Column sizing id must not be empty.");
+    expect(() =>
+      grid.dispatch({
+        type: "columns.sizing.replace",
+        sizing: { missing: 120 },
+      })
+    ).toThrow('[MGRID-COL-009] Unknown column sizing id: "missing".');
+    expect(() =>
+      grid.dispatch({ type: "columns.sizing.replace", sizing: { name: 0 } })
+    ).toThrow("[MGRID-COL-010] Column sizing width must be positive.");
   });
 
   it("rejects empty selected row ids with a predictable English error", () => {

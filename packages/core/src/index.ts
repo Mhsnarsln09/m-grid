@@ -74,6 +74,7 @@ export interface SelectionState {
 export interface ColumnState {
   readonly order: readonly ColumnId[];
   readonly visibility?: Readonly<Record<ColumnId, boolean>>;
+  readonly sizing?: Readonly<Record<ColumnId, number>>;
 }
 
 export interface DataRowsState<TData> {
@@ -129,6 +130,10 @@ export type GridCommand<TData> =
   | {
       readonly type: "columns.visibility.replace";
       readonly visibility: Readonly<Record<ColumnId, boolean>>;
+    }
+  | {
+      readonly type: "columns.sizing.replace";
+      readonly sizing: Readonly<Record<ColumnId, number>>;
     }
   | {
       readonly type: "data.request.start";
@@ -343,7 +348,8 @@ function createInitialState<TData>(
         : createColumnState(
             initial.columns.order,
             columnIds,
-            initial.columns.visibility
+            initial.columns.visibility,
+            initial.columns.sizing
           ),
     loading: initial.loading ?? { status: "idle" },
   });
@@ -373,7 +379,12 @@ function reduceGridState<TData>(
       return withSliceChange(
         state,
         "columns",
-        createColumnState(command.order, context.columnIds, state.columns.visibility),
+        createColumnState(
+          command.order,
+          context.columnIds,
+          state.columns.visibility,
+          state.columns.sizing
+        ),
         command
       );
     case "columns.visibility.replace":
@@ -383,7 +394,20 @@ function reduceGridState<TData>(
         createColumnState(
           state.columns.order,
           context.columnIds,
-          command.visibility
+          command.visibility,
+          state.columns.sizing
+        ),
+        command
+      );
+    case "columns.sizing.replace":
+      return withSliceChange(
+        state,
+        "columns",
+        createColumnState(
+          state.columns.order,
+          context.columnIds,
+          state.columns.visibility,
+          command.sizing
         ),
         command
       );
@@ -600,7 +624,8 @@ function assertValidColumns<TData>(
 function createColumnState(
   order: readonly ColumnId[],
   knownColumnIds: readonly ColumnId[],
-  visibility: Readonly<Record<ColumnId, boolean>> = {}
+  visibility: Readonly<Record<ColumnId, boolean>> = {},
+  sizing: Readonly<Record<ColumnId, number>> = {}
 ): ColumnState {
   const known = new Set(knownColumnIds);
   const seen = new Set<ColumnId>();
@@ -619,9 +644,11 @@ function createColumnState(
     normalizedOrder.push(columnId);
   }
   const normalizedVisibility = createColumnVisibilityState(visibility, known);
+  const normalizedSizing = createColumnSizingState(sizing, known);
   return Object.freeze({
     order: Object.freeze(normalizedOrder),
     visibility: normalizedVisibility,
+    sizing: normalizedSizing,
   });
 }
 
@@ -643,6 +670,26 @@ function createColumnVisibilityState(
       throw new Error("[MGRID-COL-007] Column visibility value must be boolean.");
     }
     normalized[columnId] = visible;
+  }
+  return Object.freeze(normalized);
+}
+
+function createColumnSizingState(
+  sizing: Readonly<Record<ColumnId, number>>,
+  knownColumnIds: ReadonlySet<ColumnId>
+): Readonly<Record<ColumnId, number>> {
+  const normalized: Record<ColumnId, number> = {};
+  for (const [columnId, width] of Object.entries(sizing)) {
+    if (columnId === "") {
+      throw new Error("[MGRID-COL-008] Column sizing id must not be empty.");
+    }
+    if (!knownColumnIds.has(columnId)) {
+      throw new Error(`[MGRID-COL-009] Unknown column sizing id: "${columnId}".`);
+    }
+    if (!Number.isFinite(width) || width <= 0) {
+      throw new Error("[MGRID-COL-010] Column sizing width must be positive.");
+    }
+    normalized[columnId] = width;
   }
   return Object.freeze(normalized);
 }
@@ -789,6 +836,7 @@ function freezeState<TData>(state: GridState<TData>): GridState<TData> {
     columns: Object.freeze({
       order: Object.freeze([...state.columns.order]),
       visibility: Object.freeze({ ...(state.columns.visibility ?? {}) }),
+      sizing: Object.freeze({ ...(state.columns.sizing ?? {}) }),
     }),
     sort: Object.freeze({ items: Object.freeze([...state.sort.items]) }),
     filter: Object.freeze({ items: Object.freeze([...state.filter.items]) }),

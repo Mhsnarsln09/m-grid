@@ -267,6 +267,7 @@ export function renderStaticGridHtml<TData>(
   ).filter((column) => state.columns.visibility?.[getColumnId(column)] !== false);
   assertVisibleStaticGridColumns(renderColumns);
   const columnCount = renderColumns.length;
+  const columnTemplate = getStaticGridColumnTemplate(renderColumns, state.columns.sizing);
   const density = options.density ?? "comfortable";
   const theme = options.theme ?? "light";
   const loadingStatus = state.loading.status;
@@ -357,7 +358,7 @@ export function renderStaticGridHtml<TData>(
     loadingStatus
   )}">
 ${caption}
-<div class="m-grid-surface" role="grid"${gridLabel} aria-busy="${busy}" aria-readonly="true" aria-rowcount="${state.rows.rows.length}" aria-colcount="${columnCount}" style="--m-grid-column-count: ${columnCount};">
+<div class="m-grid-surface" role="grid"${gridLabel} aria-busy="${busy}" aria-readonly="true" aria-rowcount="${state.rows.rows.length}" aria-colcount="${columnCount}" style="--m-grid-column-count: ${columnCount}; --m-grid-column-template: ${columnTemplate};">
 <div class="m-grid-header-row" role="row">${headerCells}</div>
 ${rows}
 </div>${empty}
@@ -390,6 +391,18 @@ function assertVisibleStaticGridColumns<TData>(
       "[MGRID-DOM-004] At least one visible column is required for DOM rendering."
     );
   }
+}
+
+function getStaticGridColumnTemplate<TData>(
+  columns: readonly AnyColumnDef<TData>[],
+  sizing: Readonly<Record<ColumnId, number>> | undefined
+): string {
+  return columns
+    .map((column) => {
+      const width = sizing?.[getColumnId(column)];
+      return width === undefined ? "minmax(0, 1fr)" : `${width}px`;
+    })
+    .join(" ");
 }
 
 function resolveRenderColumns<TData>(
