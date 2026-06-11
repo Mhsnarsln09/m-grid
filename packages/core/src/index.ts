@@ -517,7 +517,10 @@ function compareValues(left: unknown, right: unknown): number {
   if (left === undefined || left === null) return 1;
   if (right === undefined || right === null) return -1;
   if (typeof left === "number" && typeof right === "number") return left - right;
-  return String(left).localeCompare(String(right));
+  return String(left).localeCompare(String(right), undefined, {
+    numeric: true,
+    sensitivity: "base",
+  });
 }
 
 function matchesFilter(value: unknown, filter: FilterItem): boolean {

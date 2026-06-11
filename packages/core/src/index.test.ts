@@ -287,6 +287,23 @@ describe("@m-grid/core contract", () => {
     ]);
   });
 
+  it("sorts text values case-insensitively with numeric collation", () => {
+    const grid = createGrid<TestRow>({
+      columns,
+      getRowId,
+      rows: [
+        { id: "a", name: "item 10", value: 1 },
+        { id: "b", name: "Item 2", value: 2 },
+        { id: "c", name: "alpha", value: 3 },
+      ],
+      initialState: {
+        sort: { items: [{ columnId: "name", direction: "asc" }] },
+      },
+    });
+
+    expect(getProcessedRows(grid, columns).rowIds).toEqual(["c", "b", "a"]);
+  });
+
   it("derives visible columns from order, visibility and sizing state", () => {
     const grid = createGrid<TestRow>({
       columns,

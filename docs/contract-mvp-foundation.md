@@ -95,7 +95,7 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 
 ### Sort State API
 
-`sort.replace` replaces core sort state with typed `{ columnId, direction }` items. It validates non-empty known column ids, accepts only `asc` or `desc` directions and deduplicates repeated column ids while preserving first occurrence order. Row ordering is derived by `getProcessedRows`; this command does not mutate source rows.
+`sort.replace` replaces core sort state with typed `{ columnId, direction }` items. It validates non-empty known column ids, accepts only `asc` or `desc` directions and deduplicates repeated column ids while preserving first occurrence order. Row ordering is derived by `getProcessedRows`; this command does not mutate source rows. String sorting is case-insensitive and numeric-aware.
 
 ### Filter State API
 
@@ -252,7 +252,7 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 
 ### Sort State API
 
-`sort.replace`, core sort state'ini typed `{ columnId, direction }` item'lariyla degistirir. Non-empty known column id'leri validate eder, yalniz `asc` veya `desc` direction kabul eder ve tekrar eden column id'leri ilk gorulme sirasini koruyarak tekillestirir. Row ordering `getProcessedRows` ile turetilir; bu command source row'lari mutate etmez.
+`sort.replace`, core sort state'ini typed `{ columnId, direction }` item'lariyla degistirir. Non-empty known column id'leri validate eder, yalniz `asc` veya `desc` direction kabul eder ve tekrar eden column id'leri ilk gorulme sirasini koruyarak tekillestirir. Row ordering `getProcessedRows` ile turetilir; bu command source row'lari mutate etmez. String sorting case-insensitive ve numeric-aware calisir.
 
 ### Filter State API
 
