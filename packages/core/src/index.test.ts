@@ -283,6 +283,21 @@ describe("@m-grid/core contract", () => {
     expect(getProcessedRows(grid, columns).rowIds).toEqual([]);
   });
 
+  it("rejects processed rows when required columns are not provided", () => {
+    const grid = createGrid<TestRow>({
+      columns,
+      getRowId,
+      rows: [{ id: "a", name: "Alpha", value: 1 }],
+      initialState: {
+        sort: { items: [{ columnId: "score", direction: "asc" }] },
+      },
+    });
+
+    expect(() => getProcessedRows(grid, [columns[0]!])).toThrow(
+      '[MGRID-ROWMODEL-001] Processed row column was not provided: "score".'
+    );
+  });
+
   it("keeps cursor pagination unsliced in the client processed row model", () => {
     const grid = createGrid<TestRow>({
       columns,

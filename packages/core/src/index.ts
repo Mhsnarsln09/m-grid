@@ -380,7 +380,9 @@ export function getProcessedRows<TData>(
   api: GridApi<TData>,
   columns: readonly AnyColumnDef<TData>[]
 ): ProcessedRows<TData> {
+  assertValidColumns(columns);
   const state = api.getState();
+  assertProcessedRowColumnsAvailable(columns, state);
   const indexedRows = state.rows.rows.map((row, sourceIndex) => ({
     row,
     rowId: state.rows.rowIds[sourceIndex] ?? "",
@@ -411,6 +413,20 @@ export function getProcessedRows<TData>(
     totalRowCount: indexedRows.length,
     filteredRowCount: filteredRows.length,
   });
+}
+
+function assertProcessedRowColumnsAvailable<TData>(
+  columns: readonly AnyColumnDef<TData>[],
+  state: Readonly<GridState<TData>>
+): void {
+  const known = new Set(columns.map(resolveColumnId));
+  for (const item of [...state.filter.items, ...state.sort.items]) {
+    if (!known.has(item.columnId)) {
+      throw new Error(
+        `[MGRID-ROWMODEL-001] Processed row column was not provided: "${item.columnId}".`
+      );
+    }
+  }
 }
 
 export function getVisibleColumns<TData>(
