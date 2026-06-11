@@ -64,7 +64,7 @@ Run the static demo server, then open `http://127.0.0.1:4173/examples/dom-static
 corepack pnpm demo:static
 ```
 
-The demo imports package build output from `packages/core/dist/index.js` and `packages/dom/dist/index.js`. The `demo:static` script builds first, then serves the repository root. It exercises `mountStaticGrid`: the helper writes escaped static HTML from the current core state into a container and re-renders after core state changes. It does not diff, hydrate, virtualize, sort, filter or handle keyboard interaction.
+The demo imports package build output from `packages/core/dist/index.js` and `packages/dom/dist/index.js`. The `demo:static` script builds first, then serves the repository root. It exercises `mountStaticGrid`, row refresh and selected-row replacement through static controls. It does not diff, hydrate, virtualize, sort, filter or handle keyboard interaction.
 
 See [Static DOM Demo Notes](./examples/dom-static/README.md) for the demo scope and validation notes.
 
@@ -132,6 +132,6 @@ Static demo server'i calistirin, sonra `http://127.0.0.1:4173/examples/dom-stati
 corepack pnpm demo:static
 ```
 
-Demo `packages/core/dist/index.js` ve `packages/dom/dist/index.js` build ciktilarini import eder. `demo:static` script'i once build alir, sonra repository root'unu serve eder. `mountStaticGrid` helper'ini dener: helper mevcut core state uzerinden escaped static HTML'i container icine yazar ve core state degisince yeniden render eder. Diff, hydrate, virtualize, sort, filter veya keyboard interaction yapmaz.
+Demo `packages/core/dist/index.js` ve `packages/dom/dist/index.js` build ciktilarini import eder. `demo:static` script'i once build alir, sonra repository root'unu serve eder. `mountStaticGrid`, row refresh ve selected-row replacement davranisini static control'lerle dener. Diff, hydrate, virtualize, sort, filter veya keyboard interaction yapmaz.
 
 Demo kapsami ve validation notlari icin [Static DOM Demo Notes](./examples/dom-static/README.md) dokumanina bakin.
