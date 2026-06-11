@@ -386,12 +386,16 @@ export function getProcessedRows<TData>(
     rowId: state.rows.rowIds[sourceIndex] ?? "",
     sourceIndex,
   }));
+  const columnLookup = createColumnLookup(columns);
   const filteredRows = indexedRows.filter((entry) =>
     state.filter.items.every((filter) =>
-      matchesFilter(getColumnValue(api, entry.row, columns, filter.columnId, entry.sourceIndex), filter)
+      matchesFilter(
+        getColumnValue(api, entry.row, columnLookup, filter.columnId, entry.sourceIndex),
+        filter
+      )
     )
   );
-  const sortedRows = sortProcessedRows(api, filteredRows, columns, state.sort.items);
+  const sortedRows = sortProcessedRows(api, filteredRows, columnLookup, state.sort.items);
   const pagedRows =
     state.pagination.mode === "offset" &&
     state.pagination.pageIndex !== undefined &&
@@ -479,14 +483,26 @@ function createInitialState<TData>(
 function sortProcessedRows<TData>(
   api: GridApi<TData>,
   rows: readonly ProcessedRow<TData>[],
-  columns: readonly AnyColumnDef<TData>[],
+  columnLookup: ReadonlyMap<ColumnId, AnyColumnDef<TData>>,
   sortItems: readonly SortItem[]
 ): readonly ProcessedRow<TData>[] {
   if (sortItems.length === 0) return rows;
   return [...rows].sort((left, right) => {
     for (const sort of sortItems) {
-      const leftValue = getColumnValue(api, left.row, columns, sort.columnId, left.sourceIndex);
-      const rightValue = getColumnValue(api, right.row, columns, sort.columnId, right.sourceIndex);
+      const leftValue = getColumnValue(
+        api,
+        left.row,
+        columnLookup,
+        sort.columnId,
+        left.sourceIndex
+      );
+      const rightValue = getColumnValue(
+        api,
+        right.row,
+        columnLookup,
+        sort.columnId,
+        right.sourceIndex
+      );
       const comparison = compareValues(leftValue, rightValue);
       if (comparison !== 0) {
         return sort.direction === "asc" ? comparison : -comparison;
@@ -496,14 +512,22 @@ function sortProcessedRows<TData>(
   });
 }
 
+function createColumnLookup<TData>(
+  columns: readonly AnyColumnDef<TData>[]
+): ReadonlyMap<ColumnId, AnyColumnDef<TData>> {
+  const lookup = new Map<ColumnId, AnyColumnDef<TData>>();
+  for (const column of columns) lookup.set(resolveColumnId(column), column);
+  return lookup;
+}
+
 function getColumnValue<TData>(
   api: GridApi<TData>,
   row: TData,
-  columns: readonly AnyColumnDef<TData>[],
+  columnLookup: ReadonlyMap<ColumnId, AnyColumnDef<TData>>,
   columnId: ColumnId,
   rowIndex: number
 ): unknown {
-  const column = columns.find((candidate) => resolveColumnId(candidate) === columnId);
+  const column = columnLookup.get(columnId);
   if (column === undefined) return undefined;
   if (column.accessorFn !== undefined) {
     return column.accessorFn(row, { rowIndex, getRowId: api.getRowId });
