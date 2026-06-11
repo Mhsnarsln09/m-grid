@@ -4,6 +4,7 @@ import type {
   GridApi,
   GridEvent,
   GridState,
+  RowId,
 } from "@m-grid/core";
 
 export type GridDomSlot =
@@ -168,6 +169,13 @@ export function createDomAdapter<TData>(
       return undefined;
     },
   };
+}
+
+export function selectStaticGridRow<TData>(
+  api: GridApi<TData>,
+  rowId: RowId
+): void {
+  api.dispatch({ type: "selection.replace", rowIds: [rowId] });
 }
 
 export function mountStaticGrid<TData>(

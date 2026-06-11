@@ -108,6 +108,7 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 - Header labels, row ids, column ids and cell values are escaped before interpolation.
 - `renderStaticGridHtml` returns a string.
 - `mountStaticGrid` writes that string into `container.innerHTML`, re-renders after core state changes, exposes `render()` for explicit refresh and `unmount()` to clear the container and stop its subscription.
+- `selectStaticGridRow` is a small DOM-package helper that dispatches core `selection.replace` for one row id.
 - Core state changes from one dispatch share one transaction id; `mountStaticGrid` uses that id to avoid duplicate automatic renders for multi-slice updates.
 - Static output includes `aria-rowcount`, `aria-colcount`, body-row `aria-rowindex` and cell/header `aria-colindex` metadata.
 - Static output includes zero-based `data-row-index` and `data-column-index` hooks.
@@ -229,6 +230,7 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 - Header label, row id, column id ve cell value degerleri interpolation oncesi escape edilir.
 - `renderStaticGridHtml` string dondurur.
 - `mountStaticGrid` bu string'i `container.innerHTML` icine yazar, core state degisince yeniden render eder, explicit refresh icin `render()` ve container'i temizleyip subscription'i durdurmak icin `unmount()` sunar.
+- `selectStaticGridRow`, tek row id icin core `selection.replace` dispatch eden kucuk bir DOM-package helper'idir.
 - Tek dispatch'ten gelen core state change'leri tek transaction id paylasir; `mountStaticGrid` multi-slice update'lerde duplicate automatic render'i onlemek icin bu id'yi kullanir.
 - Static output `aria-rowcount`, `aria-colcount`, body-row `aria-rowindex` ve cell/header `aria-colindex` metadata'si icerir.
 - Static output zero-based `data-row-index` ve `data-column-index` hook'lari icerir.

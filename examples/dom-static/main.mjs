@@ -1,5 +1,8 @@
 import { createGrid } from "../../packages/core/dist/index.js";
-import { mountStaticGrid } from "../../packages/dom/dist/index.js";
+import {
+  mountStaticGrid,
+  selectStaticGridRow,
+} from "../../packages/dom/dist/index.js";
 
 const rows = [
   { id: "order-1001", customer: "Ada Lovelace", total: 129, status: "Ready" },
@@ -64,10 +67,7 @@ export function setupStaticDemo(documentRef) {
   function updateSelection() {
     const visibleRows = getVisibleRows();
     const selectedRow = visibleRows[selectedRowIndex] ?? visibleRows[0];
-    api.dispatch({
-      type: "selection.replace",
-      rowIds: selectedRow === undefined ? [] : [selectedRow.id],
-    });
+    if (selectedRow !== undefined) selectStaticGridRow(api, selectedRow.id);
     refreshStatus.textContent = `${showingAlternateRows ? "Showing refreshed rows" : "Showing initial rows"}; ${
       selectedRow?.customer ?? "No row"
     } selected`;

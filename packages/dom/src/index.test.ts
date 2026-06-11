@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createGrid, type ColumnDef } from "@m-grid/core";
-import { mountStaticGrid, renderStaticGridHtml } from "./index.js";
+import { mountStaticGrid, renderStaticGridHtml, selectStaticGridRow } from "./index.js";
 
 interface TestRow {
   readonly id: string;
@@ -105,6 +105,21 @@ describe("@m-grid/dom static rendering", () => {
       'aria-selected="true" data-selected="true" data-row-id="row-2"'
     );
     expect(html).not.toContain('data-selected="true" data-row-id="row-1"');
+  });
+
+  it("selects one row through the static selection helper", () => {
+    const api = createGrid({
+      columns,
+      rows: [
+        { id: "row-1", label: "Alpha", amount: 12 },
+        { id: "row-2", label: "Beta", amount: 34 },
+      ],
+      getRowId: (row) => row.id,
+    });
+
+    selectStaticGridRow(api, "row-2");
+
+    expect([...api.getState().selection.rowIds]).toEqual(["row-2"]);
   });
 
   it("honors core column order state", () => {
