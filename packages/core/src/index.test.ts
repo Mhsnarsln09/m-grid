@@ -2,6 +2,7 @@ import { describe, expect, expectTypeOf, it } from "vitest";
 import {
   createDataCoordinator,
   createGrid,
+  getProcessedRows,
   type AccessorFnColumnDef,
   type AccessorKeyColumnDef,
   type ColumnDef,
@@ -206,6 +207,50 @@ describe("@m-grid/core contract", () => {
       cursor: "next",
       pageSize: 50,
     });
+  });
+
+  it("derives processed rows from filter, sort and offset pagination state", () => {
+    const grid = createGrid<TestRow>({
+      columns,
+      getRowId,
+      rows: [
+        { id: "a", name: "Alpha", value: 2 },
+        { id: "b", name: "Beta", value: 3 },
+        { id: "c", name: "Alpine", value: 1 },
+      ],
+      initialState: {
+        filter: { items: [{ columnId: "name", operator: "contains", value: "Al" }] },
+        sort: { items: [{ columnId: "score", direction: "asc" }] },
+        pagination: { mode: "offset", pageIndex: 0, pageSize: 1 },
+      },
+    });
+
+    const processed = getProcessedRows(grid, columns);
+
+    expect(processed.totalRowCount).toBe(3);
+    expect(processed.filteredRowCount).toBe(2);
+    expect(processed.rows.map((entry) => entry.rowId)).toEqual(["c"]);
+    expect(processed.rows[0]?.sourceIndex).toBe(2);
+  });
+
+  it("keeps cursor pagination unsliced in the client processed row model", () => {
+    const grid = createGrid<TestRow>({
+      columns,
+      getRowId,
+      rows: [
+        { id: "a", name: "Alpha", value: 2 },
+        { id: "b", name: "Beta", value: 1 },
+      ],
+      initialState: {
+        sort: { items: [{ columnId: "score", direction: "asc" }] },
+        pagination: { mode: "cursor", cursor: "next", pageSize: 1 },
+      },
+    });
+
+    expect(getProcessedRows(grid, columns).rows.map((entry) => entry.rowId)).toEqual([
+      "b",
+      "a",
+    ]);
   });
 
   it("rejects invalid column order ids with predictable English errors", () => {

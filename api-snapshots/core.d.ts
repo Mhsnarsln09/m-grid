@@ -65,6 +65,16 @@ export interface DataRowsState<TData> {
     readonly rows: readonly TData[];
     readonly rowIds: readonly RowId[];
 }
+export interface ProcessedRow<TData> {
+    readonly row: TData;
+    readonly rowId: RowId;
+    readonly sourceIndex: number;
+}
+export interface ProcessedRows<TData> {
+    readonly rows: readonly ProcessedRow<TData>[];
+    readonly totalRowCount: number;
+    readonly filteredRowCount: number;
+}
 export type LoadingState = {
     readonly status: "idle";
 } | {
@@ -229,5 +239,6 @@ export interface LatestRequestMetadata {
     readonly queryKey: QueryKey;
 }
 export declare function createGrid<TData>(options: GridOptions<TData>): GridApi<TData>;
+export declare function getProcessedRows<TData>(api: GridApi<TData>, columns: readonly AnyColumnDef<TData>[]): ProcessedRows<TData>;
 export declare function createDataCoordinator<TData>(api: GridApi<TData>, dataSource: GridDataSource<TData>): GridDataCoordinator<TData>;
 export {};

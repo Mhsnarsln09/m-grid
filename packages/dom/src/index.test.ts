@@ -31,6 +31,8 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('role="grid"');
     expect(html).toContain('aria-label="Orders"');
     expect(html).toContain('aria-rowcount="1"');
+    expect(html).toContain('data-total-row-count="1"');
+    expect(html).toContain('data-filtered-row-count="1"');
     expect(html).toContain('aria-colcount="2"');
     expect(html).toContain('aria-busy="false"');
     expect(html).toContain('aria-readonly="true"');
@@ -266,6 +268,32 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('data-pagination-mode="offset"');
   });
 
+  it("renders processed rows from core sort, filter and offset pagination state", () => {
+    const api = createGrid({
+      columns,
+      rows: [
+        { id: "row-1", label: "Alpha", amount: 12 },
+        { id: "row-2", label: "Beta", amount: 34 },
+        { id: "row-3", label: "Alpine", amount: 8 },
+      ],
+      getRowId: (row) => row.id,
+      initialState: {
+        filter: { items: [{ columnId: "label", operator: "contains", value: "Al" }] },
+        sort: { items: [{ columnId: "amount", direction: "asc" }] },
+        pagination: { mode: "offset", pageIndex: 0, pageSize: 1 },
+      },
+    });
+
+    const html = renderStaticGridHtml({ api, columns });
+
+    expect(html).toContain("Alpine");
+    expect(html).not.toContain("Alpha");
+    expect(html).not.toContain("Beta");
+    expect(html).toContain('aria-rowcount="1"');
+    expect(html).toContain('data-total-row-count="3"');
+    expect(html).toContain('data-filtered-row-count="2"');
+  });
+
   it("rejects static output with no visible columns", () => {
     const api = createGrid({
       columns,
@@ -356,7 +384,7 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toMatchInlineSnapshot(`
       "<div class="m-grid-root" data-density="comfortable" data-theme="light" data-loading-status="idle" data-pagination-mode="none">
       <div class="m-grid-caption">Orders</div>
-      <div class="m-grid-surface" role="grid" aria-label="Orders" aria-busy="false" aria-readonly="true" aria-rowcount="2" aria-colcount="2" style="--m-grid-column-count: 2; --m-grid-column-template: minmax(0, 1fr) minmax(0, 1fr);">
+      <div class="m-grid-surface" role="grid" aria-label="Orders" aria-busy="false" aria-readonly="true" aria-rowcount="2" aria-colcount="2" data-total-row-count="2" data-filtered-row-count="2" style="--m-grid-column-count: 2; --m-grid-column-template: minmax(0, 1fr) minmax(0, 1fr);">
       <div class="m-grid-header-row" role="row"><div class="m-grid-header-cell" role="columnheader" aria-colindex="1" data-column-index="0" data-column-id="label">Label</div><div class="m-grid-header-cell" role="columnheader" aria-colindex="2" data-column-index="1" data-column-id="amount">Amount</div></div>
       <div class="m-grid-row" role="row" aria-rowindex="1" data-row-index="0" data-row-id="row-1"><div class="m-grid-cell" role="gridcell" aria-colindex="1" data-column-index="0" data-column-id="label">Alpha</div><div class="m-grid-cell" role="gridcell" aria-colindex="2" data-column-index="1" data-column-id="amount">12</div></div><div class="m-grid-row" role="row" aria-rowindex="2" data-row-index="1" data-row-id="row-2"><div class="m-grid-cell" role="gridcell" aria-colindex="1" data-column-index="0" data-column-id="label">Beta &amp; Co</div><div class="m-grid-cell" role="gridcell" aria-colindex="2" data-column-index="1" data-column-id="amount">34</div></div>
       </div>

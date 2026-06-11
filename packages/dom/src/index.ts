@@ -1,3 +1,4 @@
+import { getProcessedRows } from "@m-grid/core";
 import type {
   AnyColumnDef,
   ColumnId,
@@ -266,6 +267,7 @@ export function renderStaticGridHtml<TData>(
     state.columns.order
   ).filter((column) => state.columns.visibility?.[getColumnId(column)] !== false);
   assertVisibleStaticGridColumns(renderColumns);
+  const processedRows = getProcessedRows(options.api, options.columns);
   const columnCount = renderColumns.length;
   const columnTemplate = getStaticGridColumnTemplate(renderColumns, state.columns.sizing);
   const density = options.density ?? "comfortable";
@@ -302,9 +304,8 @@ export function renderStaticGridHtml<TData>(
     })
     .join("");
 
-  const rows = state.rows.rows
-    .map((row, rowIndex) => {
-      const rowId = state.rows.rowIds[rowIndex] ?? "";
+  const rows = processedRows.rows
+    .map(({ row, rowId, sourceIndex }, rowIndex) => {
       const selected = state.selection.rowIds.has(rowId);
       const rowClassName = composeClassName(
         "m-grid-row",
@@ -316,7 +317,7 @@ export function renderStaticGridHtml<TData>(
       const cells = renderColumns
         .map((column, columnIndex) => {
           const columnId = getColumnId(column);
-          const value = getCellValue(options.api, row, column, rowIndex);
+          const value = getCellValue(options.api, row, column, sourceIndex);
           const className = composeClassName(
             "m-grid-cell",
             options.getCellClassName?.({
@@ -353,7 +354,7 @@ export function renderStaticGridHtml<TData>(
       ? ""
       : `<div class="m-grid-caption">${escapeHtml(options.caption)}</div>`;
   const empty =
-    state.rows.rows.length === 0 && options.emptyMessage !== undefined
+    processedRows.rows.length === 0 && options.emptyMessage !== undefined
       ? `\n<div class="m-grid-empty" role="status">${escapeHtml(
           options.emptyMessage
         )}</div>`
@@ -369,7 +370,7 @@ export function renderStaticGridHtml<TData>(
     state.pagination.mode
   )}">
 ${caption}
-<div class="m-grid-surface" role="grid"${gridLabel} aria-busy="${busy}" aria-readonly="true" aria-rowcount="${state.rows.rows.length}" aria-colcount="${columnCount}" style="--m-grid-column-count: ${columnCount}; --m-grid-column-template: ${columnTemplate};">
+<div class="m-grid-surface" role="grid"${gridLabel} aria-busy="${busy}" aria-readonly="true" aria-rowcount="${processedRows.rows.length}" aria-colcount="${columnCount}" data-total-row-count="${processedRows.totalRowCount}" data-filtered-row-count="${processedRows.filteredRowCount}" style="--m-grid-column-count: ${columnCount}; --m-grid-column-template: ${columnTemplate};">
 <div class="m-grid-header-row" role="row">${headerCells}</div>
 ${rows}
 </div>${empty}

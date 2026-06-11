@@ -95,11 +95,15 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 
 ### Sort State API
 
-`sort.replace` replaces core sort state with typed `{ columnId, direction }` items. It validates non-empty known column ids, accepts only `asc` or `desc` directions and deduplicates repeated column ids while preserving first occurrence order. It does not sort row data yet.
+`sort.replace` replaces core sort state with typed `{ columnId, direction }` items. It validates non-empty known column ids, accepts only `asc` or `desc` directions and deduplicates repeated column ids while preserving first occurrence order. Row ordering is derived by `getProcessedRows`; this command does not mutate source rows.
 
 ### Filter State API
 
-`filter.replace` replaces core filter state with typed `{ columnId, operator, value }` items. It validates non-empty known column ids and supports the `equals`, `contains`, `startsWith`, `endsWith`, `gt`, `gte`, `lt` and `lte` operators. It does not filter row data yet.
+`filter.replace` replaces core filter state with typed `{ columnId, operator, value }` items. It validates non-empty known column ids and supports the `equals`, `contains`, `startsWith`, `endsWith`, `gt`, `gte`, `lt` and `lte` operators. Filtered rows are derived by `getProcessedRows`; this command does not mutate source rows.
+
+### Processed Row Model API
+
+`getProcessedRows(api, columns)` derives rows from current core state. It applies `filter.items`, then `sort.items`, then offset pagination. Cursor pagination remains unsliced because cursor windows are expected to come from the data source. The result includes `rows`, `totalRowCount` and `filteredRowCount`.
 
 ### Column Order State API
 
@@ -121,8 +125,8 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 - `options.columns` defines renderable columns; current core `columns.order` controls rendered order when ids match.
 - Current core `columns.visibility` hides columns whose visibility value is `false`.
 - Current core `columns.sizing` maps visible column ids to pixel tracks in the static CSS grid template.
-- Current core `sort` state is exposed on matching static column headers through `aria-sort` and `data-sort-direction`; row data is not sorted by this helper.
-- Current core `filter` state is exposed on matching static column headers through `data-filtered="true"`; row data is not filtered by this helper.
+- Current core `sort` state is exposed on matching static column headers through `aria-sort` and `data-sort-direction`; row order comes from `getProcessedRows`.
+- Current core `filter` state is exposed on matching static column headers through `data-filtered="true"`; visible rows come from `getProcessedRows`.
 - Empty `options.columns` is rejected because static DOM grid output requires at least one renderable column.
 - Static DOM output with no visible columns is rejected.
 - `options.caption`, when provided, renders visible caption text and the grid `aria-label`.
@@ -137,18 +141,19 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 - `getStaticGridRowIdFromTarget` extracts row ids from `[data-row-id]` targets for simple pointer selection wiring.
 - Core state changes from one dispatch share one transaction id; `mountStaticGrid` uses that id to avoid duplicate automatic renders for multi-slice updates.
 - Static output includes `aria-rowcount`, `aria-colcount`, body-row `aria-rowindex` and cell/header `aria-colindex` metadata.
+- Static output includes processed `aria-rowcount`, source `data-total-row-count` and processed `data-filtered-row-count` metadata.
 - Static output marks the grid as read-only with `aria-readonly="true"` because editing is out of scope.
 - Static output includes zero-based `data-row-index` and `data-column-index` hooks.
 - Static output exposes loading state through root `data-loading-status` and grid `aria-busy`.
 - Static output exposes pagination mode through root `data-pagination-mode`.
 - Static output exposes selected rows through row `aria-selected="true"` and `data-selected="true"`.
-- These helpers do not diff, hydrate, virtualize, sort, filter, paginate, select, edit or handle keyboard interaction.
+- These helpers do not diff, hydrate, virtualize, provide interactive sort/filter/pagination controls, edit or handle keyboard interaction.
 
 Acceptance for this slice is the focused DOM unit test and inline static output snapshot. Browser runtime validation remains limited to manually serving `examples/dom-static/` after a build.
 
 ### Current Limitations
 
-The Contract MVP foundation has only static DOM rendering. It does not sort, filter, paginate, select, edit, virtualize, navigate with keyboard, calculate responsive columns, export files, or provide a real Vue component. Those belong to later slices.
+The Contract MVP foundation has only static DOM rendering plus a derived row model. It does not provide interactive sort/filter/pagination controls, edit, virtualize, navigate with keyboard, calculate responsive columns, export files, or provide a real Vue component. Those belong to later slices.
 
 ## Turkce
 
@@ -245,11 +250,15 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 
 ### Sort State API
 
-`sort.replace`, core sort state'ini typed `{ columnId, direction }` item'lariyla degistirir. Non-empty known column id'leri validate eder, yalniz `asc` veya `desc` direction kabul eder ve tekrar eden column id'leri ilk gorulme sirasini koruyarak tekillestirir. Henuz row data siralamaz.
+`sort.replace`, core sort state'ini typed `{ columnId, direction }` item'lariyla degistirir. Non-empty known column id'leri validate eder, yalniz `asc` veya `desc` direction kabul eder ve tekrar eden column id'leri ilk gorulme sirasini koruyarak tekillestirir. Row ordering `getProcessedRows` ile turetilir; bu command source row'lari mutate etmez.
 
 ### Filter State API
 
-`filter.replace`, core filter state'ini typed `{ columnId, operator, value }` item'lariyla degistirir. Non-empty known column id'leri validate eder ve `equals`, `contains`, `startsWith`, `endsWith`, `gt`, `gte`, `lt` ve `lte` operator'lerini destekler. Henuz row data filtrelemez.
+`filter.replace`, core filter state'ini typed `{ columnId, operator, value }` item'lariyla degistirir. Non-empty known column id'leri validate eder ve `equals`, `contains`, `startsWith`, `endsWith`, `gt`, `gte`, `lt` ve `lte` operator'lerini destekler.
+
+### Processed Row Model API
+
+`getProcessedRows(api, columns)`, mevcut core state'ten row turetir. Once `filter.items`, sonra `sort.items`, sonra offset pagination uygular. Cursor pagination unsliced kalir cunku cursor window'larin data source'tan gelmesi beklenir. Result `rows`, `totalRowCount` ve `filteredRowCount` icerir.
 
 ### Column Order State API
 
@@ -271,8 +280,8 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 - `options.columns` renderable column'lari belirler; id'ler eslestiginde mevcut core `columns.order` rendered order'i kontrol eder.
 - Mevcut core `columns.visibility`, visibility degeri `false` olan column'lari gizler.
 - Mevcut core `columns.sizing`, visible column id'lerini static CSS grid template icinde pixel track'lere map eder.
-- Mevcut core `sort` state'i eslesen static column header'larda `aria-sort` ve `data-sort-direction` ile expose edilir; bu helper row data siralamaz.
-- Mevcut core `filter` state'i eslesen static column header'larda `data-filtered="true"` ile expose edilir; bu helper row data filtrelemez.
+- Mevcut core `sort` state'i eslesen static column header'larda `aria-sort` ve `data-sort-direction` ile expose edilir; row order `getProcessedRows` sonucundan gelir.
+- Mevcut core `filter` state'i eslesen static column header'larda `data-filtered="true"` ile expose edilir; visible rows `getProcessedRows` sonucundan gelir.
 - Empty `options.columns` reddedilir cunku static DOM grid output en az bir renderable column gerektirir.
 - Visible column kalmayan static DOM output reddedilir.
 - `options.caption` verildiginde visible caption text ve grid `aria-label` uretir.
@@ -287,15 +296,16 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 - `getStaticGridRowIdFromTarget`, basit pointer selection wiring icin `[data-row-id]` target'larindan row id cikarir.
 - Tek dispatch'ten gelen core state change'leri tek transaction id paylasir; `mountStaticGrid` multi-slice update'lerde duplicate automatic render'i onlemek icin bu id'yi kullanir.
 - Static output `aria-rowcount`, `aria-colcount`, body-row `aria-rowindex` ve cell/header `aria-colindex` metadata'si icerir.
+- Static output processed `aria-rowcount`, source `data-total-row-count` ve processed `data-filtered-row-count` metadata'si icerir.
 - Static output, editing kapsam disi oldugu icin grid'i `aria-readonly="true"` ile read-only olarak isaretler.
 - Static output zero-based `data-row-index` ve `data-column-index` hook'lari icerir.
 - Static output loading state'i root `data-loading-status` ve grid `aria-busy` uzerinden expose eder.
 - Static output pagination mode'u root `data-pagination-mode` uzerinden expose eder.
 - Static output selected row'lari row `aria-selected="true"` ve `data-selected="true"` ile expose eder.
-- Bu helper'lar diff, hydrate, virtualize, sort, filter, paginate, select, edit veya keyboard interaction yapmaz.
+- Bu helper'lar diff, hydrate, virtualize, interactive sort/filter/pagination control, edit veya keyboard interaction saglamaz.
 
 Bu slice icin acceptance, focused DOM unit test ve inline static output snapshot'tir. Browser runtime validation halen build sonrasi `examples/dom-static/` klasorunu manuel serve etmekle sinirlidir.
 
 ### Current Limitations
 
-Contract MVP foundation yalniz static DOM rendering icerir. Sort, filter, pagination, selection, editing, virtualization, keyboard navigation, responsive column calculation, file export veya real Vue component saglamaz. Bunlar sonraki implementation slice'larin kapsamindadir.
+Contract MVP foundation yalniz static DOM rendering ve derived row model icerir. Interactive sort/filter/pagination control, editing, virtualization, keyboard navigation, responsive column calculation, file export veya real Vue component saglamaz. Bunlar sonraki implementation slice'larin kapsamindadir.

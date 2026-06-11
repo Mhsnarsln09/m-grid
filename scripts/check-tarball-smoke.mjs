@@ -62,7 +62,7 @@ run(
 await writeFile(
   join(consumerDir, "consumer.mjs"),
   `
-import { createGrid } from "@m-grid/core";
+import { createGrid, getProcessedRows } from "@m-grid/core";
 import { createDomAdapter, getStaticGridRowIdFromTarget, mountStaticGrid, renderStaticGridHtml, selectStaticGridRow } from "@m-grid/dom";
 import { createVueGridContract } from "@m-grid/vue";
 import corePackage from "@m-grid/core/package.json" with { type: "json" };
@@ -108,6 +108,7 @@ api.dispatch({ type: "columns.sizing.replace", sizing: { label: 180 } });
 if (api.getState().sort.items[0]?.columnId !== "label") throw new Error("Sort command did not update state.");
 if (api.getState().filter.items[0]?.operator !== "contains") throw new Error("Filter command did not update state.");
 if (api.getState().pagination.mode !== "offset") throw new Error("Pagination command did not update state.");
+if (getProcessedRows(api, columns).rows[0]?.rowId !== "row-2") throw new Error("Processed row model did not derive rows.");
 if (!container.innerHTML.includes("--m-grid-column-template: 180px;")) throw new Error("Column sizing did not update static DOM output.");
 mount.unmount();
 if (container.innerHTML !== "") throw new Error("Static DOM mount did not clear the container.");

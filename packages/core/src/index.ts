@@ -105,6 +105,18 @@ export interface DataRowsState<TData> {
   readonly rowIds: readonly RowId[];
 }
 
+export interface ProcessedRow<TData> {
+  readonly row: TData;
+  readonly rowId: RowId;
+  readonly sourceIndex: number;
+}
+
+export interface ProcessedRows<TData> {
+  readonly rows: readonly ProcessedRow<TData>[];
+  readonly totalRowCount: number;
+  readonly filteredRowCount: number;
+}
+
 export type LoadingState =
   | { readonly status: "idle" }
   | {
@@ -354,6 +366,38 @@ export function createGrid<TData>(options: GridOptions<TData>): GridApi<TData> {
   return api;
 }
 
+export function getProcessedRows<TData>(
+  api: GridApi<TData>,
+  columns: readonly AnyColumnDef<TData>[]
+): ProcessedRows<TData> {
+  const state = api.getState();
+  const indexedRows = state.rows.rows.map((row, sourceIndex) => ({
+    row,
+    rowId: state.rows.rowIds[sourceIndex] ?? "",
+    sourceIndex,
+  }));
+  const filteredRows = indexedRows.filter((entry) =>
+    state.filter.items.every((filter) =>
+      matchesFilter(getColumnValue(api, entry.row, columns, filter.columnId, entry.sourceIndex), filter)
+    )
+  );
+  const sortedRows = sortProcessedRows(api, filteredRows, columns, state.sort.items);
+  const pagedRows =
+    state.pagination.mode === "offset" &&
+    state.pagination.pageIndex !== undefined &&
+    state.pagination.pageSize !== undefined
+      ? sortedRows.slice(
+          state.pagination.pageIndex * state.pagination.pageSize,
+          state.pagination.pageIndex * state.pagination.pageSize + state.pagination.pageSize
+        )
+      : sortedRows;
+  return Object.freeze({
+    rows: Object.freeze(pagedRows.map((entry) => Object.freeze(entry))),
+    totalRowCount: indexedRows.length,
+    filteredRowCount: filteredRows.length,
+  });
+}
+
 function createInitialState<TData>(
   options: GridOptions<TData>
 ): GridState<TData> {
@@ -379,6 +423,84 @@ function createInitialState<TData>(
           ),
     loading: initial.loading ?? { status: "idle" },
   });
+}
+
+function sortProcessedRows<TData>(
+  api: GridApi<TData>,
+  rows: readonly ProcessedRow<TData>[],
+  columns: readonly AnyColumnDef<TData>[],
+  sortItems: readonly SortItem[]
+): readonly ProcessedRow<TData>[] {
+  if (sortItems.length === 0) return rows;
+  return [...rows].sort((left, right) => {
+    for (const sort of sortItems) {
+      const leftValue = getColumnValue(api, left.row, columns, sort.columnId, left.sourceIndex);
+      const rightValue = getColumnValue(api, right.row, columns, sort.columnId, right.sourceIndex);
+      const comparison = compareValues(leftValue, rightValue);
+      if (comparison !== 0) {
+        return sort.direction === "asc" ? comparison : -comparison;
+      }
+    }
+    return left.sourceIndex - right.sourceIndex;
+  });
+}
+
+function getColumnValue<TData>(
+  api: GridApi<TData>,
+  row: TData,
+  columns: readonly AnyColumnDef<TData>[],
+  columnId: ColumnId,
+  rowIndex: number
+): unknown {
+  const column = columns.find((candidate) => resolveColumnId(candidate) === columnId);
+  if (column === undefined) return undefined;
+  if (column.accessorFn !== undefined) {
+    return column.accessorFn(row, { rowIndex, getRowId: api.getRowId });
+  }
+  if (column.accessorKey !== undefined) return row[column.accessorKey];
+  return undefined;
+}
+
+function compareValues(left: unknown, right: unknown): number {
+  if (left === right) return 0;
+  if (left === undefined || left === null) return 1;
+  if (right === undefined || right === null) return -1;
+  if (typeof left === "number" && typeof right === "number") return left - right;
+  return String(left).localeCompare(String(right));
+}
+
+function matchesFilter(value: unknown, filter: FilterItem): boolean {
+  const actual = value ?? "";
+  const expected = filter.value ?? "";
+  switch (filter.operator) {
+    case "equals":
+      return actual === expected;
+    case "contains":
+      return String(actual).includes(String(expected));
+    case "startsWith":
+      return String(actual).startsWith(String(expected));
+    case "endsWith":
+      return String(actual).endsWith(String(expected));
+    case "gt":
+      return compareFilterNumbers(actual, expected, (left, right) => left > right);
+    case "gte":
+      return compareFilterNumbers(actual, expected, (left, right) => left >= right);
+    case "lt":
+      return compareFilterNumbers(actual, expected, (left, right) => left < right);
+    case "lte":
+      return compareFilterNumbers(actual, expected, (left, right) => left <= right);
+  }
+}
+
+function compareFilterNumbers(
+  actual: unknown,
+  expected: unknown,
+  compare: (left: number, right: number) => boolean
+): boolean {
+  const left = Number(actual);
+  const right = Number(expected);
+  if (!Number.isFinite(left) || !Number.isFinite(right)) return false;
+  return compare(left, right);
 }
 
 function reduceGridState<TData>(
