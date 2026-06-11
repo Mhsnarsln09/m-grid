@@ -267,6 +267,8 @@ describe("@m-grid/dom static rendering", () => {
     const html = renderStaticGridHtml({ api, columns });
 
     expect(html).toContain('data-pagination-mode="offset"');
+    expect(html).toContain('data-page-index="1"');
+    expect(html).toContain('data-page-size="20"');
   });
 
   it("renders processed rows from core sort, filter and offset pagination state", () => {

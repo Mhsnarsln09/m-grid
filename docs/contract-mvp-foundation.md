@@ -149,7 +149,7 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 - Static output marks the grid as read-only with `aria-readonly="true"` because editing is out of scope.
 - Static output includes zero-based processed `data-row-index`, source `data-source-row-index` and visible `data-column-index` hooks.
 - Static output exposes loading state through root `data-loading-status` and grid `aria-busy`.
-- Static output exposes pagination mode through root `data-pagination-mode`.
+- Static output exposes pagination mode through root `data-pagination-mode`; offset pagination also exposes `data-page-index` and `data-page-size`.
 - Static output exposes selected rows through row `aria-selected="true"` and `data-selected="true"`.
 - These helpers do not diff, hydrate, virtualize, provide interactive sort/filter/pagination controls, edit or handle keyboard interaction.
 
@@ -308,7 +308,7 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 - Static output, editing kapsam disi oldugu icin grid'i `aria-readonly="true"` ile read-only olarak isaretler.
 - Static output zero-based processed `data-row-index`, source `data-source-row-index` ve visible `data-column-index` hook'lari icerir.
 - Static output loading state'i root `data-loading-status` ve grid `aria-busy` uzerinden expose eder.
-- Static output pagination mode'u root `data-pagination-mode` uzerinden expose eder.
+- Static output pagination mode'u root `data-pagination-mode` uzerinden expose eder; offset pagination ayrica `data-page-index` ve `data-page-size` expose eder.
 - Static output selected row'lari row `aria-selected="true"` ve `data-selected="true"` ile expose eder.
 - Bu helper'lar diff, hydrate, virtualize, interactive sort/filter/pagination control, edit veya keyboard interaction saglamaz.
 

@@ -272,6 +272,12 @@ export function renderStaticGridHtml<TData>(
   const theme = options.theme ?? "light";
   const loadingStatus = state.loading.status;
   const busy = loadingStatus === "loading" ? "true" : "false";
+  const paginationAttributes =
+    state.pagination.mode === "offset"
+      ? ` data-page-index="${state.pagination.pageIndex}" data-page-size="${state.pagination.pageSize}"`
+      : state.pagination.mode === "cursor"
+        ? ` data-page-size="${state.pagination.pageSize}"`
+        : "";
   const gridLabel =
     options.caption === undefined
       ? ""
@@ -368,7 +374,7 @@ export function renderStaticGridHtml<TData>(
     loadingStatus
   )}" data-pagination-mode="${escapeAttribute(
     state.pagination.mode
-  )}">
+  )}"${paginationAttributes}>
 ${caption}
 <div class="m-grid-surface" role="grid"${gridLabel} aria-busy="${busy}" aria-readonly="true" aria-rowcount="${processedRows.rows.length}" aria-colcount="${columnCount}" data-total-row-count="${processedRows.totalRowCount}" data-filtered-row-count="${processedRows.filteredRowCount}" style="--m-grid-column-count: ${columnCount}; --m-grid-column-template: ${columnTemplate};">
 <div class="m-grid-header-row" role="row">${headerCells}</div>
