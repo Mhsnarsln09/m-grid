@@ -24,6 +24,7 @@ Acceptance criteria:
 - clicking a row swaps selected row state through `selection.replace`;
 - the swap columns button swaps column order through `columns.order.replace`;
 - the hide total button swaps column visibility through `columns.visibility.replace`;
+- the resize total button swaps column sizing through `columns.sizing.replace`;
 - the optional default theme CSS remains replaceable by consumers;
 - no interactive grid behavior is implied by the demo.
 
@@ -53,6 +54,7 @@ Acceptance criteria:
 - row'a tiklamak selected row state'i `selection.replace` ile degistirir;
 - swap columns button, column order'i `columns.order.replace` ile degistirir;
 - hide total button, column visibility'yi `columns.visibility.replace` ile degistirir;
+- resize total button, column sizing'i `columns.sizing.replace` ile degistirir;
 - optional default theme CSS consumer tarafindan degistirilebilir kalir;
 - demo interactive grid behavior ima etmez.
 

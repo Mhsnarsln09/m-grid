@@ -9,6 +9,7 @@ describe("static DOM demo", () => {
       "#select-next-row": createButton(),
       "#swap-columns": createButton(),
       "#toggle-total-column": createButton("Hide total"),
+      "#resize-total-column": createButton("Resize total"),
       "#refresh-status": {
         textContent: "Showing initial rows; Grace Hopper selected",
       },
@@ -73,6 +74,13 @@ describe("static DOM demo", () => {
     );
     expect(elements["#swap-columns"].textContent).toBe("Show customer first");
 
+    elements["#resize-total-column"].click();
+
+    expect(elements["#app"].innerHTML).toContain(
+      "--m-grid-column-template: 180px minmax(0, 1fr) minmax(0, 1fr);"
+    );
+    expect(elements["#resize-total-column"].textContent).toBe("Reset total width");
+
     elements["#toggle-total-column"].click();
 
     expect(elements["#app"].innerHTML).not.toContain("Total");
@@ -98,6 +106,9 @@ describe("static DOM demo", () => {
     expect(() =>
       setupStaticDemo(createDocumentWithout("#toggle-total-column"))
     ).toThrow("[MGRID-DEMO-006] Demo toggle total column button was not found.");
+    expect(() =>
+      setupStaticDemo(createDocumentWithout("#resize-total-column"))
+    ).toThrow("[MGRID-DEMO-007] Demo resize total column button was not found.");
   });
 });
 
@@ -108,6 +119,7 @@ function createDocumentWithout(missingSelector) {
     "#select-next-row": createButton(),
     "#swap-columns": createButton(),
     "#toggle-total-column": createButton("Hide total"),
+    "#resize-total-column": createButton("Resize total"),
     "#refresh-status": {
       textContent: "Showing initial rows; Grace Hopper selected",
     },

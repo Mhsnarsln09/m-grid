@@ -56,6 +56,11 @@ export function setupStaticDemo(documentRef) {
     throw new Error("[MGRID-DEMO-006] Demo toggle total column button was not found.");
   }
 
+  const resizeTotalColumnButton = documentRef.querySelector("#resize-total-column");
+  if (resizeTotalColumnButton === null) {
+    throw new Error("[MGRID-DEMO-007] Demo resize total column button was not found.");
+  }
+
   const refreshStatus = documentRef.querySelector("#refresh-status");
   if (refreshStatus === null) {
     throw new Error("[MGRID-DEMO-003] Demo refresh status was not found.");
@@ -72,6 +77,7 @@ export function setupStaticDemo(documentRef) {
   let selectedRowIndex = 1;
   let showingTotalFirst = false;
   let showingTotalColumn = true;
+  let showingWideTotal = false;
 
   function getVisibleRows() {
     return showingAlternateRows ? alternateRows : rows;
@@ -126,6 +132,17 @@ export function setupStaticDemo(documentRef) {
     toggleTotalColumnButton.textContent = showingTotalColumn
       ? "Hide total"
       : "Show total";
+  });
+
+  resizeTotalColumnButton.addEventListener("click", () => {
+    showingWideTotal = !showingWideTotal;
+    api.dispatch({
+      type: "columns.sizing.replace",
+      sizing: { total: showingWideTotal ? 180 : 96 },
+    });
+    resizeTotalColumnButton.textContent = showingWideTotal
+      ? "Reset total width"
+      : "Resize total";
   });
 
   app.addEventListener("click", (event) => {
