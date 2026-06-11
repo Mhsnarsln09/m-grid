@@ -63,7 +63,7 @@ await writeFile(
   join(consumerDir, "consumer.mjs"),
   `
 import { createGrid } from "@m-grid/core";
-import { createDomAdapter, mountStaticGrid, renderStaticGridHtml, selectStaticGridRow } from "@m-grid/dom";
+import { createDomAdapter, getStaticGridRowIdFromTarget, mountStaticGrid, renderStaticGridHtml, selectStaticGridRow } from "@m-grid/dom";
 import { createVueGridContract } from "@m-grid/vue";
 import corePackage from "@m-grid/core/package.json" with { type: "json" };
 
@@ -80,6 +80,10 @@ const selectedApi = createGrid({
 const dom = createDomAdapter({ api });
 const html = renderStaticGridHtml({ api, columns, caption: "Smoke" });
 const selectedHtml = renderStaticGridHtml({ api: selectedApi, columns });
+const rowIdFromTarget = getStaticGridRowIdFromTarget({
+  getAttribute: () => null,
+  closest: () => ({ getAttribute: () => "row-1" }),
+});
 const container = { innerHTML: "" };
 const mount = mountStaticGrid({ api, columns, caption: "Smoke", container });
 const vue = createVueGridContract({ rows, columns, getRowId, adapterName: "vue" });
@@ -89,11 +93,22 @@ if (dom.getState().rows.rowIds[0] !== "row-1") throw new Error("DOM adapter did 
 if (!html.includes('role="grid"')) throw new Error("Static DOM render did not produce a grid role.");
 if (!html.includes("Ready")) throw new Error("Static DOM render did not include row content.");
 if (!selectedHtml.includes('aria-selected="true"')) throw new Error("Static DOM render did not expose selected row metadata.");
+if (rowIdFromTarget !== "row-1") throw new Error("Static DOM target helper did not read row id.");
 if (!container.innerHTML.includes("Ready")) throw new Error("Static DOM mount did not include row content.");
 api.dispatch({ type: "rows.replace", rows: [{ id: "row-2", label: "Updated" }] });
 if (!container.innerHTML.includes("Updated")) throw new Error("Static DOM mount did not auto-render state changes.");
 selectStaticGridRow(api, "row-2");
 if (!container.innerHTML.includes('aria-selected="true"')) throw new Error("Static DOM mount did not auto-render selection changes.");
+api.dispatch({ type: "sort.replace", sort: { items: [{ columnId: "label", direction: "asc" }] } });
+api.dispatch({ type: "filter.replace", filter: { items: [{ columnId: "label", operator: "contains", value: "Updated" }] } });
+api.dispatch({ type: "pagination.replace", pagination: { mode: "offset", pageIndex: 0, pageSize: 10 } });
+api.dispatch({ type: "columns.order.replace", order: ["label"] });
+api.dispatch({ type: "columns.visibility.replace", visibility: { label: true } });
+api.dispatch({ type: "columns.sizing.replace", sizing: { label: 180 } });
+if (api.getState().sort.items[0]?.columnId !== "label") throw new Error("Sort command did not update state.");
+if (api.getState().filter.items[0]?.operator !== "contains") throw new Error("Filter command did not update state.");
+if (api.getState().pagination.mode !== "offset") throw new Error("Pagination command did not update state.");
+if (!container.innerHTML.includes("--m-grid-column-template: 180px;")) throw new Error("Column sizing did not update static DOM output.");
 mount.unmount();
 if (container.innerHTML !== "") throw new Error("Static DOM mount did not clear the container.");
 if (vue.api.getState().version !== 1) throw new Error("Vue contract did not create a core grid.");
