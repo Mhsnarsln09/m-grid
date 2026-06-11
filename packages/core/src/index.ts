@@ -440,6 +440,7 @@ export function getVisibleColumns<TData>(
   columns: readonly AnyColumnDef<TData>[],
   state: ColumnState
 ): readonly VisibleColumn<TData>[] {
+  assertValidColumns(columns);
   const columnsById = new Map<ColumnId, { column: AnyColumnDef<TData>; sourceIndex: number }>();
   columns.forEach((column, sourceIndex) => {
     columnsById.set(resolveColumnId(column), { column, sourceIndex });

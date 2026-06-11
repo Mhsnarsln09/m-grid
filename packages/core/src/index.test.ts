@@ -418,6 +418,18 @@ describe("@m-grid/core contract", () => {
     ]);
   });
 
+  it("rejects duplicate columns in visible column derivation", () => {
+    expect(() =>
+      getVisibleColumns(
+        [
+          { accessorKey: "name" },
+          { id: "name", accessorFn: (row: TestRow) => row.value },
+        ],
+        { order: ["name"] }
+      )
+    ).toThrow('[MGRID-COL-002] Column id collision: "name" is used by multiple columns.');
+  });
+
   it("rejects invalid column order ids with predictable English errors", () => {
     const grid = createGrid<TestRow>({ columns, getRowId });
 
