@@ -103,7 +103,7 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 
 ### Processed Row Model API
 
-`getProcessedRows(api, columns)` derives rows from current core state. It applies `filter.items`, then `sort.items`, then offset pagination. Cursor pagination remains unsliced because cursor windows are expected to come from the data source. The result includes `rows`, `totalRowCount` and `filteredRowCount`.
+`getProcessedRows(api, columns)` derives rows from current core state. It applies `filter.items`, then `sort.items`, then offset pagination. Cursor pagination remains unsliced because cursor windows are expected to come from the data source; adapters must not pretend cursor mode can page arbitrary client rows. The result includes `rows`, `totalRowCount` and `filteredRowCount`.
 
 ### Column Order State API
 
@@ -260,7 +260,7 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 
 ### Processed Row Model API
 
-`getProcessedRows(api, columns)`, mevcut core state'ten row turetir. Once `filter.items`, sonra `sort.items`, sonra offset pagination uygular. Cursor pagination unsliced kalir cunku cursor window'larin data source'tan gelmesi beklenir. Result `rows`, `totalRowCount` ve `filteredRowCount` icerir.
+`getProcessedRows(api, columns)`, mevcut core state'ten row turetir. Once `filter.items`, sonra `sort.items`, sonra offset pagination uygular. Cursor pagination unsliced kalir cunku cursor window'larin data source'tan gelmesi beklenir; adapter'lar cursor mode'un arbitrary client row'lari page edebildigini ima etmemelidir. Result `rows`, `totalRowCount` ve `filteredRowCount` icerir.
 
 ### Column Order State API
 

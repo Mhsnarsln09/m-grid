@@ -10,6 +10,8 @@ The core state model now supports replacing selected row ids through `selection.
 
 The repository includes a static DOM demo for the first visible output. It renders rows and columns only; it is not yet a usable interactive grid.
 
+Cursor pagination remains a data-source windowing responsibility. The client processed row model applies offset pagination only.
+
 ### Packages
 
 ```text
@@ -77,6 +79,8 @@ Henuz usable grid rendering, real Vue component, sorting, filtering, pagination,
 Core state model artik selected row id'lerini `selection.replace` ile, sort state'i `sort.replace` ile, filter state'i `filter.replace` ile, column order'i `columns.order.replace` ile, column visibility'yi `columns.visibility.replace` ile, column sizing'i `columns.sizing.replace` ile ve pagination'i `pagination.replace` ile degistirmeyi destekler. `getProcessedRows` sorted, filtered ve offset-paginated row'lar turetir, `getVisibleColumns` ise ordered, visible ve sized column descriptor'lari turetir; adapter'larin real pointer ve keyboard selection behavior'i henuz implement etmesi gerekir.
 
 Repository ilk gorunur cikti icin static DOM demo icerir. Sadece row ve column render eder; henuz usable interactive grid degildir.
+
+Cursor pagination data-source windowing sorumlulugu olarak kalir. Client processed row model yalniz offset pagination uygular.
 
 ### Packages
 

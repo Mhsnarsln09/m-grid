@@ -294,6 +294,50 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('data-filtered-row-count="2"');
   });
 
+  it("renders the empty message when processed rows are filtered out", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+      initialState: {
+        filter: { items: [{ columnId: "label", operator: "equals", value: "Beta" }] },
+      },
+    });
+
+    const html = renderStaticGridHtml({
+      api,
+      columns,
+      emptyMessage: "No matching rows",
+    });
+
+    expect(html).toContain('<div class="m-grid-empty" role="status">No matching rows</div>');
+    expect(html).toContain('aria-rowcount="0"');
+    expect(html).toContain('data-total-row-count="1"');
+    expect(html).toContain('data-filtered-row-count="0"');
+  });
+
+  it("preserves selection state when the selected row is not processed", () => {
+    const api = createGrid({
+      columns,
+      rows: [
+        { id: "row-1", label: "Alpha", amount: 12 },
+        { id: "row-2", label: "Beta", amount: 34 },
+      ],
+      getRowId: (row) => row.id,
+      initialState: {
+        selection: { rowIds: new Set(["row-2"]) },
+        filter: { items: [{ columnId: "label", operator: "equals", value: "Alpha" }] },
+      },
+    });
+
+    const html = renderStaticGridHtml({ api, columns });
+
+    expect([...api.getState().selection.rowIds]).toEqual(["row-2"]);
+    expect(html).toContain("Alpha");
+    expect(html).not.toContain("Beta");
+    expect(html).not.toContain('aria-selected="true"');
+  });
+
   it("rejects static output with no visible columns", () => {
     const api = createGrid({
       columns,
