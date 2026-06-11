@@ -121,6 +121,7 @@ export interface ProcessedRow<TData> {
 
 export interface ProcessedRows<TData> {
   readonly rows: readonly ProcessedRow<TData>[];
+  readonly rowIds: readonly RowId[];
   readonly totalRowCount: number;
   readonly filteredRowCount: number;
 }
@@ -401,6 +402,7 @@ export function getProcessedRows<TData>(
       : sortedRows;
   return Object.freeze({
     rows: Object.freeze(pagedRows.map((entry) => Object.freeze(entry))),
+    rowIds: Object.freeze(pagedRows.map((entry) => entry.rowId)),
     totalRowCount: indexedRows.length,
     filteredRowCount: filteredRows.length,
   });

@@ -108,7 +108,7 @@ api.dispatch({ type: "columns.sizing.replace", sizing: { label: 180 } });
 if (api.getState().sort.items[0]?.columnId !== "label") throw new Error("Sort command did not update state.");
 if (api.getState().filter.items[0]?.operator !== "contains") throw new Error("Filter command did not update state.");
 if (api.getState().pagination.mode !== "offset") throw new Error("Pagination command did not update state.");
-if (getProcessedRows(api, columns).rows[0]?.rowId !== "row-2") throw new Error("Processed row model did not derive rows.");
+if (getProcessedRows(api, columns).rowIds[0] !== "row-2") throw new Error("Processed row model did not derive rows.");
 if (getVisibleColumns(columns, api.getState().columns)[0]?.columnId !== "label") throw new Error("Visible column helper did not derive columns.");
 if (!container.innerHTML.includes("--m-grid-column-template: 180px;")) throw new Error("Column sizing did not update static DOM output.");
 mount.unmount();

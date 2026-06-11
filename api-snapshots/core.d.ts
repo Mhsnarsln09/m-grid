@@ -79,6 +79,7 @@ export interface ProcessedRow<TData> {
 }
 export interface ProcessedRows<TData> {
     readonly rows: readonly ProcessedRow<TData>[];
+    readonly rowIds: readonly RowId[];
     readonly totalRowCount: number;
     readonly filteredRowCount: number;
 }

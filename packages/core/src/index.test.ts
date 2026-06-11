@@ -230,6 +230,7 @@ describe("@m-grid/core contract", () => {
 
     expect(processed.totalRowCount).toBe(3);
     expect(processed.filteredRowCount).toBe(2);
+    expect(processed.rowIds).toEqual(["c"]);
     expect(processed.rows.map((entry) => entry.rowId)).toEqual(["c"]);
     expect(processed.rows[0]?.sourceIndex).toBe(2);
   });
