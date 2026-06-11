@@ -77,6 +77,7 @@ export interface FilterItem {
   readonly columnId: ColumnId;
   readonly operator: FilterOperator;
   readonly value: unknown;
+  readonly caseSensitive?: boolean;
 }
 
 export interface FilterState {
@@ -522,15 +523,19 @@ function compareValues(left: unknown, right: unknown): number {
 function matchesFilter(value: unknown, filter: FilterItem): boolean {
   const actual = value ?? "";
   const expected = filter.value ?? "";
+  const actualText = normalizeFilterText(actual, filter.caseSensitive);
+  const expectedText = normalizeFilterText(expected, filter.caseSensitive);
   switch (filter.operator) {
     case "equals":
-      return actual === expected;
+      return typeof actual === "string" || typeof expected === "string"
+        ? actualText === expectedText
+        : actual === expected;
     case "contains":
-      return String(actual).includes(String(expected));
+      return actualText.includes(expectedText);
     case "startsWith":
-      return String(actual).startsWith(String(expected));
+      return actualText.startsWith(expectedText);
     case "endsWith":
-      return String(actual).endsWith(String(expected));
+      return actualText.endsWith(expectedText);
     case "gt":
       return compareFilterNumbers(actual, expected, (left, right) => left > right);
     case "gte":
@@ -540,6 +545,11 @@ function matchesFilter(value: unknown, filter: FilterItem): boolean {
     case "lte":
       return compareFilterNumbers(actual, expected, (left, right) => left <= right);
   }
+}
+
+function normalizeFilterText(value: unknown, caseSensitive: boolean | undefined): string {
+  const text = String(value);
+  return caseSensitive === true ? text : text.toLocaleLowerCase();
 }
 
 function compareFilterNumbers(
@@ -994,6 +1004,9 @@ function createFilterState(
       columnId: item.columnId,
       operator: item.operator,
       value: item.value,
+      ...(item.caseSensitive === undefined
+        ? {}
+        : { caseSensitive: item.caseSensitive }),
     });
   });
   return Object.freeze({ items: Object.freeze(items) });

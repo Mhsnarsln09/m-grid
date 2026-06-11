@@ -235,6 +235,38 @@ describe("@m-grid/core contract", () => {
     expect(processed.rows[0]?.sourceIndex).toBe(2);
   });
 
+  it("applies text filters case-insensitively unless requested otherwise", () => {
+    const grid = createGrid<TestRow>({
+      columns,
+      getRowId,
+      rows: [
+        { id: "a", name: "Alpha", value: 1 },
+        { id: "b", name: "beta", value: 2 },
+      ],
+      initialState: {
+        filter: { items: [{ columnId: "name", operator: "contains", value: "AL" }] },
+      },
+    });
+
+    expect(getProcessedRows(grid, columns).rowIds).toEqual(["a"]);
+
+    grid.dispatch({
+      type: "filter.replace",
+      filter: {
+        items: [
+          {
+            columnId: "name",
+            operator: "contains",
+            value: "AL",
+            caseSensitive: true,
+          },
+        ],
+      },
+    });
+
+    expect(getProcessedRows(grid, columns).rowIds).toEqual([]);
+  });
+
   it("keeps cursor pagination unsliced in the client processed row model", () => {
     const grid = createGrid<TestRow>({
       columns,

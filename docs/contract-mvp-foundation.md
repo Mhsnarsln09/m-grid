@@ -99,7 +99,7 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 
 ### Filter State API
 
-`filter.replace` replaces core filter state with typed `{ columnId, operator, value }` items. It validates non-empty known column ids and supports the `equals`, `contains`, `startsWith`, `endsWith`, `gt`, `gte`, `lt` and `lte` operators. Filtered rows are derived by `getProcessedRows`; this command does not mutate source rows.
+`filter.replace` replaces core filter state with typed `{ columnId, operator, value }` items. It validates non-empty known column ids and supports the `equals`, `contains`, `startsWith`, `endsWith`, `gt`, `gte`, `lt` and `lte` operators. Text filters are case-insensitive by default and can opt into `caseSensitive: true`. Filtered rows are derived by `getProcessedRows`; this command does not mutate source rows.
 
 ### Processed Row Model API
 
@@ -256,7 +256,7 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 
 ### Filter State API
 
-`filter.replace`, core filter state'ini typed `{ columnId, operator, value }` item'lariyla degistirir. Non-empty known column id'leri validate eder ve `equals`, `contains`, `startsWith`, `endsWith`, `gt`, `gte`, `lt` ve `lte` operator'lerini destekler.
+`filter.replace`, core filter state'ini typed `{ columnId, operator, value }` item'lariyla degistirir. Non-empty known column id'leri validate eder ve `equals`, `contains`, `startsWith`, `endsWith`, `gt`, `gte`, `lt` ve `lte` operator'lerini destekler. Text filter'lar default olarak case-insensitive calisir ve `caseSensitive: true` ile case-sensitive olabilir.
 
 ### Processed Row Model API
 

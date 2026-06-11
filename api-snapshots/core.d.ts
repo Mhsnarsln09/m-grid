@@ -43,6 +43,7 @@ export interface FilterItem {
     readonly columnId: ColumnId;
     readonly operator: FilterOperator;
     readonly value: unknown;
+    readonly caseSensitive?: boolean;
 }
 export interface FilterState {
     readonly items: readonly FilterItem[];
