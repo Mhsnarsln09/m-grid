@@ -345,7 +345,7 @@ export function renderStaticGridHtml<TData>(
         rowClassName
       )}" role="row" aria-rowindex="${
         rowIndex + 1
-      }" data-row-index="${rowIndex}"${selectionAttributes} data-row-id="${escapeAttribute(rowId)}">${cells}</div>`;
+      }" data-row-index="${rowIndex}" data-source-row-index="${sourceIndex}"${selectionAttributes} data-row-id="${escapeAttribute(rowId)}">${cells}</div>`;
     })
     .join("");
 
