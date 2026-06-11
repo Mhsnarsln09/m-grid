@@ -112,6 +112,7 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 - `getStaticGridRowIdFromTarget` extracts row ids from `[data-row-id]` targets for simple pointer selection wiring.
 - Core state changes from one dispatch share one transaction id; `mountStaticGrid` uses that id to avoid duplicate automatic renders for multi-slice updates.
 - Static output includes `aria-rowcount`, `aria-colcount`, body-row `aria-rowindex` and cell/header `aria-colindex` metadata.
+- Static output marks the grid as read-only with `aria-readonly="true"` because editing is out of scope.
 - Static output includes zero-based `data-row-index` and `data-column-index` hooks.
 - Static output exposes loading state through root `data-loading-status` and grid `aria-busy`.
 - Static output exposes selected rows through row `aria-selected="true"` and `data-selected="true"`.
@@ -235,6 +236,7 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 - `getStaticGridRowIdFromTarget`, basit pointer selection wiring icin `[data-row-id]` target'larindan row id cikarir.
 - Tek dispatch'ten gelen core state change'leri tek transaction id paylasir; `mountStaticGrid` multi-slice update'lerde duplicate automatic render'i onlemek icin bu id'yi kullanir.
 - Static output `aria-rowcount`, `aria-colcount`, body-row `aria-rowindex` ve cell/header `aria-colindex` metadata'si icerir.
+- Static output, editing kapsam disi oldugu icin grid'i `aria-readonly="true"` ile read-only olarak isaretler.
 - Static output zero-based `data-row-index` ve `data-column-index` hook'lari icerir.
 - Static output loading state'i root `data-loading-status` ve grid `aria-busy` uzerinden expose eder.
 - Static output selected row'lari row `aria-selected="true"` ve `data-selected="true"` ile expose eder.

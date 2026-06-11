@@ -33,6 +33,7 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('aria-rowcount="1"');
     expect(html).toContain('aria-colcount="2"');
     expect(html).toContain('aria-busy="false"');
+    expect(html).toContain('aria-readonly="true"');
     expect(html).toContain('data-loading-status="idle"');
     expect(html).toContain('aria-rowindex="1"');
     expect(html).toContain('aria-colindex="2"');
@@ -248,7 +249,7 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toMatchInlineSnapshot(`
       "<div class="m-grid-root" data-density="comfortable" data-theme="light" data-loading-status="idle">
       <div class="m-grid-caption">Orders</div>
-      <div class="m-grid-surface" role="grid" aria-label="Orders" aria-busy="false" aria-rowcount="2" aria-colcount="2" style="--m-grid-column-count: 2;">
+      <div class="m-grid-surface" role="grid" aria-label="Orders" aria-busy="false" aria-readonly="true" aria-rowcount="2" aria-colcount="2" style="--m-grid-column-count: 2;">
       <div class="m-grid-header-row" role="row"><div class="m-grid-header-cell" role="columnheader" aria-colindex="1" data-column-index="0" data-column-id="label">Label</div><div class="m-grid-header-cell" role="columnheader" aria-colindex="2" data-column-index="1" data-column-id="amount">Amount</div></div>
       <div class="m-grid-row" role="row" aria-rowindex="1" data-row-index="0" data-row-id="row-1"><div class="m-grid-cell" role="gridcell" aria-colindex="1" data-column-index="0" data-column-id="label">Alpha</div><div class="m-grid-cell" role="gridcell" aria-colindex="2" data-column-index="1" data-column-id="amount">12</div></div><div class="m-grid-row" role="row" aria-rowindex="2" data-row-index="1" data-row-id="row-2"><div class="m-grid-cell" role="gridcell" aria-colindex="1" data-column-index="0" data-column-id="label">Beta &amp; Co</div><div class="m-grid-cell" role="gridcell" aria-colindex="2" data-column-index="1" data-column-id="amount">34</div></div>
       </div>

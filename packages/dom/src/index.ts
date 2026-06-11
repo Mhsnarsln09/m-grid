@@ -353,7 +353,7 @@ export function renderStaticGridHtml<TData>(
     loadingStatus
   )}">
 ${caption}
-<div class="m-grid-surface" role="grid"${gridLabel} aria-busy="${busy}" aria-rowcount="${state.rows.rows.length}" aria-colcount="${columnCount}" style="--m-grid-column-count: ${columnCount};">
+<div class="m-grid-surface" role="grid"${gridLabel} aria-busy="${busy}" aria-readonly="true" aria-rowcount="${state.rows.rows.length}" aria-colcount="${columnCount}" style="--m-grid-column-count: ${columnCount};">
 <div class="m-grid-header-row" role="row">${headerCells}</div>
 ${rows}
 </div>${empty}
