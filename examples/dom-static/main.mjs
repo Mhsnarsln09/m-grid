@@ -51,6 +51,11 @@ export function setupStaticDemo(documentRef) {
     throw new Error("[MGRID-DEMO-005] Demo swap columns button was not found.");
   }
 
+  const toggleTotalColumnButton = documentRef.querySelector("#toggle-total-column");
+  if (toggleTotalColumnButton === null) {
+    throw new Error("[MGRID-DEMO-006] Demo toggle total column button was not found.");
+  }
+
   const refreshStatus = documentRef.querySelector("#refresh-status");
   if (refreshStatus === null) {
     throw new Error("[MGRID-DEMO-003] Demo refresh status was not found.");
@@ -66,6 +71,7 @@ export function setupStaticDemo(documentRef) {
   let showingAlternateRows = false;
   let selectedRowIndex = 1;
   let showingTotalFirst = false;
+  let showingTotalColumn = true;
 
   function getVisibleRows() {
     return showingAlternateRows ? alternateRows : rows;
@@ -109,6 +115,17 @@ export function setupStaticDemo(documentRef) {
     swapColumnsButton.textContent = showingTotalFirst
       ? "Show customer first"
       : "Swap columns";
+  });
+
+  toggleTotalColumnButton.addEventListener("click", () => {
+    showingTotalColumn = !showingTotalColumn;
+    api.dispatch({
+      type: "columns.visibility.replace",
+      visibility: { total: showingTotalColumn },
+    });
+    toggleTotalColumnButton.textContent = showingTotalColumn
+      ? "Hide total"
+      : "Show total";
   });
 
   app.addEventListener("click", (event) => {

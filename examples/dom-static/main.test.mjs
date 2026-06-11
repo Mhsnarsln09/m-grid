@@ -8,6 +8,7 @@ describe("static DOM demo", () => {
       "#refresh-rows": createButton(),
       "#select-next-row": createButton(),
       "#swap-columns": createButton(),
+      "#toggle-total-column": createButton("Hide total"),
       "#refresh-status": {
         textContent: "Showing initial rows; Grace Hopper selected",
       },
@@ -71,6 +72,11 @@ describe("static DOM demo", () => {
       elements["#app"].innerHTML.indexOf("Customer")
     );
     expect(elements["#swap-columns"].textContent).toBe("Show customer first");
+
+    elements["#toggle-total-column"].click();
+
+    expect(elements["#app"].innerHTML).not.toContain("Total");
+    expect(elements["#toggle-total-column"].textContent).toBe("Show total");
   });
 
   it("fails predictably when required demo nodes are missing", () => {
@@ -89,6 +95,9 @@ describe("static DOM demo", () => {
     expect(() => setupStaticDemo(createDocumentWithout("#swap-columns"))).toThrow(
       "[MGRID-DEMO-005] Demo swap columns button was not found."
     );
+    expect(() =>
+      setupStaticDemo(createDocumentWithout("#toggle-total-column"))
+    ).toThrow("[MGRID-DEMO-006] Demo toggle total column button was not found.");
   });
 });
 
@@ -98,6 +107,7 @@ function createDocumentWithout(missingSelector) {
     "#refresh-rows": createButton(),
     "#select-next-row": createButton(),
     "#swap-columns": createButton(),
+    "#toggle-total-column": createButton("Hide total"),
     "#refresh-status": {
       textContent: "Showing initial rows; Grace Hopper selected",
     },
@@ -134,10 +144,10 @@ function createRowTarget(rowId) {
   };
 }
 
-function createButton() {
+function createButton(textContent = "Refresh rows") {
   let listener = () => undefined;
   return {
-    textContent: "Refresh rows",
+    textContent,
     addEventListener(type, callback) {
       if (type === "click") listener = callback;
     },
