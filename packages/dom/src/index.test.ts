@@ -320,6 +320,29 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('data-filtered-row-count="0"');
   });
 
+  it("renders the empty message when offset pagination is beyond filtered rows", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+      initialState: {
+        pagination: { mode: "offset", pageIndex: 1, pageSize: 1 },
+      },
+    });
+
+    const html = renderStaticGridHtml({
+      api,
+      columns,
+      emptyMessage: "No rows on this page",
+    });
+
+    expect(html).toContain('<div class="m-grid-empty" role="status">No rows on this page</div>');
+    expect(html).toContain('aria-rowcount="0"');
+    expect(html).toContain('data-total-row-count="1"');
+    expect(html).toContain('data-filtered-row-count="1"');
+    expect(html).toContain('data-page-index="1"');
+  });
+
   it("preserves selection state when the selected row is not processed", () => {
     const api = createGrid({
       columns,
