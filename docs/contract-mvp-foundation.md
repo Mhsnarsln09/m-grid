@@ -121,6 +121,7 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 - `options.columns` defines renderable columns; current core `columns.order` controls rendered order when ids match.
 - Current core `columns.visibility` hides columns whose visibility value is `false`.
 - Current core `columns.sizing` maps visible column ids to pixel tracks in the static CSS grid template.
+- Current core `sort` state is exposed on matching static column headers through `aria-sort` and `data-sort-direction`; row data is not sorted by this helper.
 - Empty `options.columns` is rejected because static DOM grid output requires at least one renderable column.
 - Static DOM output with no visible columns is rejected.
 - `options.caption`, when provided, renders visible caption text and the grid `aria-label`.
@@ -268,6 +269,7 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 - `options.columns` renderable column'lari belirler; id'ler eslestiginde mevcut core `columns.order` rendered order'i kontrol eder.
 - Mevcut core `columns.visibility`, visibility degeri `false` olan column'lari gizler.
 - Mevcut core `columns.sizing`, visible column id'lerini static CSS grid template icinde pixel track'lere map eder.
+- Mevcut core `sort` state'i eslesen static column header'larda `aria-sort` ve `data-sort-direction` ile expose edilir; bu helper row data siralamaz.
 - Empty `options.columns` reddedilir cunku static DOM grid output en az bir renderable column gerektirir.
 - Visible column kalmayan static DOM output reddedilir.
 - `options.caption` verildiginde visible caption text ve grid `aria-label` uretir.

@@ -279,13 +279,20 @@ export function renderStaticGridHtml<TData>(
   const headerCells = renderColumns
     .map((column, columnIndex) => {
       const columnId = getColumnId(column);
+      const sortItem = state.sort.items.find((item) => item.columnId === columnId);
+      const sortAttributes =
+        sortItem === undefined
+          ? ""
+          : ` aria-sort="${
+              sortItem.direction === "asc" ? "ascending" : "descending"
+            }" data-sort-direction="${sortItem.direction}"`;
       const className = composeClassName(
         "m-grid-header-cell",
         options.getHeaderCellClassName?.({ column, columnId, columnIndex })
       );
       return `<div class="${escapeAttribute(
         className
-      )}" role="columnheader" aria-colindex="${
+      )}" role="columnheader"${sortAttributes} aria-colindex="${
         columnIndex + 1
       }" data-column-index="${columnIndex}" data-column-id="${escapeAttribute(columnId)}">${escapeHtml(
         column.header ?? columnId
