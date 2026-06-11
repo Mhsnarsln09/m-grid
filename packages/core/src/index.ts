@@ -419,11 +419,17 @@ function assertProcessedRowColumnsAvailable<TData>(
   columns: readonly AnyColumnDef<TData>[],
   state: Readonly<GridState<TData>>
 ): void {
-  const known = new Set(columns.map(resolveColumnId));
+  const byId = createColumnLookup(columns);
   for (const item of [...state.filter.items, ...state.sort.items]) {
-    if (!known.has(item.columnId)) {
+    const column = byId.get(item.columnId);
+    if (column === undefined) {
       throw new Error(
         `[MGRID-ROWMODEL-001] Processed row column was not provided: "${item.columnId}".`
+      );
+    }
+    if (column.accessorKey === undefined && column.accessorFn === undefined) {
+      throw new Error(
+        `[MGRID-ROWMODEL-002] Processed row column has no value accessor: "${item.columnId}".`
       );
     }
   }

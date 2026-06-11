@@ -298,6 +298,25 @@ describe("@m-grid/core contract", () => {
     );
   });
 
+  it("rejects processed rows when sort or filter columns have no accessor", () => {
+    const displayColumns = [
+      ...columns,
+      { id: "actions", header: "Actions" },
+    ] satisfies readonly ColumnDef<TestRow>[];
+    const grid = createGrid<TestRow>({
+      columns: displayColumns,
+      getRowId,
+      rows: [{ id: "a", name: "Alpha", value: 1 }],
+      initialState: {
+        sort: { items: [{ columnId: "actions", direction: "asc" }] },
+      },
+    });
+
+    expect(() => getProcessedRows(grid, displayColumns)).toThrow(
+      '[MGRID-ROWMODEL-002] Processed row column has no value accessor: "actions".'
+    );
+  });
+
   it("keeps cursor pagination unsliced in the client processed row model", () => {
     const grid = createGrid<TestRow>({
       columns,

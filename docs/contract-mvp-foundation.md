@@ -109,6 +109,8 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 
 `getProcessedRows` rejects calls where the supplied columns do not include a column referenced by current sort or filter state.
 
+Sort and filter items require accessor-backed columns. Display-only columns can render, but they cannot participate in the processed row model until a future custom value contract exists.
+
 ### Column Order State API
 
 `columns.order.replace` replaces core column order state. It validates non-empty known column ids, deduplicates repeated ids while preserving first occurrence order and allows omitted columns so renderers can append unmatched configured columns as their own fallback.
@@ -269,6 +271,8 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 `getProcessedRows(api, columns)`, mevcut core state'ten row turetir. Once `filter.items`, sonra `sort.items`, sonra offset pagination uygular. Cursor pagination unsliced kalir cunku cursor window'larin data source'tan gelmesi beklenir; adapter'lar cursor mode'un arbitrary client row'lari page edebildigini ima etmemelidir. Result `rows`, `rowIds`, `totalRowCount` ve `filteredRowCount` icerir.
 
 `getProcessedRows`, verilen columns mevcut sort veya filter state'in referans verdigi column'i icermediginde cagrilari reddeder.
+
+Sort ve filter item'lari accessor-backed column ister. Display-only column'lar render edilebilir, fakat future custom value contract gelene kadar processed row model'e katilamaz.
 
 ### Column Order State API
 
