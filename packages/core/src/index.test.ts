@@ -430,6 +430,21 @@ describe("@m-grid/core contract", () => {
         },
       })
     ).toThrow("[MGRID-FILTER-003] Filter operator is not supported.");
+    expect(() =>
+      grid.dispatch({
+        type: "filter.replace",
+        filter: {
+          items: [
+            {
+              columnId: "name",
+              operator: "equals",
+              value: "x",
+              caseSensitive: "yes" as unknown as boolean,
+            },
+          ],
+        },
+      })
+    ).toThrow("[MGRID-FILTER-004] Filter caseSensitive must be boolean.");
   });
 
   it("rejects empty selected row ids with a predictable English error", () => {

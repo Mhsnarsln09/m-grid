@@ -1000,6 +1000,12 @@ function createFilterState(
     if (!isFilterOperator(item.operator)) {
       throw new Error("[MGRID-FILTER-003] Filter operator is not supported.");
     }
+    if (
+      item.caseSensitive !== undefined &&
+      typeof item.caseSensitive !== "boolean"
+    ) {
+      throw new Error("[MGRID-FILTER-004] Filter caseSensitive must be boolean.");
+    }
     return Object.freeze({
       columnId: item.columnId,
       operator: item.operator,
