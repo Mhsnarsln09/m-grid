@@ -135,7 +135,7 @@ Sort and filter items require accessor-backed columns. Display-only columns can 
 - `options.columns` defines renderable columns; current core `columns.order` controls rendered order when ids match.
 - Current core `columns.visibility` hides columns whose visibility value is `false`.
 - Current core `columns.sizing` maps visible column ids to pixel tracks in the static CSS grid template.
-- Current core `sort` state is exposed on matching static column headers through `aria-sort` and `data-sort-direction`; row order comes from `getProcessedRows`.
+- Current core `sort` state is exposed on matching static column headers through `data-sort-direction` and `data-sort-index`; only the primary sorted header receives `aria-sort`. Row order comes from `getProcessedRows`.
 - Current core `filter` state is exposed on matching static column headers through `data-filtered="true"`; visible rows come from `getProcessedRows`.
 - Empty `options.columns` is rejected because static DOM grid output requires at least one renderable column.
 - Static DOM output with no visible columns is rejected.
@@ -300,7 +300,7 @@ Sort ve filter item'lari accessor-backed column ister. Display-only column'lar r
 - `options.columns` renderable column'lari belirler; id'ler eslestiginde mevcut core `columns.order` rendered order'i kontrol eder.
 - Mevcut core `columns.visibility`, visibility degeri `false` olan column'lari gizler.
 - Mevcut core `columns.sizing`, visible column id'lerini static CSS grid template icinde pixel track'lere map eder.
-- Mevcut core `sort` state'i eslesen static column header'larda `aria-sort` ve `data-sort-direction` ile expose edilir; row order `getProcessedRows` sonucundan gelir.
+- Mevcut core `sort` state'i eslesen static column header'larda `data-sort-direction` ve `data-sort-index` ile expose edilir; yalniz primary sorted header `aria-sort` alir. Row order `getProcessedRows` sonucundan gelir.
 - Mevcut core `filter` state'i eslesen static column header'larda `data-filtered="true"` ile expose edilir; visible rows `getProcessedRows` sonucundan gelir.
 - Empty `options.columns` reddedilir cunku static DOM grid output en az bir renderable column gerektirir.
 - Visible column kalmayan static DOM output reddedilir.

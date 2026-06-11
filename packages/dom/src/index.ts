@@ -284,13 +284,14 @@ export function renderStaticGridHtml<TData>(
       : ` aria-label="${escapeAttribute(options.caption)}"`;
   const headerCells = visibleColumns
     .map(({ column, columnId, visibleIndex }) => {
-      const sortItem = state.sort.items.find((item) => item.columnId === columnId);
+      const sortIndex = state.sort.items.findIndex((item) => item.columnId === columnId);
+      const sortItem = sortIndex === -1 ? undefined : state.sort.items[sortIndex];
       const sortAttributes =
         sortItem === undefined
           ? ""
-          : ` aria-sort="${
+          : `${sortIndex === 0 ? ` aria-sort="${
               sortItem.direction === "asc" ? "ascending" : "descending"
-            }" data-sort-direction="${sortItem.direction}"`;
+            }"` : ""} data-sort-direction="${sortItem.direction}" data-sort-index="${sortIndex}"`;
       const filtered = state.filter.items.some((item) => item.columnId === columnId);
       const filterAttributes = filtered ? ' data-filtered="true"' : "";
       const className = composeClassName(

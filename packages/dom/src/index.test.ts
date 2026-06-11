@@ -233,8 +233,30 @@ describe("@m-grid/dom static rendering", () => {
     const html = renderStaticGridHtml({ api, columns });
 
     expect(html).toContain(
-      'role="columnheader" aria-sort="descending" data-sort-direction="desc" aria-colindex="2"'
+      'role="columnheader" aria-sort="descending" data-sort-direction="desc" data-sort-index="0" aria-colindex="2"'
     );
+  });
+
+  it("renders aria-sort only on the primary sorted header", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+      initialState: {
+        sort: {
+          items: [
+            { columnId: "amount", direction: "desc" },
+            { columnId: "label", direction: "asc" },
+          ],
+        },
+      },
+    });
+
+    const html = renderStaticGridHtml({ api, columns });
+
+    expect(html.match(/aria-sort=/g)).toHaveLength(1);
+    expect(html).toContain('data-column-id="label">Label');
+    expect(html).toContain('data-sort-direction="asc" data-sort-index="1"');
   });
 
   it("renders filter metadata on filtered headers", () => {
