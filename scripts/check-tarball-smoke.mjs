@@ -127,6 +127,11 @@ try {
 run("node", ["consumer.mjs"], consumerDir);
 run("test", ["-f", "node_modules/@m-grid/theme-default/src/base.css"], consumerDir);
 run("test", ["-f", "node_modules/@m-grid/theme-default/src/light.css"], consumerDir);
+const baseCss = await readFile(join(consumerDir, "node_modules/@m-grid/theme-default/src/base.css"), "utf8");
+const lightCss = await readFile(join(consumerDir, "node_modules/@m-grid/theme-default/src/light.css"), "utf8");
+if (!baseCss.includes(".m-grid-header-cell[aria-sort]")) throw new Error("Theme base CSS did not style sorted headers.");
+if (!baseCss.includes('.m-grid-header-cell[data-filtered="true"]')) throw new Error("Theme base CSS did not style filtered headers.");
+if (!lightCss.includes("--m-grid-header-filtered-border")) throw new Error("Theme light CSS did not define filtered header token.");
 
 console.log("Tarball smoke check passed.");
 

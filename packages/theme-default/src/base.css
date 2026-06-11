@@ -9,6 +9,8 @@
     --m-grid-background: Canvas;
     --m-grid-foreground: CanvasText;
     --m-grid-header-background: color-mix(in srgb, CanvasText 4%, Canvas);
+    --m-grid-header-active-background: color-mix(in srgb, Highlight 12%, var(--m-grid-header-background));
+    --m-grid-header-filtered-border: Highlight;
     --m-grid-border-color: color-mix(in srgb, CanvasText 20%, transparent);
     --m-grid-focus-ring: Highlight;
     --m-grid-selected-background: Highlight;
@@ -77,6 +79,14 @@
     background: var(--m-grid-header-background);
     min-block-size: var(--m-grid-header-height);
     font-weight: 600;
+  }
+
+  :where(.m-grid-header-cell[aria-sort], .m-grid-header-cell[data-filtered="true"]) {
+    background: var(--m-grid-header-active-background);
+  }
+
+  :where(.m-grid-header-cell[data-filtered="true"]) {
+    box-shadow: inset 0 -2px 0 var(--m-grid-header-filtered-border);
   }
 
   :where(.m-grid-row:last-child .m-grid-cell) {

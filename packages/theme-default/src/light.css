@@ -3,6 +3,8 @@
     --m-grid-background: #ffffff;
     --m-grid-foreground: #111827;
     --m-grid-header-background: #f9fafb;
+    --m-grid-header-active-background: #dbeafe;
+    --m-grid-header-filtered-border: #2563eb;
     --m-grid-border-color: #d1d5db;
     --m-grid-focus-ring: #2563eb;
     --m-grid-selected-background: #2563eb;
