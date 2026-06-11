@@ -143,6 +143,28 @@ describe("@m-grid/core contract", () => {
     expect(grid.getState().columns.sizing).toEqual({ name: 180, score: 96 });
   });
 
+  it("replaces pagination through a command", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    const offsetEvents = grid.dispatch({
+      type: "pagination.replace",
+      pagination: { mode: "offset", pageIndex: 2, pageSize: 25 },
+    });
+    const cursorEvents = grid.dispatch({
+      type: "pagination.replace",
+      pagination: { mode: "cursor", cursor: "next", pageSize: 50 },
+    });
+
+    expect(offsetEvents).toHaveLength(1);
+    expect(offsetEvents[0]?.slice).toBe("pagination");
+    expect(cursorEvents).toHaveLength(1);
+    expect(grid.getState().pagination).toEqual({
+      mode: "cursor",
+      cursor: "next",
+      pageSize: 50,
+    });
+  });
+
   it("rejects invalid column order ids with predictable English errors", () => {
     const grid = createGrid<TestRow>({ columns, getRowId });
 
@@ -183,6 +205,33 @@ describe("@m-grid/core contract", () => {
     expect(() =>
       grid.dispatch({ type: "columns.sizing.replace", sizing: { name: 0 } })
     ).toThrow("[MGRID-COL-010] Column sizing width must be positive.");
+  });
+
+  it("rejects invalid pagination state with predictable English errors", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    expect(() =>
+      grid.dispatch({
+        type: "pagination.replace",
+        pagination: { mode: "offset", pageIndex: -1, pageSize: 25 },
+      })
+    ).toThrow(
+      "[MGRID-PAGE-001] Offset pagination pageIndex must be a non-negative integer."
+    );
+    expect(() =>
+      grid.dispatch({
+        type: "pagination.replace",
+        pagination: { mode: "offset", pageIndex: 0, pageSize: 0 },
+      })
+    ).toThrow(
+      "[MGRID-PAGE-002] Offset pagination pageSize must be a positive integer."
+    );
+    expect(() =>
+      grid.dispatch({
+        type: "pagination.replace",
+        pagination: { mode: "cursor", cursor: "", pageSize: 25 },
+      })
+    ).toThrow("[MGRID-PAGE-004] Cursor pagination cursor must not be empty.");
   });
 
   it("rejects empty selected row ids with a predictable English error", () => {

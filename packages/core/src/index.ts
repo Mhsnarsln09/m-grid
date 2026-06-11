@@ -135,6 +135,7 @@ export type GridCommand<TData> =
       readonly type: "columns.sizing.replace";
       readonly sizing: Readonly<Record<ColumnId, number>>;
     }
+  | { readonly type: "pagination.replace"; readonly pagination: PaginationState }
   | {
       readonly type: "data.request.start";
       readonly requestId: RequestId;
@@ -340,7 +341,7 @@ function createInitialState<TData>(
     rows: initial.rows ?? createDataRowsState(rows, options.getRowId),
     sort: initial.sort ?? { items: [] },
     filter: initial.filter ?? { items: [] },
-    pagination: initial.pagination ?? { mode: "none" },
+    pagination: createPaginationState(initial.pagination ?? { mode: "none" }),
     selection: initial.selection ?? { rowIds: new Set<RowId>() },
     columns:
       initial.columns === undefined
@@ -409,6 +410,13 @@ function reduceGridState<TData>(
           state.columns.visibility,
           command.sizing
         ),
+        command
+      );
+    case "pagination.replace":
+      return withSliceChange(
+        state,
+        "pagination",
+        createPaginationState(command.pagination),
         command
       );
     case "data.request.start":
@@ -694,6 +702,60 @@ function createColumnSizingState(
   return Object.freeze(normalized);
 }
 
+function createPaginationState(pagination: PaginationState): PaginationState {
+  switch (pagination.mode) {
+    case "none":
+      return Object.freeze({ mode: "none" });
+    case "offset": {
+      assertNonNegativeInteger(
+        pagination.pageIndex,
+        "[MGRID-PAGE-001] Offset pagination pageIndex must be a non-negative integer."
+      );
+      assertPositiveInteger(
+        pagination.pageSize,
+        "[MGRID-PAGE-002] Offset pagination pageSize must be a positive integer."
+      );
+      return Object.freeze({
+        mode: "offset",
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize,
+      });
+    }
+    case "cursor": {
+      assertPositiveInteger(
+        pagination.pageSize,
+        "[MGRID-PAGE-003] Cursor pagination pageSize must be a positive integer."
+      );
+      if (pagination.cursor === "") {
+        throw new Error("[MGRID-PAGE-004] Cursor pagination cursor must not be empty.");
+      }
+      return Object.freeze({
+        mode: "cursor",
+        pageSize: pagination.pageSize,
+        ...(pagination.cursor === undefined ? {} : { cursor: pagination.cursor }),
+      });
+    }
+  }
+}
+
+function assertNonNegativeInteger(
+  value: number | undefined,
+  message: string
+): asserts value is number {
+  if (value === undefined || !Number.isInteger(value) || value < 0) {
+    throw new Error(message);
+  }
+}
+
+function assertPositiveInteger(
+  value: number | undefined,
+  message: string
+): asserts value is number {
+  if (value === undefined || !Number.isInteger(value) || value <= 0) {
+    throw new Error(message);
+  }
+}
+
 function createDataRowsState<TData>(
   rows: readonly TData[],
   getRowId: GetRowId<TData>
@@ -840,6 +902,7 @@ function freezeState<TData>(state: GridState<TData>): GridState<TData> {
     }),
     sort: Object.freeze({ items: Object.freeze([...state.sort.items]) }),
     filter: Object.freeze({ items: Object.freeze([...state.filter.items]) }),
+    pagination: Object.freeze({ ...state.pagination }),
     selection: Object.freeze({ rowIds: new Set(state.selection.rowIds) }),
   });
 }

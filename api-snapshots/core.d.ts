@@ -104,6 +104,9 @@ export type GridCommand<TData> = {
     readonly type: "columns.sizing.replace";
     readonly sizing: Readonly<Record<ColumnId, number>>;
 } | {
+    readonly type: "pagination.replace";
+    readonly pagination: PaginationState;
+} | {
     readonly type: "data.request.start";
     readonly requestId: RequestId;
     readonly queryKey: QueryKey;
