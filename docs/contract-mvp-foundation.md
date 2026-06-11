@@ -42,6 +42,8 @@ pnpm release:check
 
 `@m-grid/theme-default` is an optional CSS package with explicit CSS entry points and CSS side-effect metadata. It has no JavaScript runtime dependency.
 
+The default theme exposes header activity tokens for static sort and filter metadata: `--m-grid-header-active-background` and `--m-grid-header-filtered-border`.
+
 ### Dependency Rules
 
 Allowed package directions:
@@ -200,6 +202,8 @@ pnpm release:check
 `@m-grid/vue` ilk adapter package'tir ve su anda yalniz core ve DOM contract'larini birlestiren minimal placeholder contract export eder. Henuz real Vue grid component implement etmez.
 
 `@m-grid/theme-default` explicit CSS entry point'leri ve CSS side-effect metadata'si olan optional CSS package'tir. JavaScript runtime dependency'si yoktur.
+
+Default theme static sort ve filter metadata'si icin header activity token'lari expose eder: `--m-grid-header-active-background` ve `--m-grid-header-filtered-border`.
 
 ### Dependency Rules
 
