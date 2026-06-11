@@ -97,13 +97,17 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 
 `columns.order.replace` replaces core column order state. It validates non-empty known column ids, deduplicates repeated ids while preserving first occurrence order and allows omitted columns so renderers can append unmatched configured columns as their own fallback.
 
+`columns.visibility.replace` replaces core column visibility state. Omitted columns remain visible, `false` hides a known column and static DOM rendering rejects output when no visible columns remain.
+
 ### Static DOM Rendering API
 
 `@m-grid/dom` exposes `renderStaticGridHtml(options)` and `mountStaticGrid(options)` for first-output demos and package smoke coverage. The public contract is intentionally narrow:
 
 - `options.api` reads the current `@m-grid/core` state and row identity contract.
 - `options.columns` defines renderable columns; current core `columns.order` controls rendered order when ids match.
+- Current core `columns.visibility` hides columns whose visibility value is `false`.
 - Empty `options.columns` is rejected because static DOM grid output requires at least one renderable column.
+- Static DOM output with no visible columns is rejected.
 - `options.caption`, when provided, renders visible caption text and the grid `aria-label`.
 - `options.emptyMessage`, when provided and there are no rows, renders escaped status text outside the grid surface.
 - `options.density` and `options.theme` set root `data-density` and `data-theme` attributes; defaults are `comfortable` and `light`.
@@ -225,13 +229,17 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 
 `columns.order.replace`, core column order state'ini degistirir. Non-empty ve known column id'leri validate eder, tekrar eden id'leri ilk gorulme sirasini koruyarak tekillestirir ve omitted column'lara izin verir; boylece renderer'lar eslesmeyen configured column'lari kendi fallback'i olarak sona ekleyebilir.
 
+`columns.visibility.replace`, core column visibility state'ini degistirir. Omitted column'lar visible kalir, `false` known column'i gizler ve static DOM rendering visible column kalmadiginda output'u reddeder.
+
 ### Static DOM Rendering API
 
 `@m-grid/dom`, ilk cikti demo'lari ve package smoke coverage icin `renderStaticGridHtml(options)` ve `mountStaticGrid(options)` export eder. Public contract bilerek dar tutulur:
 
 - `options.api` mevcut `@m-grid/core` state'ini ve row identity contract'ini okur.
 - `options.columns` renderable column'lari belirler; id'ler eslestiginde mevcut core `columns.order` rendered order'i kontrol eder.
+- Mevcut core `columns.visibility`, visibility degeri `false` olan column'lari gizler.
 - Empty `options.columns` reddedilir cunku static DOM grid output en az bir renderable column gerektirir.
+- Visible column kalmayan static DOM output reddedilir.
 - `options.caption` verildiginde visible caption text ve grid `aria-label` uretir.
 - `options.emptyMessage` verildiginde ve row yoksa, grid surface disinda escaped status text render eder.
 - `options.density` ve `options.theme` root `data-density` ve `data-theme` attribute'larini belirler; default degerler `comfortable` ve `light` olur.

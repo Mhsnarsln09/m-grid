@@ -73,6 +73,7 @@ export interface SelectionState {
 
 export interface ColumnState {
   readonly order: readonly ColumnId[];
+  readonly visibility?: Readonly<Record<ColumnId, boolean>>;
 }
 
 export interface DataRowsState<TData> {
@@ -125,6 +126,10 @@ export type GridCommand<TData> =
   | { readonly type: "rows.replace"; readonly rows: readonly TData[] }
   | { readonly type: "selection.replace"; readonly rowIds: readonly RowId[] }
   | { readonly type: "columns.order.replace"; readonly order: readonly ColumnId[] }
+  | {
+      readonly type: "columns.visibility.replace";
+      readonly visibility: Readonly<Record<ColumnId, boolean>>;
+    }
   | {
       readonly type: "data.request.start";
       readonly requestId: RequestId;
@@ -332,7 +337,14 @@ function createInitialState<TData>(
     filter: initial.filter ?? { items: [] },
     pagination: initial.pagination ?? { mode: "none" },
     selection: initial.selection ?? { rowIds: new Set<RowId>() },
-    columns: initial.columns ?? createColumnState(columnIds, columnIds),
+    columns:
+      initial.columns === undefined
+        ? createColumnState(columnIds, columnIds)
+        : createColumnState(
+            initial.columns.order,
+            columnIds,
+            initial.columns.visibility
+          ),
     loading: initial.loading ?? { status: "idle" },
   });
 }
@@ -361,7 +373,18 @@ function reduceGridState<TData>(
       return withSliceChange(
         state,
         "columns",
-        createColumnState(command.order, context.columnIds),
+        createColumnState(command.order, context.columnIds, state.columns.visibility),
+        command
+      );
+    case "columns.visibility.replace":
+      return withSliceChange(
+        state,
+        "columns",
+        createColumnState(
+          state.columns.order,
+          context.columnIds,
+          command.visibility
+        ),
         command
       );
     case "data.request.start":
@@ -576,7 +599,8 @@ function assertValidColumns<TData>(
 
 function createColumnState(
   order: readonly ColumnId[],
-  knownColumnIds: readonly ColumnId[]
+  knownColumnIds: readonly ColumnId[],
+  visibility: Readonly<Record<ColumnId, boolean>> = {}
 ): ColumnState {
   const known = new Set(knownColumnIds);
   const seen = new Set<ColumnId>();
@@ -594,7 +618,33 @@ function createColumnState(
     seen.add(columnId);
     normalizedOrder.push(columnId);
   }
-  return Object.freeze({ order: Object.freeze(normalizedOrder) });
+  const normalizedVisibility = createColumnVisibilityState(visibility, known);
+  return Object.freeze({
+    order: Object.freeze(normalizedOrder),
+    visibility: normalizedVisibility,
+  });
+}
+
+function createColumnVisibilityState(
+  visibility: Readonly<Record<ColumnId, boolean>>,
+  knownColumnIds: ReadonlySet<ColumnId>
+): Readonly<Record<ColumnId, boolean>> {
+  const normalized: Record<ColumnId, boolean> = {};
+  for (const [columnId, visible] of Object.entries(visibility)) {
+    if (columnId === "") {
+      throw new Error("[MGRID-COL-005] Column visibility id must not be empty.");
+    }
+    if (!knownColumnIds.has(columnId)) {
+      throw new Error(
+        `[MGRID-COL-006] Unknown column visibility id: "${columnId}".`
+      );
+    }
+    if (typeof visible !== "boolean") {
+      throw new Error("[MGRID-COL-007] Column visibility value must be boolean.");
+    }
+    normalized[columnId] = visible;
+  }
+  return Object.freeze(normalized);
 }
 
 function createDataRowsState<TData>(
@@ -736,7 +786,10 @@ function freezeState<TData>(state: GridState<TData>): GridState<TData> {
       rows: Object.freeze([...state.rows.rows]),
       rowIds: Object.freeze([...state.rows.rowIds]),
     }),
-    columns: Object.freeze({ order: Object.freeze([...state.columns.order]) }),
+    columns: Object.freeze({
+      order: Object.freeze([...state.columns.order]),
+      visibility: Object.freeze({ ...(state.columns.visibility ?? {}) }),
+    }),
     sort: Object.freeze({ items: Object.freeze([...state.sort.items]) }),
     filter: Object.freeze({ items: Object.freeze([...state.filter.items]) }),
     selection: Object.freeze({ rowIds: new Set(state.selection.rowIds) }),

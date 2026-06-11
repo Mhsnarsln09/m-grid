@@ -261,7 +261,11 @@ export function renderStaticGridHtml<TData>(
 ): string {
   assertRenderableStaticGridColumns(options.columns);
   const state = options.api.getState();
-  const renderColumns = resolveRenderColumns(options.columns, state.columns.order);
+  const renderColumns = resolveRenderColumns(
+    options.columns,
+    state.columns.order
+  ).filter((column) => state.columns.visibility?.[getColumnId(column)] !== false);
+  assertVisibleStaticGridColumns(renderColumns);
   const columnCount = renderColumns.length;
   const density = options.density ?? "comfortable";
   const theme = options.theme ?? "light";
@@ -374,6 +378,16 @@ function assertRenderableStaticGridColumns<TData>(
   if (columns.length === 0) {
     throw new Error(
       "[MGRID-DOM-003] At least one column is required for DOM rendering."
+    );
+  }
+}
+
+function assertVisibleStaticGridColumns<TData>(
+  columns: readonly AnyColumnDef<TData>[]
+): void {
+  if (columns.length === 0) {
+    throw new Error(
+      "[MGRID-DOM-004] At least one visible column is required for DOM rendering."
     );
   }
 }

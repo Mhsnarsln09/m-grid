@@ -117,6 +117,19 @@ describe("@m-grid/core contract", () => {
     expect(grid.getState().columns.order).toEqual(["score", "name"]);
   });
 
+  it("replaces column visibility through a command", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    const events = grid.dispatch({
+      type: "columns.visibility.replace",
+      visibility: { score: false },
+    });
+
+    expect(events).toHaveLength(1);
+    expect(events[0]?.slice).toBe("columns");
+    expect(grid.getState().columns.visibility).toEqual({ score: false });
+  });
+
   it("rejects invalid column order ids with predictable English errors", () => {
     const grid = createGrid<TestRow>({ columns, getRowId });
 
@@ -126,6 +139,20 @@ describe("@m-grid/core contract", () => {
     expect(() =>
       grid.dispatch({ type: "columns.order.replace", order: ["missing"] })
     ).toThrow('[MGRID-COL-004] Unknown column order id: "missing".');
+  });
+
+  it("rejects invalid column visibility ids with predictable English errors", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    expect(() =>
+      grid.dispatch({ type: "columns.visibility.replace", visibility: { "": false } })
+    ).toThrow("[MGRID-COL-005] Column visibility id must not be empty.");
+    expect(() =>
+      grid.dispatch({
+        type: "columns.visibility.replace",
+        visibility: { missing: false },
+      })
+    ).toThrow('[MGRID-COL-006] Unknown column visibility id: "missing".');
   });
 
   it("rejects empty selected row ids with a predictable English error", () => {

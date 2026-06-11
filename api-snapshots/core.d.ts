@@ -47,6 +47,7 @@ export interface SelectionState {
 }
 export interface ColumnState {
     readonly order: readonly ColumnId[];
+    readonly visibility?: Readonly<Record<ColumnId, boolean>>;
 }
 export interface DataRowsState<TData> {
     readonly rows: readonly TData[];
@@ -95,6 +96,9 @@ export type GridCommand<TData> = {
 } | {
     readonly type: "columns.order.replace";
     readonly order: readonly ColumnId[];
+} | {
+    readonly type: "columns.visibility.replace";
+    readonly visibility: Readonly<Record<ColumnId, boolean>>;
 } | {
     readonly type: "data.request.start";
     readonly requestId: RequestId;
