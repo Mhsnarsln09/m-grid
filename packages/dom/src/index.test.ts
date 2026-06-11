@@ -34,6 +34,7 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('aria-colcount="2"');
     expect(html).toContain('aria-busy="false"');
     expect(html).toContain('aria-readonly="true"');
+    expect(html).toContain('data-pagination-mode="none"');
     expect(html).toContain('data-loading-status="idle"');
     expect(html).toContain('aria-rowindex="1"');
     expect(html).toContain('aria-colindex="2"');
@@ -250,6 +251,21 @@ describe("@m-grid/dom static rendering", () => {
     );
   });
 
+  it("renders pagination metadata on the static root", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+      initialState: {
+        pagination: { mode: "offset", pageIndex: 1, pageSize: 20 },
+      },
+    });
+
+    const html = renderStaticGridHtml({ api, columns });
+
+    expect(html).toContain('data-pagination-mode="offset"');
+  });
+
   it("rejects static output with no visible columns", () => {
     const api = createGrid({
       columns,
@@ -338,7 +354,7 @@ describe("@m-grid/dom static rendering", () => {
     const html = renderStaticGridHtml({ api, columns, caption: "Orders" });
 
     expect(html).toMatchInlineSnapshot(`
-      "<div class="m-grid-root" data-density="comfortable" data-theme="light" data-loading-status="idle">
+      "<div class="m-grid-root" data-density="comfortable" data-theme="light" data-loading-status="idle" data-pagination-mode="none">
       <div class="m-grid-caption">Orders</div>
       <div class="m-grid-surface" role="grid" aria-label="Orders" aria-busy="false" aria-readonly="true" aria-rowcount="2" aria-colcount="2" style="--m-grid-column-count: 2; --m-grid-column-template: minmax(0, 1fr) minmax(0, 1fr);">
       <div class="m-grid-header-row" role="row"><div class="m-grid-header-cell" role="columnheader" aria-colindex="1" data-column-index="0" data-column-id="label">Label</div><div class="m-grid-header-cell" role="columnheader" aria-colindex="2" data-column-index="1" data-column-id="amount">Amount</div></div>

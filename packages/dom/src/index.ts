@@ -365,6 +365,8 @@ export function renderStaticGridHtml<TData>(
     density
   )}" data-theme="${escapeAttribute(theme)}" data-loading-status="${escapeAttribute(
     loadingStatus
+  )}" data-pagination-mode="${escapeAttribute(
+    state.pagination.mode
   )}">
 ${caption}
 <div class="m-grid-surface" role="grid"${gridLabel} aria-busy="${busy}" aria-readonly="true" aria-rowcount="${state.rows.rows.length}" aria-colcount="${columnCount}" style="--m-grid-column-count: ${columnCount}; --m-grid-column-template: ${columnTemplate};">
