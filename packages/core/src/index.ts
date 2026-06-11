@@ -63,8 +63,24 @@ export interface SortState {
   readonly items: readonly SortItem[];
 }
 
+export type FilterOperator =
+  | "equals"
+  | "contains"
+  | "startsWith"
+  | "endsWith"
+  | "gt"
+  | "gte"
+  | "lt"
+  | "lte";
+
+export interface FilterItem {
+  readonly columnId: ColumnId;
+  readonly operator: FilterOperator;
+  readonly value: unknown;
+}
+
 export interface FilterState {
-  readonly items: readonly unknown[];
+  readonly items: readonly FilterItem[];
 }
 
 export interface PaginationState {
@@ -134,6 +150,7 @@ export type GridCommand<TData> =
   | { readonly type: "rows.replace"; readonly rows: readonly TData[] }
   | { readonly type: "selection.replace"; readonly rowIds: readonly RowId[] }
   | { readonly type: "sort.replace"; readonly sort: SortState }
+  | { readonly type: "filter.replace"; readonly filter: FilterState }
   | { readonly type: "columns.order.replace"; readonly order: readonly ColumnId[] }
   | {
       readonly type: "columns.visibility.replace";
@@ -348,7 +365,7 @@ function createInitialState<TData>(
     version: 1,
     rows: initial.rows ?? createDataRowsState(rows, options.getRowId),
     sort: createSortState(initial.sort ?? { items: [] }, columnIds),
-    filter: initial.filter ?? { items: [] },
+    filter: createFilterState(initial.filter ?? { items: [] }, columnIds),
     pagination: createPaginationState(initial.pagination ?? { mode: "none" }),
     selection: initial.selection ?? { rowIds: new Set<RowId>() },
     columns:
@@ -389,6 +406,13 @@ function reduceGridState<TData>(
         state,
         "sort",
         createSortState(command.sort, context.columnIds),
+        command
+      );
+    case "filter.replace":
+      return withSliceChange(
+        state,
+        "filter",
+        createFilterState(command.filter, context.columnIds),
         command
       );
     case "columns.order.replace":
@@ -775,6 +799,45 @@ function createSortState(
     items.push(Object.freeze({ columnId: item.columnId, direction: item.direction }));
   }
   return Object.freeze({ items: Object.freeze(items) });
+}
+
+function createFilterState(
+  filter: FilterState,
+  knownColumnIds: readonly ColumnId[]
+): FilterState {
+  const known = new Set(knownColumnIds);
+  const items = filter.items.map((item) => {
+    if (item.columnId === "") {
+      throw new Error("[MGRID-FILTER-001] Filter column id must not be empty.");
+    }
+    if (!known.has(item.columnId)) {
+      throw new Error(
+        `[MGRID-FILTER-002] Unknown filter column id: "${item.columnId}".`
+      );
+    }
+    if (!isFilterOperator(item.operator)) {
+      throw new Error("[MGRID-FILTER-003] Filter operator is not supported.");
+    }
+    return Object.freeze({
+      columnId: item.columnId,
+      operator: item.operator,
+      value: item.value,
+    });
+  });
+  return Object.freeze({ items: Object.freeze(items) });
+}
+
+function isFilterOperator(operator: string): operator is FilterOperator {
+  return (
+    operator === "equals" ||
+    operator === "contains" ||
+    operator === "startsWith" ||
+    operator === "endsWith" ||
+    operator === "gt" ||
+    operator === "gte" ||
+    operator === "lt" ||
+    operator === "lte"
+  );
 }
 
 function assertNonNegativeInteger(

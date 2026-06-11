@@ -97,6 +97,10 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 
 `sort.replace` replaces core sort state with typed `{ columnId, direction }` items. It validates non-empty known column ids, accepts only `asc` or `desc` directions and deduplicates repeated column ids while preserving first occurrence order. It does not sort row data yet.
 
+### Filter State API
+
+`filter.replace` replaces core filter state with typed `{ columnId, operator, value }` items. It validates non-empty known column ids and supports the `equals`, `contains`, `startsWith`, `endsWith`, `gt`, `gte`, `lt` and `lte` operators. It does not filter row data yet.
+
 ### Column Order State API
 
 `columns.order.replace` replaces core column order state. It validates non-empty known column ids, deduplicates repeated ids while preserving first occurrence order and allows omitted columns so renderers can append unmatched configured columns as their own fallback.
@@ -239,6 +243,10 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 ### Sort State API
 
 `sort.replace`, core sort state'ini typed `{ columnId, direction }` item'lariyla degistirir. Non-empty known column id'leri validate eder, yalniz `asc` veya `desc` direction kabul eder ve tekrar eden column id'leri ilk gorulme sirasini koruyarak tekillestirir. Henuz row data siralamaz.
+
+### Filter State API
+
+`filter.replace`, core filter state'ini typed `{ columnId, operator, value }` item'lariyla degistirir. Non-empty known column id'leri validate eder ve `equals`, `contains`, `startsWith`, `endsWith`, `gt`, `gte`, `lt` ve `lte` operator'lerini destekler. Henuz row data filtrelemez.
 
 ### Column Order State API
 

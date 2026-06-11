@@ -38,8 +38,14 @@ export interface SortItem {
 export interface SortState {
     readonly items: readonly SortItem[];
 }
+export type FilterOperator = "equals" | "contains" | "startsWith" | "endsWith" | "gt" | "gte" | "lt" | "lte";
+export interface FilterItem {
+    readonly columnId: ColumnId;
+    readonly operator: FilterOperator;
+    readonly value: unknown;
+}
 export interface FilterState {
-    readonly items: readonly unknown[];
+    readonly items: readonly FilterItem[];
 }
 export interface PaginationState {
     readonly mode: "none" | "offset" | "cursor";
@@ -102,6 +108,9 @@ export type GridCommand<TData> = {
 } | {
     readonly type: "sort.replace";
     readonly sort: SortState;
+} | {
+    readonly type: "filter.replace";
+    readonly filter: FilterState;
 } | {
     readonly type: "columns.order.replace";
     readonly order: readonly ColumnId[];

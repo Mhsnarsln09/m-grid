@@ -6,7 +6,7 @@
 
 It does not yet provide usable grid rendering, a real Vue component, sorting, filtering, pagination, interactive row selection behavior, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, editing, grouping or export features.
 
-The core state model now supports replacing selected row ids through `selection.replace`, sort state through `sort.replace`, column order through `columns.order.replace`, column visibility through `columns.visibility.replace`, column sizing through `columns.sizing.replace` and pagination through `pagination.replace`; adapters still need to implement real pointer and keyboard selection behavior.
+The core state model now supports replacing selected row ids through `selection.replace`, sort state through `sort.replace`, filter state through `filter.replace`, column order through `columns.order.replace`, column visibility through `columns.visibility.replace`, column sizing through `columns.sizing.replace` and pagination through `pagination.replace`; adapters still need to implement real pointer and keyboard selection behavior.
 
 The repository includes a static DOM demo for the first visible output. It renders rows and columns only; it is not yet a usable interactive grid.
 
@@ -74,7 +74,7 @@ See [Static DOM Demo Notes](./examples/dom-static/README.md) for the demo scope 
 
 Henuz usable grid rendering, real Vue component, sorting, filtering, pagination, interactive row selection behavior, keyboard navigation, ARIA grid navigation, virtualization, responsive column behavior, editing, grouping veya export feature saglamaz.
 
-Core state model artik selected row id'lerini `selection.replace` ile, sort state'i `sort.replace` ile, column order'i `columns.order.replace` ile, column visibility'yi `columns.visibility.replace` ile, column sizing'i `columns.sizing.replace` ile ve pagination'i `pagination.replace` ile degistirmeyi destekler; adapter'larin real pointer ve keyboard selection behavior'i henuz implement etmesi gerekir.
+Core state model artik selected row id'lerini `selection.replace` ile, sort state'i `sort.replace` ile, filter state'i `filter.replace` ile, column order'i `columns.order.replace` ile, column visibility'yi `columns.visibility.replace` ile, column sizing'i `columns.sizing.replace` ile ve pagination'i `pagination.replace` ile degistirmeyi destekler; adapter'larin real pointer ve keyboard selection behavior'i henuz implement etmesi gerekir.
 
 Repository ilk gorunur cikti icin static DOM demo icerir. Sadece row ve column render eder; henuz usable interactive grid degildir.
 

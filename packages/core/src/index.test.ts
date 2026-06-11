@@ -126,6 +126,27 @@ describe("@m-grid/core contract", () => {
     ]);
   });
 
+  it("replaces filter state through a command", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    const events = grid.dispatch({
+      type: "filter.replace",
+      filter: {
+        items: [
+          { columnId: "name", operator: "contains", value: "Al" },
+          { columnId: "score", operator: "gte", value: 10 },
+        ],
+      },
+    });
+
+    expect(events).toHaveLength(1);
+    expect(events[0]?.slice).toBe("filter");
+    expect(grid.getState().filter.items).toEqual([
+      { columnId: "name", operator: "contains", value: "Al" },
+      { columnId: "score", operator: "gte", value: 10 },
+    ]);
+  });
+
   it("replaces column order through a command", () => {
     const grid = createGrid<TestRow>({ columns, getRowId });
 
@@ -277,6 +298,35 @@ describe("@m-grid/core contract", () => {
         sort: { items: [{ columnId: "name", direction: "up" as "asc" }] },
       })
     ).toThrow("[MGRID-SORT-003] Sort direction must be asc or desc.");
+  });
+
+  it("rejects invalid filter state with predictable English errors", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    expect(() =>
+      grid.dispatch({
+        type: "filter.replace",
+        filter: { items: [{ columnId: "", operator: "equals", value: "x" }] },
+      })
+    ).toThrow("[MGRID-FILTER-001] Filter column id must not be empty.");
+    expect(() =>
+      grid.dispatch({
+        type: "filter.replace",
+        filter: {
+          items: [{ columnId: "missing", operator: "equals", value: "x" }],
+        },
+      })
+    ).toThrow('[MGRID-FILTER-002] Unknown filter column id: "missing".');
+    expect(() =>
+      grid.dispatch({
+        type: "filter.replace",
+        filter: {
+          items: [
+            { columnId: "name", operator: "near" as "equals", value: "x" },
+          ],
+        },
+      })
+    ).toThrow("[MGRID-FILTER-003] Filter operator is not supported.");
   });
 
   it("rejects empty selected row ids with a predictable English error", () => {
