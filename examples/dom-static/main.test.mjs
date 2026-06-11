@@ -10,6 +10,9 @@ describe("static DOM demo", () => {
       "#swap-columns": createButton(),
       "#toggle-total-column": createButton("Hide total"),
       "#resize-total-column": createButton("Resize total"),
+      "#sort-total": createButton("Sort total"),
+      "#filter-ready": createButton("Filter ready"),
+      "#page-size-one": createButton("Page size 1"),
       "#refresh-status": {
         textContent: "Showing initial rows; Grace Hopper selected",
       },
@@ -35,7 +38,7 @@ describe("static DOM demo", () => {
     );
     expect(elements["#refresh-rows"].textContent).toBe("Show initial rows");
     expect(elements["#refresh-status"].textContent).toBe(
-      "Showing refreshed rows; Mary Jackson selected"
+      "Showing refreshed rows; Mary Jackson selected; 3 of 3 processed rows"
     );
 
     elements["#refresh-rows"].click();
@@ -46,7 +49,7 @@ describe("static DOM demo", () => {
     );
     expect(elements["#refresh-rows"].textContent).toBe("Refresh rows");
     expect(elements["#refresh-status"].textContent).toBe(
-      "Showing initial rows; Grace Hopper selected"
+      "Showing initial rows; Grace Hopper selected; 3 of 3 processed rows"
     );
 
     elements["#select-next-row"].click();
@@ -55,7 +58,7 @@ describe("static DOM demo", () => {
       'aria-selected="true" data-selected="true" data-row-id="order-1003"'
     );
     expect(elements["#refresh-status"].textContent).toBe(
-      "Showing initial rows; Katherine Johnson selected"
+      "Showing initial rows; Katherine Johnson selected; 3 of 3 processed rows"
     );
 
     elements["#app"].clickRow("order-1001");
@@ -64,7 +67,7 @@ describe("static DOM demo", () => {
       'aria-selected="true" data-selected="true" data-row-id="order-1001"'
     );
     expect(elements["#refresh-status"].textContent).toBe(
-      "Showing initial rows; Ada Lovelace selected"
+      "Showing initial rows; Ada Lovelace selected; 3 of 3 processed rows"
     );
 
     elements["#swap-columns"].click();
@@ -85,6 +88,24 @@ describe("static DOM demo", () => {
 
     expect(elements["#app"].innerHTML).not.toContain("Total");
     expect(elements["#toggle-total-column"].textContent).toBe("Show total");
+
+    elements["#sort-total"].click();
+
+    expect(elements["#app"].innerHTML.indexOf("Katherine Johnson")).toBeLessThan(
+      elements["#app"].innerHTML.indexOf("Ada Lovelace")
+    );
+    expect(elements["#sort-total"].textContent).toBe("Clear total sort");
+
+    elements["#filter-ready"].click();
+
+    expect(elements["#app"].innerHTML).toContain("Ada Lovelace");
+    expect(elements["#app"].innerHTML).not.toContain("Grace Hopper");
+    expect(elements["#filter-ready"].textContent).toBe("Clear ready filter");
+
+    elements["#page-size-one"].click();
+
+    expect(elements["#app"].innerHTML).toContain('aria-rowcount="1"');
+    expect(elements["#page-size-one"].textContent).toBe("Show all rows");
   });
 
   it("fails predictably when required demo nodes are missing", () => {
@@ -109,6 +130,15 @@ describe("static DOM demo", () => {
     expect(() =>
       setupStaticDemo(createDocumentWithout("#resize-total-column"))
     ).toThrow("[MGRID-DEMO-007] Demo resize total column button was not found.");
+    expect(() => setupStaticDemo(createDocumentWithout("#sort-total"))).toThrow(
+      "[MGRID-DEMO-008] Demo sort total button was not found."
+    );
+    expect(() => setupStaticDemo(createDocumentWithout("#filter-ready"))).toThrow(
+      "[MGRID-DEMO-009] Demo filter ready button was not found."
+    );
+    expect(() => setupStaticDemo(createDocumentWithout("#page-size-one"))).toThrow(
+      "[MGRID-DEMO-010] Demo page size one button was not found."
+    );
   });
 });
 
@@ -120,6 +150,9 @@ function createDocumentWithout(missingSelector) {
     "#swap-columns": createButton(),
     "#toggle-total-column": createButton("Hide total"),
     "#resize-total-column": createButton("Resize total"),
+    "#sort-total": createButton("Sort total"),
+    "#filter-ready": createButton("Filter ready"),
+    "#page-size-one": createButton("Page size 1"),
     "#refresh-status": {
       textContent: "Showing initial rows; Grace Hopper selected",
     },

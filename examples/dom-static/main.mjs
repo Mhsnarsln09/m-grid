@@ -1,4 +1,4 @@
-import { createGrid } from "../../packages/core/dist/index.js";
+import { createGrid, getProcessedRows } from "../../packages/core/dist/index.js";
 import {
   getStaticGridRowIdFromTarget,
   mountStaticGrid,
@@ -13,7 +13,7 @@ const rows = [
 
 const columns = [
   { accessorKey: "customer", header: "Customer" },
-  { id: "total", header: "Total", accessorFn: (row) => `$${row.total}` },
+  { id: "total", header: "Total", accessorFn: (row) => row.total },
   { accessorKey: "status", header: "Status" },
 ];
 
@@ -61,6 +61,21 @@ export function setupStaticDemo(documentRef) {
     throw new Error("[MGRID-DEMO-007] Demo resize total column button was not found.");
   }
 
+  const sortTotalButton = documentRef.querySelector("#sort-total");
+  if (sortTotalButton === null) {
+    throw new Error("[MGRID-DEMO-008] Demo sort total button was not found.");
+  }
+
+  const filterReadyButton = documentRef.querySelector("#filter-ready");
+  if (filterReadyButton === null) {
+    throw new Error("[MGRID-DEMO-009] Demo filter ready button was not found.");
+  }
+
+  const pageSizeOneButton = documentRef.querySelector("#page-size-one");
+  if (pageSizeOneButton === null) {
+    throw new Error("[MGRID-DEMO-010] Demo page size one button was not found.");
+  }
+
   const refreshStatus = documentRef.querySelector("#refresh-status");
   if (refreshStatus === null) {
     throw new Error("[MGRID-DEMO-003] Demo refresh status was not found.");
@@ -78,6 +93,9 @@ export function setupStaticDemo(documentRef) {
   let showingTotalFirst = false;
   let showingTotalColumn = true;
   let showingWideTotal = false;
+  let sortingTotalAsc = false;
+  let filteringReady = false;
+  let pagingOne = false;
 
   function getVisibleRows() {
     return showingAlternateRows ? alternateRows : rows;
@@ -87,9 +105,16 @@ export function setupStaticDemo(documentRef) {
     const visibleRows = getVisibleRows();
     const selectedRow = visibleRows[selectedRowIndex] ?? visibleRows[0];
     if (selectedRow !== undefined) selectStaticGridRow(api, selectedRow.id);
-    refreshStatus.textContent = `${showingAlternateRows ? "Showing refreshed rows" : "Showing initial rows"}; ${
-      selectedRow?.customer ?? "No row"
-    } selected`;
+    updateStatus(selectedRow?.customer ?? "No row");
+  }
+
+  function updateStatus(selectedCustomer) {
+    const processed = getProcessedRows(api, columns);
+    refreshStatus.textContent = `${
+      showingAlternateRows ? "Showing refreshed rows" : "Showing initial rows"
+    }; ${selectedCustomer} selected; ${processed.rows.length} of ${
+      processed.filteredRowCount
+    } processed rows`;
   }
 
   refreshButton.addEventListener("click", () => {
@@ -143,6 +168,50 @@ export function setupStaticDemo(documentRef) {
     resizeTotalColumnButton.textContent = showingWideTotal
       ? "Reset total width"
       : "Resize total";
+  });
+
+  sortTotalButton.addEventListener("click", () => {
+    sortingTotalAsc = !sortingTotalAsc;
+    api.dispatch({
+      type: "sort.replace",
+      sort: {
+        items: sortingTotalAsc
+          ? [{ columnId: "total", direction: "asc" }]
+          : [],
+      },
+    });
+    sortTotalButton.textContent = sortingTotalAsc
+      ? "Clear total sort"
+      : "Sort total";
+    updateSelection();
+  });
+
+  filterReadyButton.addEventListener("click", () => {
+    filteringReady = !filteringReady;
+    api.dispatch({
+      type: "filter.replace",
+      filter: {
+        items: filteringReady
+          ? [{ columnId: "status", operator: "equals", value: "Ready" }]
+          : [],
+      },
+    });
+    filterReadyButton.textContent = filteringReady
+      ? "Clear ready filter"
+      : "Filter ready";
+    updateSelection();
+  });
+
+  pageSizeOneButton.addEventListener("click", () => {
+    pagingOne = !pagingOne;
+    api.dispatch({
+      type: "pagination.replace",
+      pagination: pagingOne
+        ? { mode: "offset", pageIndex: 0, pageSize: 1 }
+        : { mode: "none" },
+    });
+    pageSizeOneButton.textContent = pagingOne ? "Show all rows" : "Page size 1";
+    updateSelection();
   });
 
   app.addEventListener("click", (event) => {
