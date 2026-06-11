@@ -100,6 +100,14 @@ export interface ColumnState {
   readonly sizing?: Readonly<Record<ColumnId, number>>;
 }
 
+export interface VisibleColumn<TData> {
+  readonly column: AnyColumnDef<TData>;
+  readonly columnId: ColumnId;
+  readonly sourceIndex: number;
+  readonly visibleIndex: number;
+  readonly width: number | undefined;
+}
+
 export interface DataRowsState<TData> {
   readonly rows: readonly TData[];
   readonly rowIds: readonly RowId[];
@@ -396,6 +404,46 @@ export function getProcessedRows<TData>(
     totalRowCount: indexedRows.length,
     filteredRowCount: filteredRows.length,
   });
+}
+
+export function getVisibleColumns<TData>(
+  columns: readonly AnyColumnDef<TData>[],
+  state: ColumnState
+): readonly VisibleColumn<TData>[] {
+  const columnsById = new Map<ColumnId, { column: AnyColumnDef<TData>; sourceIndex: number }>();
+  columns.forEach((column, sourceIndex) => {
+    columnsById.set(resolveColumnId(column), { column, sourceIndex });
+  });
+
+  const orderedColumns: Array<{ column: AnyColumnDef<TData>; sourceIndex: number }> = [];
+  const seen = new Set<ColumnId>();
+  for (const columnId of state.order) {
+    if (seen.has(columnId)) continue;
+    const entry = columnsById.get(columnId);
+    if (entry !== undefined) {
+      orderedColumns.push(entry);
+      seen.add(columnId);
+    }
+  }
+
+  for (const [columnId, entry] of columnsById) {
+    if (!seen.has(columnId)) orderedColumns.push(entry);
+  }
+
+  return Object.freeze(
+    orderedColumns
+      .filter(({ column }) => state.visibility?.[resolveColumnId(column)] !== false)
+      .map(({ column, sourceIndex }, visibleIndex) => {
+        const columnId = resolveColumnId(column);
+        return Object.freeze({
+          column,
+          columnId,
+          sourceIndex,
+          visibleIndex,
+          width: state.sizing?.[columnId],
+        });
+      })
+  );
 }
 
 function createInitialState<TData>(

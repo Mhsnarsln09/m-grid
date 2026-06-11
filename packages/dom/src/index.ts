@@ -1,4 +1,4 @@
-import { getProcessedRows } from "@m-grid/core";
+import { getProcessedRows, getVisibleColumns } from "@m-grid/core";
 import type {
   AnyColumnDef,
   ColumnId,
@@ -6,6 +6,7 @@ import type {
   GridEvent,
   GridState,
   RowId,
+  VisibleColumn,
 } from "@m-grid/core";
 
 export type GridDomSlot =
@@ -262,14 +263,11 @@ export function renderStaticGridHtml<TData>(
 ): string {
   assertRenderableStaticGridColumns(options.columns);
   const state = options.api.getState();
-  const renderColumns = resolveRenderColumns(
-    options.columns,
-    state.columns.order
-  ).filter((column) => state.columns.visibility?.[getColumnId(column)] !== false);
-  assertVisibleStaticGridColumns(renderColumns);
+  const visibleColumns = getVisibleColumns(options.columns, state.columns);
+  assertVisibleStaticGridColumns(visibleColumns);
   const processedRows = getProcessedRows(options.api, options.columns);
-  const columnCount = renderColumns.length;
-  const columnTemplate = getStaticGridColumnTemplate(renderColumns, state.columns.sizing);
+  const columnCount = visibleColumns.length;
+  const columnTemplate = getStaticGridColumnTemplate(visibleColumns);
   const density = options.density ?? "comfortable";
   const theme = options.theme ?? "light";
   const loadingStatus = state.loading.status;
@@ -278,9 +276,8 @@ export function renderStaticGridHtml<TData>(
     options.caption === undefined
       ? ""
       : ` aria-label="${escapeAttribute(options.caption)}"`;
-  const headerCells = renderColumns
-    .map((column, columnIndex) => {
-      const columnId = getColumnId(column);
+  const headerCells = visibleColumns
+    .map(({ column, columnId, visibleIndex }) => {
       const sortItem = state.sort.items.find((item) => item.columnId === columnId);
       const sortAttributes =
         sortItem === undefined
@@ -292,13 +289,17 @@ export function renderStaticGridHtml<TData>(
       const filterAttributes = filtered ? ' data-filtered="true"' : "";
       const className = composeClassName(
         "m-grid-header-cell",
-        options.getHeaderCellClassName?.({ column, columnId, columnIndex })
+        options.getHeaderCellClassName?.({
+          column,
+          columnId,
+          columnIndex: visibleIndex,
+        })
       );
       return `<div class="${escapeAttribute(
         className
       )}" role="columnheader"${sortAttributes}${filterAttributes} aria-colindex="${
-        columnIndex + 1
-      }" data-column-index="${columnIndex}" data-column-id="${escapeAttribute(columnId)}">${escapeHtml(
+        visibleIndex + 1
+      }" data-column-index="${visibleIndex}" data-column-id="${escapeAttribute(columnId)}">${escapeHtml(
         column.header ?? columnId
       )}</div>`;
     })
@@ -314,9 +315,8 @@ export function renderStaticGridHtml<TData>(
       const selectionAttributes = selected
         ? ' aria-selected="true" data-selected="true"'
         : "";
-      const cells = renderColumns
-        .map((column, columnIndex) => {
-          const columnId = getColumnId(column);
+      const cells = visibleColumns
+        .map(({ column, columnId, visibleIndex }) => {
           const value = getCellValue(options.api, row, column, sourceIndex);
           const className = composeClassName(
             "m-grid-cell",
@@ -327,15 +327,15 @@ export function renderStaticGridHtml<TData>(
               selected,
               column,
               columnId,
-              columnIndex,
+              columnIndex: visibleIndex,
               value,
             })
           );
           return `<div class="${escapeAttribute(
             className
           )}" role="gridcell" aria-colindex="${
-            columnIndex + 1
-          }" data-column-index="${columnIndex}" data-column-id="${escapeAttribute(columnId)}">${escapeHtml(
+            visibleIndex + 1
+          }" data-column-index="${visibleIndex}" data-column-id="${escapeAttribute(columnId)}">${escapeHtml(
             String(value ?? "")
           )}</div>`;
         })
@@ -395,9 +395,7 @@ function assertRenderableStaticGridColumns<TData>(
   }
 }
 
-function assertVisibleStaticGridColumns<TData>(
-  columns: readonly AnyColumnDef<TData>[]
-): void {
+function assertVisibleStaticGridColumns(columns: readonly unknown[]): void {
   if (columns.length === 0) {
     throw new Error(
       "[MGRID-DOM-004] At least one visible column is required for DOM rendering."
@@ -406,43 +404,13 @@ function assertVisibleStaticGridColumns<TData>(
 }
 
 function getStaticGridColumnTemplate<TData>(
-  columns: readonly AnyColumnDef<TData>[],
-  sizing: Readonly<Record<ColumnId, number>> | undefined
+  columns: readonly VisibleColumn<TData>[]
 ): string {
   return columns
-    .map((column) => {
-      const width = sizing?.[getColumnId(column)];
-      return width === undefined ? "minmax(0, 1fr)" : `${width}px`;
-    })
+    .map((column) =>
+      column.width === undefined ? "minmax(0, 1fr)" : `${column.width}px`
+    )
     .join(" ");
-}
-
-function resolveRenderColumns<TData>(
-  columns: readonly AnyColumnDef<TData>[],
-  order: readonly ColumnId[]
-): readonly AnyColumnDef<TData>[] {
-  const columnsById = new Map<ColumnId, AnyColumnDef<TData>>();
-  for (const column of columns) {
-    columnsById.set(getColumnId(column), column);
-  }
-
-  const orderedColumns: AnyColumnDef<TData>[] = [];
-  const seen = new Set<ColumnId>();
-  for (const columnId of order) {
-    if (seen.has(columnId)) continue;
-    const column = columnsById.get(columnId);
-    if (column !== undefined) {
-      orderedColumns.push(column);
-      seen.add(columnId);
-    }
-  }
-
-  for (const column of columns) {
-    const columnId = getColumnId(column);
-    if (!seen.has(columnId)) orderedColumns.push(column);
-  }
-
-  return orderedColumns;
 }
 
 function getCellValue<TData>(

@@ -113,6 +113,8 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 
 `columns.sizing.replace` replaces core column sizing state. It validates positive finite pixel widths for known column ids; static DOM rendering maps configured widths into its CSS grid template while unsized columns keep the flexible `minmax(0, 1fr)` fallback.
 
+`getVisibleColumns(columns, state)` derives visible column descriptors from source definitions plus current order, visibility and sizing state. It returns stable column ids, source indexes, visible indexes and optional pixel widths.
+
 ### Pagination State API
 
 `pagination.replace` replaces core pagination state. `none` mode clears pagination fields, `offset` mode requires non-negative integer `pageIndex` and positive integer `pageSize`, and `cursor` mode requires positive integer `pageSize` with an optional non-empty cursor.
@@ -267,6 +269,8 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 `columns.visibility.replace`, core column visibility state'ini degistirir. Omitted column'lar visible kalir, `false` known column'i gizler ve static DOM rendering visible column kalmadiginda output'u reddeder.
 
 `columns.sizing.replace`, core column sizing state'ini degistirir. Known column id'leri icin positive finite pixel width'leri validate eder; static DOM rendering configured width'leri CSS grid template'e tasir, unsized column'lar flexible `minmax(0, 1fr)` fallback'ini korur.
+
+`getVisibleColumns(columns, state)`, source definition'lar ile mevcut order, visibility ve sizing state'inden visible column descriptor'lari turetir. Stable column id, source index, visible index ve optional pixel width dondurur.
 
 ### Pagination State API
 

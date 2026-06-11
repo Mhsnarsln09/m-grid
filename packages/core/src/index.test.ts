@@ -3,6 +3,7 @@ import {
   createDataCoordinator,
   createGrid,
   getProcessedRows,
+  getVisibleColumns,
   type AccessorFnColumnDef,
   type AccessorKeyColumnDef,
   type ColumnDef,
@@ -250,6 +251,30 @@ describe("@m-grid/core contract", () => {
     expect(getProcessedRows(grid, columns).rows.map((entry) => entry.rowId)).toEqual([
       "b",
       "a",
+    ]);
+  });
+
+  it("derives visible columns from order, visibility and sizing state", () => {
+    const grid = createGrid<TestRow>({
+      columns,
+      getRowId,
+      initialState: {
+        columns: {
+          order: ["score"],
+          visibility: { name: false },
+          sizing: { score: 96 },
+        },
+      },
+    });
+
+    expect(getVisibleColumns(columns, grid.getState().columns)).toEqual([
+      {
+        column: columns[1],
+        columnId: "score",
+        sourceIndex: 1,
+        visibleIndex: 0,
+        width: 96,
+      },
     ]);
   });
 

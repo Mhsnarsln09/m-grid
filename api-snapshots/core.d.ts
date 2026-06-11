@@ -61,6 +61,13 @@ export interface ColumnState {
     readonly visibility?: Readonly<Record<ColumnId, boolean>>;
     readonly sizing?: Readonly<Record<ColumnId, number>>;
 }
+export interface VisibleColumn<TData> {
+    readonly column: AnyColumnDef<TData>;
+    readonly columnId: ColumnId;
+    readonly sourceIndex: number;
+    readonly visibleIndex: number;
+    readonly width: number | undefined;
+}
 export interface DataRowsState<TData> {
     readonly rows: readonly TData[];
     readonly rowIds: readonly RowId[];
@@ -240,5 +247,6 @@ export interface LatestRequestMetadata {
 }
 export declare function createGrid<TData>(options: GridOptions<TData>): GridApi<TData>;
 export declare function getProcessedRows<TData>(api: GridApi<TData>, columns: readonly AnyColumnDef<TData>[]): ProcessedRows<TData>;
+export declare function getVisibleColumns<TData>(columns: readonly AnyColumnDef<TData>[], state: ColumnState): readonly VisibleColumn<TData>[];
 export declare function createDataCoordinator<TData>(api: GridApi<TData>, dataSource: GridDataSource<TData>): GridDataCoordinator<TData>;
 export {};
