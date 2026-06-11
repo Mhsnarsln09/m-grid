@@ -63,7 +63,7 @@ await writeFile(
   join(consumerDir, "consumer.mjs"),
   `
 import { createGrid } from "@m-grid/core";
-import { createDomAdapter, mountStaticGrid, renderStaticGridHtml } from "@m-grid/dom";
+import { createDomAdapter, mountStaticGrid, renderStaticGridHtml, selectStaticGridRow } from "@m-grid/dom";
 import { createVueGridContract } from "@m-grid/vue";
 import corePackage from "@m-grid/core/package.json" with { type: "json" };
 
@@ -92,7 +92,7 @@ if (!selectedHtml.includes('aria-selected="true"')) throw new Error("Static DOM 
 if (!container.innerHTML.includes("Ready")) throw new Error("Static DOM mount did not include row content.");
 api.dispatch({ type: "rows.replace", rows: [{ id: "row-2", label: "Updated" }] });
 if (!container.innerHTML.includes("Updated")) throw new Error("Static DOM mount did not auto-render state changes.");
-api.dispatch({ type: "selection.replace", rowIds: ["row-2"] });
+selectStaticGridRow(api, "row-2");
 if (!container.innerHTML.includes('aria-selected="true"')) throw new Error("Static DOM mount did not auto-render selection changes.");
 mount.unmount();
 if (container.innerHTML !== "") throw new Error("Static DOM mount did not clear the container.");
