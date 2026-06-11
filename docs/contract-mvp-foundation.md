@@ -93,6 +93,10 @@ Unsupported internal deep imports are intentionally rejected by package-boundary
 
 `selection.replace` replaces the selected row id set in core state. It validates row ids with the same non-empty row id rule as row data. It does not implement pointer selection, keyboard selection ranges or adapter-level selection behavior.
 
+### Sort State API
+
+`sort.replace` replaces core sort state with typed `{ columnId, direction }` items. It validates non-empty known column ids, accepts only `asc` or `desc` directions and deduplicates repeated column ids while preserving first occurrence order. It does not sort row data yet.
+
 ### Column Order State API
 
 `columns.order.replace` replaces core column order state. It validates non-empty known column ids, deduplicates repeated ids while preserving first occurrence order and allows omitted columns so renderers can append unmatched configured columns as their own fallback.
@@ -231,6 +235,10 @@ Unsupported internal deep import'lar package-boundary check'ler tarafindan biler
 ### Selection State API
 
 `selection.replace`, core state icindeki selected row id set'ini degistirir. Row id'leri row data ile ayni non-empty row id kuraliyla validate eder. Pointer selection, keyboard selection range veya adapter-level selection behavior implement etmez.
+
+### Sort State API
+
+`sort.replace`, core sort state'ini typed `{ columnId, direction }` item'lariyla degistirir. Non-empty known column id'leri validate eder, yalniz `asc` veya `desc` direction kabul eder ve tekrar eden column id'leri ilk gorulme sirasini koruyarak tekillestirir. Henuz row data siralamaz.
 
 ### Column Order State API
 

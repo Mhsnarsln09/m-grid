@@ -104,6 +104,28 @@ describe("@m-grid/core contract", () => {
     expect([...grid.getState().selection.rowIds]).toEqual(["r1", "r2"]);
   });
 
+  it("replaces sort state through a command", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    const events = grid.dispatch({
+      type: "sort.replace",
+      sort: {
+        items: [
+          { columnId: "score", direction: "desc" },
+          { columnId: "score", direction: "asc" },
+          { columnId: "name", direction: "asc" },
+        ],
+      },
+    });
+
+    expect(events).toHaveLength(1);
+    expect(events[0]?.slice).toBe("sort");
+    expect(grid.getState().sort.items).toEqual([
+      { columnId: "score", direction: "desc" },
+      { columnId: "name", direction: "asc" },
+    ]);
+  });
+
   it("replaces column order through a command", () => {
     const grid = createGrid<TestRow>({ columns, getRowId });
 
@@ -232,6 +254,29 @@ describe("@m-grid/core contract", () => {
         pagination: { mode: "cursor", cursor: "", pageSize: 25 },
       })
     ).toThrow("[MGRID-PAGE-004] Cursor pagination cursor must not be empty.");
+  });
+
+  it("rejects invalid sort state with predictable English errors", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    expect(() =>
+      grid.dispatch({
+        type: "sort.replace",
+        sort: { items: [{ columnId: "", direction: "asc" }] },
+      })
+    ).toThrow("[MGRID-SORT-001] Sort column id must not be empty.");
+    expect(() =>
+      grid.dispatch({
+        type: "sort.replace",
+        sort: { items: [{ columnId: "missing", direction: "asc" }] },
+      })
+    ).toThrow('[MGRID-SORT-002] Unknown sort column id: "missing".');
+    expect(() =>
+      grid.dispatch({
+        type: "sort.replace",
+        sort: { items: [{ columnId: "name", direction: "up" as "asc" }] },
+      })
+    ).toThrow("[MGRID-SORT-003] Sort direction must be asc or desc.");
   });
 
   it("rejects empty selected row ids with a predictable English error", () => {

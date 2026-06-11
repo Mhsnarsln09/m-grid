@@ -30,8 +30,13 @@ export interface DisplayColumnDef<TData> extends ColumnBase<TData> {
 export type ColumnDef<TData, TValue = unknown> = AccessorKeyColumnDef<TData> | AccessorFnColumnDef<TData, TValue> | DisplayColumnDef<TData>;
 export type AnyColumnDef<TData> = ColumnDef<TData, unknown>;
 export type ColumnValue<TData, TColumn extends ColumnDef<TData, unknown>> = TColumn extends AccessorKeyColumnDef<TData, infer TKey> ? TData[TKey] : TColumn extends AccessorFnColumnDef<TData, infer TValue> ? TValue : unknown;
+export type SortDirection = "asc" | "desc";
+export interface SortItem {
+    readonly columnId: ColumnId;
+    readonly direction: SortDirection;
+}
 export interface SortState {
-    readonly items: readonly unknown[];
+    readonly items: readonly SortItem[];
 }
 export interface FilterState {
     readonly items: readonly unknown[];
@@ -94,6 +99,9 @@ export type GridCommand<TData> = {
 } | {
     readonly type: "selection.replace";
     readonly rowIds: readonly RowId[];
+} | {
+    readonly type: "sort.replace";
+    readonly sort: SortState;
 } | {
     readonly type: "columns.order.replace";
     readonly order: readonly ColumnId[];

@@ -52,8 +52,15 @@ export type ColumnValue<TData, TColumn extends ColumnDef<TData, unknown>> =
       ? TValue
       : unknown;
 
+export type SortDirection = "asc" | "desc";
+
+export interface SortItem {
+  readonly columnId: ColumnId;
+  readonly direction: SortDirection;
+}
+
 export interface SortState {
-  readonly items: readonly unknown[];
+  readonly items: readonly SortItem[];
 }
 
 export interface FilterState {
@@ -126,6 +133,7 @@ export type GridStateSliceKey = keyof GridState<unknown>;
 export type GridCommand<TData> =
   | { readonly type: "rows.replace"; readonly rows: readonly TData[] }
   | { readonly type: "selection.replace"; readonly rowIds: readonly RowId[] }
+  | { readonly type: "sort.replace"; readonly sort: SortState }
   | { readonly type: "columns.order.replace"; readonly order: readonly ColumnId[] }
   | {
       readonly type: "columns.visibility.replace";
@@ -339,7 +347,7 @@ function createInitialState<TData>(
   return freezeState({
     version: 1,
     rows: initial.rows ?? createDataRowsState(rows, options.getRowId),
-    sort: initial.sort ?? { items: [] },
+    sort: createSortState(initial.sort ?? { items: [] }, columnIds),
     filter: initial.filter ?? { items: [] },
     pagination: createPaginationState(initial.pagination ?? { mode: "none" }),
     selection: initial.selection ?? { rowIds: new Set<RowId>() },
@@ -374,6 +382,13 @@ function reduceGridState<TData>(
         state,
         "selection",
         createSelectionState(command.rowIds),
+        command
+      );
+    case "sort.replace":
+      return withSliceChange(
+        state,
+        "sort",
+        createSortState(command.sort, context.columnIds),
         command
       );
     case "columns.order.replace":
@@ -736,6 +751,30 @@ function createPaginationState(pagination: PaginationState): PaginationState {
       });
     }
   }
+}
+
+function createSortState(
+  sort: SortState,
+  knownColumnIds: readonly ColumnId[]
+): SortState {
+  const known = new Set(knownColumnIds);
+  const seen = new Set<ColumnId>();
+  const items: SortItem[] = [];
+  for (const item of sort.items) {
+    if (item.columnId === "") {
+      throw new Error("[MGRID-SORT-001] Sort column id must not be empty.");
+    }
+    if (!known.has(item.columnId)) {
+      throw new Error(`[MGRID-SORT-002] Unknown sort column id: "${item.columnId}".`);
+    }
+    if (item.direction !== "asc" && item.direction !== "desc") {
+      throw new Error("[MGRID-SORT-003] Sort direction must be asc or desc.");
+    }
+    if (seen.has(item.columnId)) continue;
+    seen.add(item.columnId);
+    items.push(Object.freeze({ columnId: item.columnId, direction: item.direction }));
+  }
+  return Object.freeze({ items: Object.freeze(items) });
 }
 
 function assertNonNegativeInteger(
