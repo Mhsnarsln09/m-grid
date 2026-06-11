@@ -7,6 +7,7 @@ describe("static DOM demo", () => {
       "#app": createApp(),
       "#refresh-rows": createButton(),
       "#select-next-row": createButton(),
+      "#swap-columns": createButton(),
       "#refresh-status": {
         textContent: "Showing initial rows; Grace Hopper selected",
       },
@@ -63,6 +64,13 @@ describe("static DOM demo", () => {
     expect(elements["#refresh-status"].textContent).toBe(
       "Showing initial rows; Ada Lovelace selected"
     );
+
+    elements["#swap-columns"].click();
+
+    expect(elements["#app"].innerHTML.indexOf("Total")).toBeLessThan(
+      elements["#app"].innerHTML.indexOf("Customer")
+    );
+    expect(elements["#swap-columns"].textContent).toBe("Show customer first");
   });
 
   it("fails predictably when required demo nodes are missing", () => {
@@ -78,6 +86,9 @@ describe("static DOM demo", () => {
     expect(() => setupStaticDemo(createDocumentWithout("#select-next-row"))).toThrow(
       "[MGRID-DEMO-004] Demo select next button was not found."
     );
+    expect(() => setupStaticDemo(createDocumentWithout("#swap-columns"))).toThrow(
+      "[MGRID-DEMO-005] Demo swap columns button was not found."
+    );
   });
 });
 
@@ -86,6 +97,7 @@ function createDocumentWithout(missingSelector) {
     "#app": createApp(),
     "#refresh-rows": createButton(),
     "#select-next-row": createButton(),
+    "#swap-columns": createButton(),
     "#refresh-status": {
       textContent: "Showing initial rows; Grace Hopper selected",
     },

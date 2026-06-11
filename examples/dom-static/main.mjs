@@ -46,6 +46,11 @@ export function setupStaticDemo(documentRef) {
     throw new Error("[MGRID-DEMO-004] Demo select next button was not found.");
   }
 
+  const swapColumnsButton = documentRef.querySelector("#swap-columns");
+  if (swapColumnsButton === null) {
+    throw new Error("[MGRID-DEMO-005] Demo swap columns button was not found.");
+  }
+
   const refreshStatus = documentRef.querySelector("#refresh-status");
   if (refreshStatus === null) {
     throw new Error("[MGRID-DEMO-003] Demo refresh status was not found.");
@@ -60,6 +65,7 @@ export function setupStaticDemo(documentRef) {
 
   let showingAlternateRows = false;
   let selectedRowIndex = 1;
+  let showingTotalFirst = false;
 
   function getVisibleRows() {
     return showingAlternateRows ? alternateRows : rows;
@@ -90,6 +96,19 @@ export function setupStaticDemo(documentRef) {
   selectNextButton.addEventListener("click", () => {
     selectedRowIndex = (selectedRowIndex + 1) % getVisibleRows().length;
     updateSelection();
+  });
+
+  swapColumnsButton.addEventListener("click", () => {
+    showingTotalFirst = !showingTotalFirst;
+    api.dispatch({
+      type: "columns.order.replace",
+      order: showingTotalFirst
+        ? ["total", "customer", "status"]
+        : ["customer", "total", "status"],
+    });
+    swapColumnsButton.textContent = showingTotalFirst
+      ? "Show customer first"
+      : "Swap columns";
   });
 
   app.addEventListener("click", (event) => {
