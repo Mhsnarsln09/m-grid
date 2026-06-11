@@ -560,10 +560,17 @@ function compareFilterNumbers(
   expected: unknown,
   compare: (left: number, right: number) => boolean
 ): boolean {
+  if (!isFilterNumberCandidate(actual) || !isFilterNumberCandidate(expected)) {
+    return false;
+  }
   const left = Number(actual);
   const right = Number(expected);
   if (!Number.isFinite(left) || !Number.isFinite(right)) return false;
   return compare(left, right);
+}
+
+function isFilterNumberCandidate(value: unknown): boolean {
+  return typeof value === "number" || (typeof value === "string" && value.trim() !== "");
 }
 
 function reduceGridState<TData>(

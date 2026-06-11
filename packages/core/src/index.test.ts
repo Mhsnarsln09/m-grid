@@ -267,6 +267,22 @@ describe("@m-grid/core contract", () => {
     expect(getProcessedRows(grid, columns).rowIds).toEqual([]);
   });
 
+  it("does not treat empty numeric filter values as zero", () => {
+    const grid = createGrid<TestRow>({
+      columns,
+      getRowId,
+      rows: [
+        { id: "a", name: "Zero", value: 0 },
+        { id: "b", name: "One", value: 1 },
+      ],
+      initialState: {
+        filter: { items: [{ columnId: "score", operator: "gte", value: "" }] },
+      },
+    });
+
+    expect(getProcessedRows(grid, columns).rowIds).toEqual([]);
+  });
+
   it("keeps cursor pagination unsliced in the client processed row model", () => {
     const grid = createGrid<TestRow>({
       columns,
