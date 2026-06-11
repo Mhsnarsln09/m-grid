@@ -345,6 +345,7 @@ export function createGrid<TData>(options: GridOptions<TData>): GridApi<TData> {
     dispatch(command) {
       const result = reduceGridState(state, command, { getRowId, columnIds });
       state = result.state as GridState<TData>;
+      if (result.events.length === 0) return [];
       const transactionId = `mgrid_tx_${String(++transactionSequence).padStart(6, "0")}`;
       const events = result.events.map((event) => ({
         ...event,

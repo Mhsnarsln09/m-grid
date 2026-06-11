@@ -584,6 +584,26 @@ describe("@m-grid/core contract", () => {
     expect(new Set(events.map((event) => event.transactionId)).size).toBe(1);
   });
 
+  it("does not consume transaction ids for no-op commands", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    expect(
+      grid.dispatch({
+        type: "data.request.success",
+        requestId: "stale",
+        queryKey: "orders",
+        rows: [],
+      })
+    ).toEqual([]);
+
+    const events = grid.dispatch({
+      type: "rows.replace",
+      rows: [{ id: "r1", name: "Ready", value: 1 }],
+    });
+
+    expect(events[0]?.transactionId).toBe("mgrid_tx_000001");
+  });
+
   it("preserves typed row input for column accessors and getRowId", () => {
     expectTypeOf<(typeof columns)[number]>().toMatchTypeOf<ColumnDef<TestRow, unknown>>();
     expectTypeOf<
