@@ -104,6 +104,30 @@ describe("@m-grid/core contract", () => {
     expect([...grid.getState().selection.rowIds]).toEqual(["r1", "r2"]);
   });
 
+  it("replaces column order through a command", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    const events = grid.dispatch({
+      type: "columns.order.replace",
+      order: ["score", "name", "score"],
+    });
+
+    expect(events).toHaveLength(1);
+    expect(events[0]?.slice).toBe("columns");
+    expect(grid.getState().columns.order).toEqual(["score", "name"]);
+  });
+
+  it("rejects invalid column order ids with predictable English errors", () => {
+    const grid = createGrid<TestRow>({ columns, getRowId });
+
+    expect(() =>
+      grid.dispatch({ type: "columns.order.replace", order: [""] })
+    ).toThrow("[MGRID-COL-003] Column order id must not be empty.");
+    expect(() =>
+      grid.dispatch({ type: "columns.order.replace", order: ["missing"] })
+    ).toThrow('[MGRID-COL-004] Unknown column order id: "missing".');
+  });
+
   it("rejects empty selected row ids with a predictable English error", () => {
     const grid = createGrid<TestRow>({ columns, getRowId });
 

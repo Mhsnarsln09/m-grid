@@ -277,6 +277,12 @@ describe("@m-grid/dom static rendering", () => {
     expect(container.innerHTML).toContain("Beta");
     expect(container.innerHTML).not.toContain("Alpha");
 
+    api.dispatch({ type: "columns.order.replace", order: ["amount", "label"] });
+
+    expect(container.innerHTML.indexOf("Amount")).toBeLessThan(
+      container.innerHTML.indexOf("Label")
+    );
+
     mount.unmount();
 
     expect(container.innerHTML).toBe("");

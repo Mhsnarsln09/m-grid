@@ -93,6 +93,9 @@ export type GridCommand<TData> = {
     readonly type: "selection.replace";
     readonly rowIds: readonly RowId[];
 } | {
+    readonly type: "columns.order.replace";
+    readonly order: readonly ColumnId[];
+} | {
     readonly type: "data.request.start";
     readonly requestId: RequestId;
     readonly queryKey: QueryKey;
@@ -140,6 +143,7 @@ export type GridUnsubscribe = () => void;
 export type GridSelector<TData, TValue> = (state: Readonly<GridState<TData>>) => TValue;
 export interface GridReducerContext<TData> {
     readonly getRowId: GetRowId<TData>;
+    readonly columnIds: readonly ColumnId[];
 }
 export type GridReducer<TData> = (state: Readonly<GridState<TData>>, command: GridCommand<TData>, context: GridReducerContext<TData>) => GridReducerResult<TData>;
 export interface GridReducerResult<TData> {

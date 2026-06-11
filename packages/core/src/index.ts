@@ -124,6 +124,7 @@ export type GridStateSliceKey = keyof GridState<unknown>;
 export type GridCommand<TData> =
   | { readonly type: "rows.replace"; readonly rows: readonly TData[] }
   | { readonly type: "selection.replace"; readonly rowIds: readonly RowId[] }
+  | { readonly type: "columns.order.replace"; readonly order: readonly ColumnId[] }
   | {
       readonly type: "data.request.start";
       readonly requestId: RequestId;
@@ -187,6 +188,7 @@ export type GridSelector<TData, TValue> = (
 
 export interface GridReducerContext<TData> {
   readonly getRowId: GetRowId<TData>;
+  readonly columnIds: readonly ColumnId[];
 }
 
 export type GridReducer<TData> = (
@@ -272,6 +274,7 @@ interface StaleResponseCheck {
 export function createGrid<TData>(options: GridOptions<TData>): GridApi<TData> {
   assertValidColumns(options.columns);
   const getRowId = options.getRowId;
+  const columnIds = options.columns.map(resolveColumnId);
   let state = createInitialState(options);
   let transactionSequence = 0;
   const subscribers = new Set<GridSubscriber<TData>>();
@@ -282,7 +285,7 @@ export function createGrid<TData>(options: GridOptions<TData>): GridApi<TData> {
       return state;
     },
     dispatch(command) {
-      const result = reduceGridState(state, command, { getRowId });
+      const result = reduceGridState(state, command, { getRowId, columnIds });
       state = result.state as GridState<TData>;
       const transactionId = `mgrid_tx_${String(++transactionSequence).padStart(6, "0")}`;
       const events = result.events.map((event) => ({
@@ -320,6 +323,7 @@ function createInitialState<TData>(
 ): GridState<TData> {
   const rows = options.rows ?? [];
   const initial = options.initialState ?? {};
+  const columnIds = options.columns.map(resolveColumnId);
 
   return freezeState({
     version: 1,
@@ -328,7 +332,7 @@ function createInitialState<TData>(
     filter: initial.filter ?? { items: [] },
     pagination: initial.pagination ?? { mode: "none" },
     selection: initial.selection ?? { rowIds: new Set<RowId>() },
-    columns: initial.columns ?? { order: options.columns.map(resolveColumnId) },
+    columns: initial.columns ?? createColumnState(columnIds, columnIds),
     loading: initial.loading ?? { status: "idle" },
   });
 }
@@ -351,6 +355,13 @@ function reduceGridState<TData>(
         state,
         "selection",
         createSelectionState(command.rowIds),
+        command
+      );
+    case "columns.order.replace":
+      return withSliceChange(
+        state,
+        "columns",
+        createColumnState(command.order, context.columnIds),
         command
       );
     case "data.request.start":
@@ -561,6 +572,29 @@ function assertValidColumns<TData>(
     }
     ids.add(id);
   }
+}
+
+function createColumnState(
+  order: readonly ColumnId[],
+  knownColumnIds: readonly ColumnId[]
+): ColumnState {
+  const known = new Set(knownColumnIds);
+  const seen = new Set<ColumnId>();
+  const normalizedOrder: ColumnId[] = [];
+  for (const columnId of order) {
+    if (columnId === "") {
+      throw new Error("[MGRID-COL-003] Column order id must not be empty.");
+    }
+    if (!known.has(columnId)) {
+      throw new Error(
+        `[MGRID-COL-004] Unknown column order id: "${columnId}".`
+      );
+    }
+    if (seen.has(columnId)) continue;
+    seen.add(columnId);
+    normalizedOrder.push(columnId);
+  }
+  return Object.freeze({ order: Object.freeze(normalizedOrder) });
 }
 
 function createDataRowsState<TData>(
