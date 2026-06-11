@@ -484,11 +484,17 @@ function createInitialState<TData>(
 
   return freezeState({
     version: 1,
-    rows: initial.rows ?? createDataRowsState(rows, options.getRowId),
+    rows:
+      initial.rows === undefined
+        ? createDataRowsState(rows, options.getRowId)
+        : createProvidedDataRowsState(initial.rows),
     sort: createSortState(initial.sort ?? { items: [] }, columnIds),
     filter: createFilterState(initial.filter ?? { items: [] }, columnIds),
     pagination: createPaginationState(initial.pagination ?? { mode: "none" }),
-    selection: initial.selection ?? { rowIds: new Set<RowId>() },
+    selection:
+      initial.selection === undefined
+        ? { rowIds: new Set<RowId>() }
+        : createSelectionState([...initial.selection.rowIds]),
     columns:
       initial.columns === undefined
         ? createColumnState(columnIds, columnIds)
@@ -1113,6 +1119,20 @@ function createDataRowsState<TData>(
   assertUniqueRowIds(rowIds);
   return Object.freeze({
     rows: Object.freeze([...rows]),
+    rowIds: Object.freeze(rowIds),
+  });
+}
+
+function createProvidedDataRowsState<TData>(
+  rowsState: DataRowsState<TData>
+): DataRowsState<TData> {
+  if (rowsState.rows.length !== rowsState.rowIds.length) {
+    throw new Error("[MGRID-ROW-003] Row ids length must match rows length.");
+  }
+  const rowIds = rowsState.rowIds.map(normalizeRowId);
+  assertUniqueRowIds(rowIds);
+  return Object.freeze({
+    rows: Object.freeze([...rowsState.rows]),
     rowIds: Object.freeze(rowIds),
   });
 }

@@ -61,6 +61,46 @@ describe("@m-grid/core contract", () => {
     ).toThrow("[MGRID-ROW-001] Row id must not be empty.");
   });
 
+  it("validates provided initial row state", () => {
+    expect(() =>
+      createGrid({
+        columns,
+        getRowId,
+        initialState: {
+          rows: {
+            rows: [{ id: "a", name: "Alpha", value: 1 }],
+            rowIds: [],
+          },
+        },
+      })
+    ).toThrow("[MGRID-ROW-003] Row ids length must match rows length.");
+    expect(() =>
+      createGrid({
+        columns,
+        getRowId,
+        initialState: {
+          rows: {
+            rows: [
+              { id: "a", name: "Alpha", value: 1 },
+              { id: "b", name: "Beta", value: 2 },
+            ],
+            rowIds: ["same", "same"],
+          },
+        },
+      })
+    ).toThrow("[MGRID-ROW-002] Duplicate row id detected.");
+  });
+
+  it("validates provided initial selection state", () => {
+    expect(() =>
+      createGrid({
+        columns,
+        getRowId,
+        initialState: { selection: { rowIds: new Set([""]) } },
+      })
+    ).toThrow("[MGRID-ROW-001] Row id must not be empty.");
+  });
+
   it("dispatches commands through reducer events and subscribers", () => {
     const grid = createGrid<TestRow>({ columns, getRowId });
     const received: string[] = [];
