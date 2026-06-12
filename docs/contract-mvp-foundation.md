@@ -156,6 +156,7 @@ Sort and filter items require accessor-backed columns. Display-only columns can 
 - Static output includes zero-based processed `data-row-index`, source `data-source-row-index` and visible `data-column-index` hooks.
 - Static output exposes loading state through root `data-loading-status` and grid `aria-busy`.
 - Static output exposes pagination mode through root `data-pagination-mode`; offset pagination also exposes `data-page-index` and `data-page-size`.
+- Static output exposes the current core selection size through root `data-selected-row-count`.
 - Static output exposes selected rows through row `aria-selected="true"` and `data-selected="true"`.
 - These helpers do not diff, hydrate, virtualize, provide interactive sort/filter/pagination controls, edit or handle keyboard interaction.
 
@@ -321,6 +322,7 @@ Sort ve filter item'lari accessor-backed column ister. Display-only column'lar r
 - Static output zero-based processed `data-row-index`, source `data-source-row-index` ve visible `data-column-index` hook'lari icerir.
 - Static output loading state'i root `data-loading-status` ve grid `aria-busy` uzerinden expose eder.
 - Static output pagination mode'u root `data-pagination-mode` uzerinden expose eder; offset pagination ayrica `data-page-index` ve `data-page-size` expose eder.
+- Static output mevcut core selection size'i root `data-selected-row-count` ile expose eder.
 - Static output selected row'lari row `aria-selected="true"` ve `data-selected="true"` ile expose eder.
 - Bu helper'lar diff, hydrate, virtualize, interactive sort/filter/pagination control, edit veya keyboard interaction saglamaz.
 
