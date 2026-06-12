@@ -17,7 +17,8 @@ Then open `http://127.0.0.1:4173/examples/dom-static/`.
 Acceptance criteria:
 
 - the page loads without a bundler;
-- `main.mjs` imports the built package output from `packages/core/dist/` and `packages/dom/dist/`;
+- `index.html` maps `@m-grid/core` and `@m-grid/dom` to built workspace package output with an import map;
+- `main.mjs` imports package names instead of direct relative dist files;
 - row, column and caption text render through `mountStaticGrid`;
 - the refresh button swaps visible row data, button text and status text after core state replacement;
 - the select next button swaps selected row state through `selection.replace`;
@@ -29,6 +30,8 @@ Acceptance criteria:
 - the static surface exposes processed row counts through `aria-rowcount`, `data-total-row-count` and `data-filtered-row-count`;
 - the optional default theme CSS remains replaceable by consumers;
 - no interactive grid behavior is implied by the demo.
+
+Troubleshooting: if the controls render but the table does not, restart the demo with `corepack pnpm demo:static`. The script builds package `dist/` output before serving the import-mapped browser page.
 
 Open questions: the future DOM mount API, focus model, keyboard navigation and responsive strategies remain out of scope for this example.
 
@@ -49,7 +52,8 @@ Sonra `http://127.0.0.1:4173/examples/dom-static/` adresini acin.
 Acceptance criteria:
 
 - page bundler olmadan yuklenir;
-- `main.mjs`, built package output'u `packages/core/dist/` ve `packages/dom/dist/` uzerinden import eder;
+- `index.html`, `@m-grid/core` ve `@m-grid/dom` package'larini import map ile built workspace package output'a map eder;
+- `main.mjs`, direct relative dist file yerine package name import eder;
 - row, column ve caption text `mountStaticGrid` ile render edilir;
 - refresh button, core state replacement sonrasi visible row data, button text ve status text'i degistirir;
 - select next button, selected row state'i `selection.replace` ile degistirir;
@@ -61,5 +65,7 @@ Acceptance criteria:
 - static surface processed row count'lari `aria-rowcount`, `data-total-row-count` ve `data-filtered-row-count` ile expose eder;
 - optional default theme CSS consumer tarafindan degistirilebilir kalir;
 - demo interactive grid behavior ima etmez.
+
+Troubleshooting: controls gorunup table gorunmuyorsa demo'yu `corepack pnpm demo:static` ile yeniden baslatin. Script, import-mapped browser page'i serve etmeden once package `dist/` output'unu build eder.
 
 Open questions: future DOM mount API, focus model, keyboard navigation ve responsive strategies bu ornegin kapsami disindadir.
