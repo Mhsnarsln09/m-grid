@@ -1,9 +1,9 @@
-import { createGrid, getProcessedRows } from "../../packages/core/dist/index.js";
+import { createGrid, getProcessedRows } from "@m-grid/core";
 import {
   getStaticGridRowIdFromTarget,
   mountStaticGrid,
   selectStaticGridRow,
-} from "../../packages/dom/dist/index.js";
+} from "@m-grid/dom";
 
 const rows = [
   { id: "order-1001", customer: "Ada Lovelace", total: 129, status: "Ready" },

@@ -1,7 +1,15 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 import { setupStaticDemo } from "./main.mjs";
 
 describe("static DOM demo", () => {
+  it("maps workspace package imports for direct browser serving", () => {
+    const html = readFileSync(new URL("./index.html", import.meta.url), "utf8");
+
+    expect(html).toContain('"@m-grid/core": "../../packages/core/dist/index.js"');
+    expect(html).toContain('"@m-grid/dom": "../../packages/dom/dist/index.js"');
+  });
+
   it("updates rows, button text and status when refreshed", () => {
     const elements = {
       "#app": createApp(),
