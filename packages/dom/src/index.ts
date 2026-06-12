@@ -5,6 +5,7 @@ import type {
   GridApi,
   GridEvent,
   GridState,
+  PaginationState,
   RowId,
   VisibleColumn,
 } from "@m-grid/core";
@@ -273,12 +274,10 @@ export function renderStaticGridHtml<TData>(
   const loadingStatus = state.loading.status;
   const busy = loadingStatus === "loading" ? "true" : "false";
   const selectedRowCount = state.selection.rowIds.size;
-  const paginationAttributes =
-    state.pagination.mode === "offset"
-      ? ` data-page-index="${state.pagination.pageIndex}" data-page-size="${state.pagination.pageSize}"`
-      : state.pagination.mode === "cursor"
-        ? ` data-page-size="${state.pagination.pageSize}"`
-        : "";
+  const paginationAttributes = getStaticPaginationAttributes(
+    state.pagination,
+    processedRows.filteredRowCount
+  );
   const gridLabel =
     options.caption === undefined
       ? ""
@@ -419,6 +418,39 @@ function getStaticGridColumnTemplate<TData>(
       column.width === undefined ? "minmax(0, 1fr)" : `${column.width}px`
     )
     .join(" ");
+}
+
+function getOffsetPageCount(filteredRowCount: number, pageSize: number): number {
+  if (filteredRowCount === 0) return 0;
+  return Math.ceil(filteredRowCount / pageSize);
+}
+
+function getStaticPaginationAttributes(
+  pagination: PaginationState,
+  filteredRowCount: number
+): string {
+  if (pagination.mode === "offset") {
+    if (pagination.pageIndex === undefined || pagination.pageSize === undefined) {
+      throw new Error(
+        "[MGRID-DOM-005] Offset pagination metadata requires pageIndex and pageSize."
+      );
+    }
+    const pageIndex = pagination.pageIndex;
+    const pageSize = pagination.pageSize;
+    return ` data-page-index="${pageIndex}" data-page-size="${pageSize}" data-page-count="${getOffsetPageCount(
+      filteredRowCount,
+      pageSize
+    )}"`;
+  }
+
+  if (pagination.mode === "cursor") {
+    if (pagination.pageSize === undefined) {
+      throw new Error("[MGRID-DOM-006] Cursor pagination metadata requires pageSize.");
+    }
+    return ` data-page-size="${pagination.pageSize}"`;
+  }
+
+  return "";
 }
 
 function getCellValue<TData>(

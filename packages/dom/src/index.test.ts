@@ -293,6 +293,7 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('data-pagination-mode="offset"');
     expect(html).toContain('data-page-index="1"');
     expect(html).toContain('data-page-size="20"');
+    expect(html).toContain('data-page-count="1"');
   });
 
   it("renders processed rows from core sort, filter and offset pagination state", () => {
@@ -319,6 +320,7 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('aria-rowcount="1"');
     expect(html).toContain('data-total-row-count="3"');
     expect(html).toContain('data-filtered-row-count="2"');
+    expect(html).toContain('data-page-count="2"');
     expect(html).toContain('data-source-row-index="2"');
   });
 
@@ -365,6 +367,7 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('data-total-row-count="1"');
     expect(html).toContain('data-filtered-row-count="1"');
     expect(html).toContain('data-page-index="1"');
+    expect(html).toContain('data-page-count="1"');
   });
 
   it("preserves selection state when the selected row is not processed", () => {
