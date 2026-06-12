@@ -296,6 +296,24 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('data-page-count="1"');
   });
 
+  it("renders cursor pagination metadata on the static root", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+      initialState: {
+        pagination: { mode: "cursor", cursor: "cursor-1", pageSize: 20 },
+      },
+    });
+
+    const html = renderStaticGridHtml({ api, columns });
+
+    expect(html).toContain('data-pagination-mode="cursor"');
+    expect(html).toContain('data-page-size="20"');
+    expect(html).not.toContain("data-page-index");
+    expect(html).not.toContain("data-page-count");
+  });
+
   it("renders processed rows from core sort, filter and offset pagination state", () => {
     const api = createGrid({
       columns,
