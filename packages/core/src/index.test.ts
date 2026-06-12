@@ -273,6 +273,12 @@ describe("@m-grid/core contract", () => {
     expect(processed.rowIds).toEqual(["c"]);
     expect(processed.rows.map((entry) => entry.rowId)).toEqual(["c"]);
     expect(processed.rows[0]?.sourceIndex).toBe(2);
+    expect(processed.pagination).toEqual({
+      mode: "offset",
+      pageIndex: 0,
+      pageSize: 1,
+      pageCount: 2,
+    });
   });
 
   it("applies text filters case-insensitively unless requested otherwise", () => {
@@ -371,10 +377,14 @@ describe("@m-grid/core contract", () => {
       },
     });
 
-    expect(getProcessedRows(grid, columns).rows.map((entry) => entry.rowId)).toEqual([
-      "b",
-      "a",
-    ]);
+    const processed = getProcessedRows(grid, columns);
+
+    expect(processed.rows.map((entry) => entry.rowId)).toEqual(["b", "a"]);
+    expect(processed.pagination).toEqual({
+      mode: "cursor",
+      cursor: "next",
+      pageSize: 1,
+    });
   });
 
   it("sorts text values case-insensitively with numeric collation", () => {

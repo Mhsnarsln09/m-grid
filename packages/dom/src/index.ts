@@ -5,7 +5,7 @@ import type {
   GridApi,
   GridEvent,
   GridState,
-  PaginationState,
+  ProcessedRowsPagination,
   RowId,
   VisibleColumn,
 } from "@m-grid/core";
@@ -275,8 +275,7 @@ export function renderStaticGridHtml<TData>(
   const busy = loadingStatus === "loading" ? "true" : "false";
   const selectedRowCount = state.selection.rowIds.size;
   const paginationAttributes = getStaticPaginationAttributes(
-    state.pagination,
-    processedRows.filteredRowCount
+    processedRows.pagination
   );
   const gridLabel =
     options.caption === undefined
@@ -420,20 +419,9 @@ function getStaticGridColumnTemplate<TData>(
     .join(" ");
 }
 
-function getOffsetPageCount(filteredRowCount: number, pageSize: number): number {
-  if (filteredRowCount === 0) return 0;
-  return Math.ceil(filteredRowCount / pageSize);
-}
-
-function getStaticPaginationAttributes(
-  pagination: PaginationState,
-  filteredRowCount: number
-): string {
+function getStaticPaginationAttributes(pagination: ProcessedRowsPagination): string {
   if (pagination.mode === "offset") {
-    return ` data-page-index="${pagination.pageIndex}" data-page-size="${pagination.pageSize}" data-page-count="${getOffsetPageCount(
-      filteredRowCount,
-      pagination.pageSize
-    )}"`;
+    return ` data-page-index="${pagination.pageIndex}" data-page-size="${pagination.pageSize}" data-page-count="${pagination.pageCount}"`;
   }
 
   if (pagination.mode === "cursor") {

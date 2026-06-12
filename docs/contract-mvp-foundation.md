@@ -107,7 +107,7 @@ Provided `initialState.rows` and `initialState.selection` are validated with the
 
 ### Processed Row Model API
 
-`getProcessedRows(api, columns)` derives rows from current core state. It applies `filter.items`, then `sort.items`, then offset pagination. Cursor pagination remains unsliced because cursor windows are expected to come from the data source; adapters must not pretend cursor mode can page arbitrary client rows. The result includes `rows`, `rowIds`, `totalRowCount` and `filteredRowCount`.
+`getProcessedRows(api, columns)` derives rows from current core state. It applies `filter.items`, then `sort.items`, then offset pagination. Cursor pagination remains unsliced because cursor windows are expected to come from the data source; adapters must not pretend cursor mode can page arbitrary client rows. The result includes `rows`, `rowIds`, `totalRowCount`, `filteredRowCount` and a `pagination` summary. Offset summaries include derived `pageCount`.
 
 `getProcessedRows` rejects calls where the supplied columns do not include a column referenced by current sort or filter state.
 
@@ -273,7 +273,7 @@ Verilen `initialState.rows` ve `initialState.selection`, command'larla ayni row 
 
 ### Processed Row Model API
 
-`getProcessedRows(api, columns)`, mevcut core state'ten row turetir. Once `filter.items`, sonra `sort.items`, sonra offset pagination uygular. Cursor pagination unsliced kalir cunku cursor window'larin data source'tan gelmesi beklenir; adapter'lar cursor mode'un arbitrary client row'lari page edebildigini ima etmemelidir. Result `rows`, `rowIds`, `totalRowCount` ve `filteredRowCount` icerir.
+`getProcessedRows(api, columns)`, mevcut core state'ten row turetir. Once `filter.items`, sonra `sort.items`, sonra offset pagination uygular. Cursor pagination unsliced kalir cunku cursor window'larin data source'tan gelmesi beklenir; adapter'lar cursor mode'un arbitrary client row'lari page edebildigini ima etmemelidir. Result `rows`, `rowIds`, `totalRowCount`, `filteredRowCount` ve `pagination` summary icerir. Offset summary derived `pageCount` icerir.
 
 `getProcessedRows`, verilen columns mevcut sort veya filter state'in referans verdigi column'i icermediginde cagrilari reddeder.
 

@@ -83,11 +83,24 @@ export interface ProcessedRow<TData> {
     readonly rowId: RowId;
     readonly sourceIndex: number;
 }
+export type ProcessedRowsPagination = {
+    readonly mode: "none";
+} | {
+    readonly mode: "offset";
+    readonly pageIndex: number;
+    readonly pageSize: number;
+    readonly pageCount: number;
+} | {
+    readonly mode: "cursor";
+    readonly pageSize: number;
+    readonly cursor?: string;
+};
 export interface ProcessedRows<TData> {
     readonly rows: readonly ProcessedRow<TData>[];
     readonly rowIds: readonly RowId[];
     readonly totalRowCount: number;
     readonly filteredRowCount: number;
+    readonly pagination: ProcessedRowsPagination;
 }
 export type LoadingState = {
     readonly status: "idle";

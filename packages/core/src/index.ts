@@ -126,11 +126,26 @@ export interface ProcessedRow<TData> {
   readonly sourceIndex: number;
 }
 
+export type ProcessedRowsPagination =
+  | { readonly mode: "none" }
+  | {
+      readonly mode: "offset";
+      readonly pageIndex: number;
+      readonly pageSize: number;
+      readonly pageCount: number;
+    }
+  | {
+      readonly mode: "cursor";
+      readonly pageSize: number;
+      readonly cursor?: string;
+    };
+
 export interface ProcessedRows<TData> {
   readonly rows: readonly ProcessedRow<TData>[];
   readonly rowIds: readonly RowId[];
   readonly totalRowCount: number;
   readonly filteredRowCount: number;
+  readonly pagination: ProcessedRowsPagination;
 }
 
 export type LoadingState =
@@ -417,7 +432,37 @@ export function getProcessedRows<TData>(
     rowIds: Object.freeze(pagedRows.map((entry) => entry.rowId)),
     totalRowCount: indexedRows.length,
     filteredRowCount: filteredRows.length,
+    pagination: createProcessedRowsPagination(state.pagination, filteredRows.length),
   });
+}
+
+function createProcessedRowsPagination(
+  pagination: PaginationState,
+  filteredRowCount: number
+): ProcessedRowsPagination {
+  if (pagination.mode === "offset") {
+    return Object.freeze({
+      mode: "offset",
+      pageIndex: pagination.pageIndex,
+      pageSize: pagination.pageSize,
+      pageCount: getOffsetPageCount(filteredRowCount, pagination.pageSize),
+    });
+  }
+
+  if (pagination.mode === "cursor") {
+    return Object.freeze({
+      mode: "cursor",
+      pageSize: pagination.pageSize,
+      ...(pagination.cursor === undefined ? {} : { cursor: pagination.cursor }),
+    });
+  }
+
+  return Object.freeze({ mode: "none" });
+}
+
+function getOffsetPageCount(filteredRowCount: number, pageSize: number): number {
+  if (filteredRowCount === 0) return 0;
+  return Math.ceil(filteredRowCount / pageSize);
 }
 
 function assertProcessedRowColumnsAvailable<TData>(
