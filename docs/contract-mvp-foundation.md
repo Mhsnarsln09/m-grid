@@ -125,7 +125,7 @@ Sort and filter items require accessor-backed columns. Display-only columns can 
 
 ### Pagination State API
 
-`pagination.replace` replaces core pagination state. `none` mode clears pagination fields, `offset` mode requires non-negative integer `pageIndex` and positive integer `pageSize`, and `cursor` mode requires positive integer `pageSize` with an optional non-empty cursor.
+`PaginationState` is a discriminated union by `mode`. `pagination.replace` replaces core pagination state. `none` mode clears pagination fields, `offset` mode requires non-negative integer `pageIndex` and positive integer `pageSize`, and `cursor` mode requires positive integer `pageSize` with an optional non-empty cursor.
 
 ### Static DOM Rendering API
 
@@ -291,7 +291,7 @@ Sort ve filter item'lari accessor-backed column ister. Display-only column'lar r
 
 ### Pagination State API
 
-`pagination.replace`, core pagination state'ini degistirir. `none` mode pagination field'larini temizler, `offset` mode non-negative integer `pageIndex` ve positive integer `pageSize` ister, `cursor` mode ise optional non-empty cursor ile positive integer `pageSize` ister.
+`PaginationState`, `mode` uzerinden discriminated union'dir. `pagination.replace`, core pagination state'ini degistirir. `none` mode pagination field'larini temizler, `offset` mode non-negative integer `pageIndex` ve positive integer `pageSize` ister, `cursor` mode ise optional non-empty cursor ile positive integer `pageSize` ister.
 
 ### Static DOM Rendering API
 

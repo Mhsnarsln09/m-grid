@@ -430,23 +430,13 @@ function getStaticPaginationAttributes(
   filteredRowCount: number
 ): string {
   if (pagination.mode === "offset") {
-    if (pagination.pageIndex === undefined || pagination.pageSize === undefined) {
-      throw new Error(
-        "[MGRID-DOM-005] Offset pagination metadata requires pageIndex and pageSize."
-      );
-    }
-    const pageIndex = pagination.pageIndex;
-    const pageSize = pagination.pageSize;
-    return ` data-page-index="${pageIndex}" data-page-size="${pageSize}" data-page-count="${getOffsetPageCount(
+    return ` data-page-index="${pagination.pageIndex}" data-page-size="${pagination.pageSize}" data-page-count="${getOffsetPageCount(
       filteredRowCount,
-      pageSize
+      pagination.pageSize
     )}"`;
   }
 
   if (pagination.mode === "cursor") {
-    if (pagination.pageSize === undefined) {
-      throw new Error("[MGRID-DOM-006] Cursor pagination metadata requires pageSize.");
-    }
     return ` data-page-size="${pagination.pageSize}"`;
   }
 

@@ -84,12 +84,18 @@ export interface FilterState {
   readonly items: readonly FilterItem[];
 }
 
-export interface PaginationState {
-  readonly mode: "none" | "offset" | "cursor";
-  readonly pageIndex?: number;
-  readonly pageSize?: number;
-  readonly cursor?: string;
-}
+export type PaginationState =
+  | { readonly mode: "none" }
+  | {
+      readonly mode: "offset";
+      readonly pageIndex: number;
+      readonly pageSize: number;
+    }
+  | {
+      readonly mode: "cursor";
+      readonly pageSize: number;
+      readonly cursor?: string;
+    };
 
 export interface SelectionState {
   readonly rowIds: ReadonlySet<RowId>;
@@ -400,9 +406,7 @@ export function getProcessedRows<TData>(
   );
   const sortedRows = sortProcessedRows(api, filteredRows, columnLookup, state.sort.items);
   const pagedRows =
-    state.pagination.mode === "offset" &&
-    state.pagination.pageIndex !== undefined &&
-    state.pagination.pageSize !== undefined
+    state.pagination.mode === "offset"
       ? sortedRows.slice(
           state.pagination.pageIndex * state.pagination.pageSize,
           state.pagination.pageIndex * state.pagination.pageSize + state.pagination.pageSize

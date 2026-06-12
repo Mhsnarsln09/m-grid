@@ -48,12 +48,17 @@ export interface FilterItem {
 export interface FilterState {
     readonly items: readonly FilterItem[];
 }
-export interface PaginationState {
-    readonly mode: "none" | "offset" | "cursor";
-    readonly pageIndex?: number;
-    readonly pageSize?: number;
+export type PaginationState = {
+    readonly mode: "none";
+} | {
+    readonly mode: "offset";
+    readonly pageIndex: number;
+    readonly pageSize: number;
+} | {
+    readonly mode: "cursor";
+    readonly pageSize: number;
     readonly cursor?: string;
-}
+};
 export interface SelectionState {
     readonly rowIds: ReadonlySet<RowId>;
 }
