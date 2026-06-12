@@ -364,6 +364,23 @@ describe("@m-grid/dom static rendering", () => {
     expect(html).toContain('data-filtered-row-count="0"');
   });
 
+  it("renders zero page count when offset pagination has no filtered rows", () => {
+    const api = createGrid({
+      columns,
+      rows: [{ id: "row-1", label: "Alpha", amount: 12 }],
+      getRowId: (row) => row.id,
+      initialState: {
+        filter: { items: [{ columnId: "label", operator: "equals", value: "Beta" }] },
+        pagination: { mode: "offset", pageIndex: 0, pageSize: 10 },
+      },
+    });
+
+    const html = renderStaticGridHtml({ api, columns, emptyMessage: "No rows" });
+
+    expect(html).toContain('data-filtered-row-count="0"');
+    expect(html).toContain('data-page-count="0"');
+  });
+
   it("renders the empty message when offset pagination is beyond filtered rows", () => {
     const api = createGrid({
       columns,

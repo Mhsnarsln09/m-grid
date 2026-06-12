@@ -329,6 +329,25 @@ describe("@m-grid/core contract", () => {
     expect(getProcessedRows(grid, columns).rowIds).toEqual([]);
   });
 
+  it("reports zero offset pages when filters remove every row", () => {
+    const grid = createGrid<TestRow>({
+      columns,
+      getRowId,
+      rows: [{ id: "a", name: "Alpha", value: 1 }],
+      initialState: {
+        filter: { items: [{ columnId: "name", operator: "equals", value: "Beta" }] },
+        pagination: { mode: "offset", pageIndex: 0, pageSize: 10 },
+      },
+    });
+
+    expect(getProcessedRows(grid, columns).pagination).toEqual({
+      mode: "offset",
+      pageIndex: 0,
+      pageSize: 10,
+      pageCount: 0,
+    });
+  });
+
   it("rejects processed rows when required columns are not provided", () => {
     const grid = createGrid<TestRow>({
       columns,
