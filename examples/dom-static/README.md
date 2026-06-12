@@ -27,6 +27,7 @@ Acceptance criteria:
 - the hide total button swaps column visibility through `columns.visibility.replace`;
 - the resize total button swaps column sizing through `columns.sizing.replace`;
 - the sort total, filter ready and page size buttons exercise processed rows from `getProcessedRows`;
+- offset pagination status reads `getProcessedRows().pagination`;
 - the static surface exposes processed row counts through `aria-rowcount`, `data-total-row-count` and `data-filtered-row-count`;
 - the optional default theme CSS remains replaceable by consumers;
 - no interactive grid behavior is implied by the demo.
@@ -62,6 +63,7 @@ Acceptance criteria:
 - hide total button, column visibility'yi `columns.visibility.replace` ile degistirir;
 - resize total button, column sizing'i `columns.sizing.replace` ile degistirir;
 - sort total, filter ready ve page size button'lari `getProcessedRows` uzerinden processed row'lari dener;
+- offset pagination status `getProcessedRows().pagination` okur;
 - static surface processed row count'lari `aria-rowcount`, `data-total-row-count` ve `data-filtered-row-count` ile expose eder;
 - optional default theme CSS consumer tarafindan degistirilebilir kalir;
 - demo interactive grid behavior ima etmez.

@@ -114,6 +114,9 @@ describe("static DOM demo", () => {
 
     expect(elements["#app"].innerHTML).toContain('aria-rowcount="1"');
     expect(elements["#page-size-one"].textContent).toBe("Show all rows");
+    expect(elements["#refresh-status"].textContent).toBe(
+      "Showing initial rows; Ada Lovelace selected; 1 of 1 processed rows; page 1 of 1"
+    );
   });
 
   it("fails predictably when required demo nodes are missing", () => {

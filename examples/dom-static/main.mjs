@@ -110,11 +110,19 @@ export function setupStaticDemo(documentRef) {
 
   function updateStatus(selectedCustomer) {
     const processed = getProcessedRows(api, columns);
+    const paginationStatus =
+      processed.pagination.mode === "offset"
+        ? processed.pagination.pageCount === 0
+          ? "; no pages"
+          : `; page ${processed.pagination.pageIndex + 1} of ${
+              processed.pagination.pageCount
+            }`
+        : "";
     refreshStatus.textContent = `${
       showingAlternateRows ? "Showing refreshed rows" : "Showing initial rows"
     }; ${selectedCustomer} selected; ${processed.rows.length} of ${
       processed.filteredRowCount
-    } processed rows`;
+    } processed rows${paginationStatus}`;
   }
 
   refreshButton.addEventListener("click", () => {
