@@ -152,6 +152,7 @@ Sort and filter items require accessor-backed columns. Display-only columns can 
 - Core state changes from one dispatch share one transaction id; `mountStaticGrid` uses that id to avoid duplicate automatic renders for multi-slice updates.
 - Static output includes `aria-rowcount`, `aria-colcount`, body-row `aria-rowindex` and cell/header `aria-colindex` metadata.
 - Static output includes processed `aria-rowcount`, source `data-total-row-count` and processed `data-filtered-row-count` metadata.
+- Static output exposes the current visible column count through root `data-visible-column-count`.
 - Static output marks the grid as read-only with `aria-readonly="true"` because editing is out of scope.
 - Static output includes zero-based processed `data-row-index`, source `data-source-row-index` and visible `data-column-index` hooks.
 - Static output exposes loading state through root `data-loading-status` and grid `aria-busy`.
@@ -318,6 +319,7 @@ Sort ve filter item'lari accessor-backed column ister. Display-only column'lar r
 - Tek dispatch'ten gelen core state change'leri tek transaction id paylasir; `mountStaticGrid` multi-slice update'lerde duplicate automatic render'i onlemek icin bu id'yi kullanir.
 - Static output `aria-rowcount`, `aria-colcount`, body-row `aria-rowindex` ve cell/header `aria-colindex` metadata'si icerir.
 - Static output processed `aria-rowcount`, source `data-total-row-count` ve processed `data-filtered-row-count` metadata'si icerir.
+- Static output mevcut visible column count'u root `data-visible-column-count` ile expose eder.
 - Static output, editing kapsam disi oldugu icin grid'i `aria-readonly="true"` ile read-only olarak isaretler.
 - Static output zero-based processed `data-row-index`, source `data-source-row-index` ve visible `data-column-index` hook'lari icerir.
 - Static output loading state'i root `data-loading-status` ve grid `aria-busy` uzerinden expose eder.

@@ -374,7 +374,7 @@ export function renderStaticGridHtml<TData>(
     loadingStatus
   )}" data-pagination-mode="${escapeAttribute(
     state.pagination.mode
-  )}" data-selected-row-count="${selectedRowCount}"${paginationAttributes}>
+  )}" data-selected-row-count="${selectedRowCount}" data-visible-column-count="${columnCount}"${paginationAttributes}>
 ${caption}
 <div class="m-grid-surface" role="grid"${gridLabel} aria-busy="${busy}" aria-readonly="true" aria-rowcount="${processedRows.rows.length}" aria-colcount="${columnCount}" data-total-row-count="${processedRows.totalRowCount}" data-filtered-row-count="${processedRows.filteredRowCount}" style="--m-grid-column-count: ${columnCount}; --m-grid-column-template: ${columnTemplate};">
 <div class="m-grid-header-row" role="row">${headerCells}</div>
