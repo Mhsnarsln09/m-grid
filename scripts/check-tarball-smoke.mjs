@@ -91,6 +91,7 @@ const vue = createVueGridContract({ rows, columns, getRowId, adapterName: "vue" 
 if (corePackage.name !== "@m-grid/core") throw new Error("Unexpected core package metadata.");
 if (dom.getState().rows.rowIds[0] !== "row-1") throw new Error("DOM adapter did not read core state.");
 if (!html.includes('role="grid"')) throw new Error("Static DOM render did not produce a grid role.");
+if (!html.includes('data-visible-column-count="1"')) throw new Error("Static DOM render did not expose visible column count.");
 if (!html.includes("Ready")) throw new Error("Static DOM render did not include row content.");
 if (!selectedHtml.includes('aria-selected="true"')) throw new Error("Static DOM render did not expose selected row metadata.");
 if (rowIdFromTarget !== "row-1") throw new Error("Static DOM target helper did not read row id.");
